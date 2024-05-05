@@ -1,11 +1,20 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.JwtTokenProvider;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Owner;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.LoginResponseDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.OwnerDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.CreateOwnerRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.LoginRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.OwnerRepository;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.StoreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,18 +26,23 @@ public class OwnerService {
 
     private final OwnerRepository ownerRepository;
     private final StoreRepository storeRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public Long createOwner(Owner owner) {
-        validateDuplicateOwner(owner);
-        ownerRepository.save(owner);
-        return owner.getId();
-    }
-
-    private void validateDuplicateOwner(Owner owner) {
-        if (ownerRepository.existsByUsername(owner.getUsername())) {
+    public Long createOwner(CreateOwnerRequestDto createOwnerRequestDto) {
+        OwnerDto ownerDto = new OwnerDto(
+                createOwnerRequestDto.getUsername(),
+                createOwnerRequestDto.getName(),
+                createOwnerRequestDto.getEmail(),
+                createOwnerRequestDto.getPassword());
+        if (ownerRepository.existsByUsername(ownerDto.getUsername())) {
             throw new IllegalStateException("이미 존재하는 점주");
         }
+        Owner owner = ownerDto.toEntity(passwordEncoder);
+        ownerRepository.save(owner);
+        return owner.getId();
     }
 
     @Transactional
