@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,10 @@ public class Store {
 
     private String name;
 
+    private LocalTime startTime;
+
+    private LocalTime endTime;
+
     private String address;
 
     private String phone;
@@ -42,10 +47,12 @@ public class Store {
     private List<Food> foods = new ArrayList<>();
 
     @Builder
-    public Store(Long id, Owner owner, String name, String address, String phone, boolean isDeleted, List<Order> orders, List<FavoriteStore> favoriteStores, List<Food> foods) {
+    public Store(Long id, Owner owner, String name, LocalTime startTime, LocalTime endTime, String address, String phone, boolean isDeleted, List<Order> orders, List<FavoriteStore> favoriteStores, List<Food> foods) {
         this.id = id;
         this.owner = owner;
         this.name = name;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.address = address;
         this.phone = phone;
         this.isDeleted = isDeleted;
