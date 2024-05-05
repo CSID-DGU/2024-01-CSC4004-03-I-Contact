@@ -35,6 +35,7 @@ public class OwnerService {
         return false;
     }
 
+    @Transactional
     public void deleteOwner(Long id) {
         ownerRepository.deleteById(id);
     }
