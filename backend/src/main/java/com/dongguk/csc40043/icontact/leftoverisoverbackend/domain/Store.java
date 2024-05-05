@@ -1,13 +1,17 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store {
 
     @Id
@@ -36,5 +40,18 @@ public class Store {
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     private List<Food> foods = new ArrayList<>();
+
+    @Builder
+    public Store(Long id, Owner owner, String name, String address, String phone, boolean isDeleted, List<Order> orders, List<FavoriteStore> favoriteStores, List<Food> foods) {
+        this.id = id;
+        this.owner = owner;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.isDeleted = isDeleted;
+        this.orders = orders;
+        this.favoriteStores = favoriteStores;
+        this.foods = foods;
+    }
 
 }
