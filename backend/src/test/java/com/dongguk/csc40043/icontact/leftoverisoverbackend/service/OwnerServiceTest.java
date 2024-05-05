@@ -3,6 +3,9 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Owner;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.OwnerDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.CreateOwnerRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.LoginRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.LoginResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.StoreDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.OwnerRepository;
 import jakarta.transaction.Transactional;
@@ -10,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalTime;
@@ -31,13 +35,13 @@ public class OwnerServiceTest {
 
     @Test
     public void createOwner() {
-        OwnerDto ownerDto = new OwnerDto();
-        ownerDto.setUsername("floreo1242");
-        ownerDto.setName("Jinsoo Yoon");
-        ownerDto.setEmail("floreo1242@gmail.com");
-        ownerDto.setPassword("testpasswd");
+        CreateOwnerRequestDto createOwnerRequestDto = new CreateOwnerRequestDto();
+        createOwnerRequestDto.setUsername("floreo1242");
+        createOwnerRequestDto.setName("Jinsoo Yoon");
+        createOwnerRequestDto.setEmail("floreo1242@gmail.com");
+        createOwnerRequestDto.setPassword("testpasswd");
 
-        Long savedId = ownerService.createOwner(ownerDto.toEntity());
+        Long savedId = ownerService.createOwner(createOwnerRequestDto);
         Owner savedOwner = ownerRepository.findById(savedId).orElse(null);
 
         assert savedOwner != null;
@@ -45,22 +49,26 @@ public class OwnerServiceTest {
     }
 
     @Test
-    public void authenticate() {
+    public void login() {
         createOwner();
-        boolean authenticated = ownerService.authenticate("floreo1242", "testpasswd");
-        assertTrue(authenticated);
+        LoginRequestDto loginRequestDto = new LoginRequestDto();
+        loginRequestDto.setUsername("floreo1242");
+        loginRequestDto.setPassword("testpasswd");
+        LoginResponseDto authenticated = ownerService.login(loginRequestDto);
+        assertNotNull(authenticated);
     }
 
     @Test
     public void addStore() {
-        OwnerDto ownerDto = new OwnerDto();
-        ownerDto.setUsername("floreo1242");
-        ownerDto.setName("Jinsoo Yoon");
-        ownerDto.setEmail("floreo1242@gmail.com");
-        ownerDto.setPassword("testpasswd");
-        Long ownerId = ownerService.createOwner(ownerDto.toEntity());
+        CreateOwnerRequestDto createOwnerRequestDto = new CreateOwnerRequestDto();
+        createOwnerRequestDto.setUsername("floreo1242");
+        createOwnerRequestDto.setName("Jinsoo Yoon");
+        createOwnerRequestDto.setEmail("floreo1242@gmail.com");
+        createOwnerRequestDto.setPassword("testpasswd");
+        Long ownerId = ownerService.createOwner(createOwnerRequestDto);
         StoreDto storeDto = new StoreDto();
-        storeDto.setOwner(ownerDto.toEntity());
+        Owner owner = ownerRepository.findById(ownerId).orElse(null);
+        storeDto.setOwner(owner);
         storeDto.setName("Burger King");
         storeDto.setStartTime(LocalTime.of(9, 0));
         storeDto.setEndTime(LocalTime.of(21, 0));
@@ -76,14 +84,15 @@ public class OwnerServiceTest {
 
     @Test
     public void deleteOwner() {
-        OwnerDto ownerDto = new OwnerDto();
-        ownerDto.setUsername("floreo1242");
-        ownerDto.setName("Jinsoo Yoon");
-        ownerDto.setEmail("floreo1242@gmail.com");
-        ownerDto.setPassword("testpasswd");
+        CreateOwnerRequestDto createOwnerRequestDto = new CreateOwnerRequestDto();
+        createOwnerRequestDto.setUsername("floreo1242");
+        createOwnerRequestDto.setName("Jinsoo Yoon");
+        createOwnerRequestDto.setEmail("floreo1242@gmail.com");
+        createOwnerRequestDto.setPassword("testpasswd");
+        Long savedId = ownerService.createOwner(createOwnerRequestDto);
 
-        Long savedId = ownerService.createOwner(ownerDto.toEntity());
         ownerService.deleteOwner(savedId);
+        
         Owner owner = ownerRepository.findById(savedId).orElse(null);
         assertNull(owner);
     }
