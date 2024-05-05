@@ -31,12 +31,13 @@ public class OwnerService {
         }
     }
 
-    public boolean authenticate(String username, String password) {
-        Owner owner = ownerRepository.findByUsername(username);
-        if (owner != null) {
-            return owner.getPassword().equals(password);
-        }
-        return false;
+    @Transactional
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+        String username = loginRequestDto.getUsername();
+        String password = loginRequestDto.getPassword();
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        return jwtTokenProvider.generateToken(authentication);
     }
 
     @Transactional

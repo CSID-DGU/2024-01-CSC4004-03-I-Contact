@@ -15,3 +15,5 @@ spring:
     properties:
       hibernate:
         format_sql: ture
+jwt:
+  secret: ${SECRET_KEY}
