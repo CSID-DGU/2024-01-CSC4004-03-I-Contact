@@ -2,11 +2,14 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Owner;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.CreateStoreRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.OwnerRepository;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -15,9 +18,19 @@ import java.util.List;
 public class StoreService {
 
     private final StoreRepository storeRepository;
+    private final OwnerRepository ownerRepository;
 
     @Transactional
-    public Long createStore(Store store) {
+    public Long createStore(CreateStoreRequestDto createStoreRequestDto) {
+        Owner owner = ownerRepository.findById(createStoreRequestDto.getOwnerId()).orElseThrow(() -> new RuntimeException("Owner not found"));
+        Store store = Store.builder()
+                .owner(owner)
+                .name(createStoreRequestDto.getName())
+                .startTime(LocalTime.parse(createStoreRequestDto.getStartTime()))
+                .endTime(LocalTime.parse(createStoreRequestDto.getEndTime()))
+                .address(createStoreRequestDto.getAddress())
+                .phone(createStoreRequestDto.getPhone())
+                .build();
         storeRepository.save(store);
         return store.getId();
     }
