@@ -17,7 +17,7 @@ public class OwnerController {
 
     private final OwnerService ownerService;
 
-    @PostMapping("api/v1/owner/create")
+    @PostMapping("api/v1/owner")
     public ResponseEntity<?> createOwner(@RequestBody CreateOwnerRequestDto createOwnerRequestDto) {
         try {
             Long id = ownerService.createOwner(createOwnerRequestDto);
