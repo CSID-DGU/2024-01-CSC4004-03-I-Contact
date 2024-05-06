@@ -12,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store {
 
@@ -37,12 +38,15 @@ public class Store {
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
 
+    @Builder.Default
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     private List<Order> orders = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     private List<FavoriteStore> favoriteStores = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     private List<Food> foods = new ArrayList<>();
 
@@ -60,5 +64,6 @@ public class Store {
         this.favoriteStores = favoriteStores;
         this.foods = foods;
     }
+
 
 }

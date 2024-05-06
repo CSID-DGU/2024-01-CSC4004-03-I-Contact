@@ -34,6 +34,7 @@ public class Owner implements UserDetails {
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
 
+    @Builder.Default
     @OneToMany(mappedBy = "owner", cascade = CascadeType.PERSIST)
     private List<Store> stores = new ArrayList<>();
 
