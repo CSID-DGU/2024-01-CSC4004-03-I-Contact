@@ -12,7 +12,7 @@ public class StoreDto {
 
     private Long id;
 
-    private Owner owner;
+    private Long ownerId;
 
     private String name;
 
@@ -31,22 +31,5 @@ public class StoreDto {
     private List<FavoriteStore> favoriteStores = new ArrayList<>();
 
     private List<Food> foods = new ArrayList<>();
-
-    public Store toEntity() {
-        return Store.builder()
-                .id(id)
-                .owner(owner)
-                .name(name)
-                .startTime(startTime)
-                .endTime(endTime)
-                .address(address)
-                .phone(phone)
-                .isDeleted(isDeleted)
-                .orders(orders)
-                .favoriteStores(favoriteStores)
-                .foods(foods)
-                .build();
-    }
-
 
 }

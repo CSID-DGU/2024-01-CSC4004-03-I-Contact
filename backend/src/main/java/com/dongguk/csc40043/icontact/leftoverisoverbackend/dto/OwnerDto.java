@@ -23,27 +23,8 @@ public class OwnerDto {
 
     private String email;
 
-    private boolean isDeleted = false;
+    private boolean isDeleted;
 
     private List<Store> stores = new ArrayList<>();
-
-    public OwnerDto(String username, String name, String email, String password) {
-        this.username = username;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
-
-    public Owner toEntity(PasswordEncoder passwordEncoder) {
-        return Owner.builder()
-                .id(id)
-                .username(username)
-                .name(name)
-                .password(passwordEncoder.encode(password))
-                .email(email)
-                .isDeleted(isDeleted)
-                .stores(stores)
-                .build();
-    }
 
 }
