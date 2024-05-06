@@ -4,7 +4,6 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.JwtTokenProvid
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Owner;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.LoginResponseDto;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.OwnerDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.CreateOwnerRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.LoginRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.OwnerRepository;
@@ -32,15 +31,16 @@ public class OwnerService {
 
     @Transactional
     public Long createOwner(CreateOwnerRequestDto createOwnerRequestDto) {
-        OwnerDto ownerDto = new OwnerDto(
-                createOwnerRequestDto.getUsername(),
-                createOwnerRequestDto.getName(),
-                createOwnerRequestDto.getEmail(),
-                createOwnerRequestDto.getPassword());
-        if (ownerRepository.existsByUsername(ownerDto.getUsername())) {
+        if (ownerRepository.existsByUsername(createOwnerRequestDto.getUsername())) {
             throw new IllegalStateException("이미 존재하는 점주");
         }
-        Owner owner = ownerDto.toEntity(passwordEncoder);
+        Owner owner = Owner.builder()
+                .username(createOwnerRequestDto.getUsername())
+                .name(createOwnerRequestDto.getName())
+                .email(createOwnerRequestDto.getEmail())
+                .password(passwordEncoder.encode(createOwnerRequestDto.getPassword()))
+                .isDeleted(false)
+                .build();
         ownerRepository.save(owner);
         return owner.getId();
     }
@@ -56,10 +56,8 @@ public class OwnerService {
 
     @Transactional
     public Long addStore(Long ownerId, Long storeId) {
-        Owner owner = ownerRepository.findById(ownerId)
-                .orElseThrow(() -> new EntityNotFoundException(ownerId + ": 해당 아이디의 점주 없음"));
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new EntityNotFoundException(storeId + ": 해당 아이디의 매장 없음"));
+        Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new EntityNotFoundException(ownerId + ": 해당 아이디의 점주 없음"));
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new EntityNotFoundException(storeId + ": 해당 아이디의 매장 없음"));
         owner.getStores().add(store);
         ownerRepository.save(owner);
         return ownerId;

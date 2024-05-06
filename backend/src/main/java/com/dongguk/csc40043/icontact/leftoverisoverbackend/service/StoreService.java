@@ -30,6 +30,7 @@ public class StoreService {
                 .endTime(LocalTime.parse(createStoreRequestDto.getEndTime()))
                 .address(createStoreRequestDto.getAddress())
                 .phone(createStoreRequestDto.getPhone())
+                .isDeleted(false)
                 .build();
         storeRepository.save(store);
         return store.getId();
