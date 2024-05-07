@@ -1,13 +1,19 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store {
 
     @Id
@@ -21,6 +27,10 @@ public class Store {
 
     private String name;
 
+    private LocalTime startTime;
+
+    private LocalTime endTime;
+
     private String address;
 
     private String phone;
@@ -28,13 +38,32 @@ public class Store {
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
 
+    @Builder.Default
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     private List<Order> orders = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     private List<FavoriteStore> favoriteStores = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     private List<Food> foods = new ArrayList<>();
+
+    @Builder
+    public Store(Long id, Owner owner, String name, LocalTime startTime, LocalTime endTime, String address, String phone, boolean isDeleted, List<Order> orders, List<FavoriteStore> favoriteStores, List<Food> foods) {
+        this.id = id;
+        this.owner = owner;
+        this.name = name;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.address = address;
+        this.phone = phone;
+        this.isDeleted = isDeleted;
+        this.orders = orders;
+        this.favoriteStores = favoriteStores;
+        this.foods = foods;
+    }
+
 
 }
