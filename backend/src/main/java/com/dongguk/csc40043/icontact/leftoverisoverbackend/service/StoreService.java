@@ -33,6 +33,7 @@ public class StoreService {
                 .phone(createStoreRequestDto.getPhone())
                 .isDeleted(false)
                 .build();
+        owner.getStores().add(store);
         storeRepository.save(store);
         return new CreateStoreResponseDto(store.getId());
     }

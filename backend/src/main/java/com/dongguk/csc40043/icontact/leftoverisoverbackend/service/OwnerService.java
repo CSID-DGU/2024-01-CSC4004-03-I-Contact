@@ -52,15 +52,6 @@ public class OwnerService {
     }
 
     @Transactional
-    public Long addStore(Long ownerId, Long storeId) {
-        Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new EntityNotFoundException(ownerId + ": 해당 아이디의 점주 없음"));
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> new EntityNotFoundException(storeId + ": 해당 아이디의 매장 없음"));
-        owner.getStores().add(store);
-        ownerRepository.save(owner);
-        return ownerId;
-    }
-
-    @Transactional
     public void deleteOwner(Long id) {
         ownerRepository.deleteById(id);
     }
