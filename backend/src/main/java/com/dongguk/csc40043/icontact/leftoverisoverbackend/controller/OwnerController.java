@@ -1,5 +1,6 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.controller;
 
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.owner.CheckDuplicateRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.owner.CreateOwnerRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.owner.LoginRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.service.OwnerService;
@@ -29,6 +30,15 @@ public class OwnerController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ownerService.login(loginRequestDto));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("api/v1/owner/check-duplicate-id")
+    public ResponseEntity<?> checkDuplicateId(@RequestBody CheckDuplicateRequestDto checkDuplicateRequestDto) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(ownerService.checkDuplicate(checkDuplicateRequestDto));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -2,8 +2,10 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.JwtTokenProvider;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Owner;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.owner.CheckDuplicateRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.owner.CreateOwnerRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.owner.LoginRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.CheckDuplicateResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.CreateOwnerResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.LoginResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.OwnerRepository;
@@ -49,6 +51,14 @@ public class OwnerService {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         return jwtTokenProvider.generateToken(authentication);
+    }
+
+    public CheckDuplicateResponseDto checkDuplicate(CheckDuplicateRequestDto checkDuplicateRequestDto) {
+        String username = checkDuplicateRequestDto.getUsername();
+        if (ownerRepository.existsByUsername(username)) {
+            throw new IllegalStateException("이미 존재하는 점주");
+        }
+        return new CheckDuplicateResponseDto(true);
     }
 
     @Transactional
