@@ -1,8 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:leftover_is_over_owner/Services/api_services.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -52,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
                     backgroundColor: Colors.white,
                     radius: 100.0, // 원래는 1000.0이었으나 실제 사용 가능한 크기로 조정
                   ),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 70),
                   Column(
                     children: [
                       TextField(
@@ -64,6 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
+                        autofocus: true,
                         controller: controllerId, // 컨트롤러 예제에서는 주석 처리
                       ),
                       const SizedBox(
@@ -79,6 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         obscureText: true,
+                        autofocus: true,
                         controller: controllerPwd, // 컨트롤러 예제에서는 주석 처리
                       ),
                       const SizedBox(
@@ -93,6 +94,10 @@ class _LoginPageState extends State<LoginPage> {
                                 MaterialStateProperty.all(Colors.green[400]),
                           ),
                           onPressed: () {
+                            ApiService.login(
+                                // 데이터베이스에서 username을 id로 바꿔야댐.
+                                controllerId.text,
+                                controllerPwd.text);
                             print('Input id: ${controllerId.text}');
                             print('Input id: ${controllerPwd.text}');
                           },
