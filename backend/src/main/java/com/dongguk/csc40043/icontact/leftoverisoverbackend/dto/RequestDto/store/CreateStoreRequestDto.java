@@ -1,4 +1,4 @@
-package com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto;
+package com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store;
 
 import lombok.Data;
 

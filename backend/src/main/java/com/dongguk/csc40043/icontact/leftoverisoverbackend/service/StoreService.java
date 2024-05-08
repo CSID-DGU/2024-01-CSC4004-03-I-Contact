@@ -2,7 +2,8 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Owner;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.CreateStoreRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store.CreateStoreRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.CreateStoreResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.OwnerRepository;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class StoreService {
     private final OwnerRepository ownerRepository;
 
     @Transactional
-    public Long createStore(CreateStoreRequestDto createStoreRequestDto) {
+    public CreateStoreResponseDto createStore(CreateStoreRequestDto createStoreRequestDto) {
         Owner owner = ownerRepository.findById(createStoreRequestDto.getOwnerId()).orElseThrow(() -> new RuntimeException("Owner not found"));
         Store store = Store.builder()
                 .owner(owner)
@@ -32,8 +33,9 @@ public class StoreService {
                 .phone(createStoreRequestDto.getPhone())
                 .isDeleted(false)
                 .build();
+        owner.getStores().add(store);
         storeRepository.save(store);
-        return store.getId();
+        return new CreateStoreResponseDto(store.getId());
     }
 
     public List<Store> getStoreList(Owner owner) {
