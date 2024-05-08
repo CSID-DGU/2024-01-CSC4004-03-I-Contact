@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                                 controllerId.text,
                                 controllerPwd.text);
                             print('Input id: ${controllerId.text}');
-                            print('Input id: ${controllerPwd.text}');
+                            print('Input password: ${controllerPwd.text}');
                           },
                           child: const Text(
                             '로그인',
