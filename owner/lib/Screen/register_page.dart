@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:leftover_is_over_owner/Screen/store_register_page.dart';
 import 'package:leftover_is_over_owner/Services/api_services.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool checkduplicate = false;
   bool checkpassword = false;
   bool checkregister = false; // 가입하기 위한 조건. 아이디 중복 안되고 비밀번호 같아야함
+  String lastCheckedId = '';
 
   late TextEditingController controllerName,
       controllerId,
@@ -28,54 +30,79 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void checkDuplicate(String id) async {
+    print(id);
     checkduplicate = await ApiService.duplicate(id);
-    // setState(() {}); // 없애도 되는지?? 이게 있으면 기존에 작성한 내용들이 다 사라짐
+    if (checkduplicate) {
+      // 중복 검사를 통과한 경우
+      lastCheckedId = id; // 마지막 중복 검사를 통과한 id를 lastCheckedId에 저장
+    }
+    setState(() {});
   }
 
   void checkCredentials() {
-    if (checkpassword && checkduplicate) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const RegisterPage()), // 다음 화면으로 이동
-      );
+    var message = '에러';
+    checkpassword = controllerPwd.text == controllerPwdChk.text;
+    print('아이디 중복 검사 결과: $checkduplicate');
+    print('비밀번호 일치 검사 결과: $checkpassword');
+    if (controllerName.text.isEmpty) {
+      message = '이름을 입력해주세요.';
+      showDialogRegister(message);
+    } else if (controllerId.text.isEmpty) {
+      message = '아이디를 입력해주세요.';
+      showDialogRegister(message);
+    } else if (controllerEmail.text.isEmpty) {
+      message = '이메일를 입력해주세요.';
+      showDialogRegister(message);
+    } else if (controllerPwd.text.isEmpty) {
+      message = '비밀번호를 입력해주세요.';
+      showDialogRegister(message);
+    } else if (controllerPwdChk.text.isEmpty) {
+      message = '비밀번호 확인을 입력해주세요.';
+      showDialogRegister(message);
+    } else if (checkpassword && checkduplicate) {
+      if (lastCheckedId != controllerId.text) {
+        // lastCheckedId와 실제 제출된 값이 다른 경우 중복확인을 새로 하도록 오류메세지
+        message = '아이디 중복확인을 새로 해주세요.';
+        showDialogRegister(message);
+      } else {
+        ApiService.register(controllerId.text, controllerName.text,
+            controllerEmail.text, controllerPwd.text);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const StoreRegisterPage()),
+        );
+      }
     } else if (checkduplicate) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('오류'),
-            content: const Text('비밀번호가 일치하지 않습니다.'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('확인'),
-                onPressed: () {
-                  Navigator.of(context).pop(); // 대화상자 닫기
-                },
-              ),
-            ],
-          );
-        },
-      );
+      message = '비밀번호가 일치하지 않습니다.';
+      showDialogRegister(message);
     } else {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('오류'),
-            content: const Text('아이디 중복 확인을 해주세요.'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('확인'),
-                onPressed: () {
-                  Navigator.of(context).pop(); // 대화상자 닫기
-                },
-              ),
-            ],
-          );
-        },
-      );
+      message = '아이디 중복 확인을 해주세요.';
+      showDialogRegister(message);
     }
+  }
+
+  void showDialogRegister(String message) {
+    var errorMessage = message;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(
+            errorMessage,
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop(); // 대화상자 닫기
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -148,18 +175,35 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                Container(
-                  clipBehavior: Clip.hardEdge,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.green[300]!.withOpacity(0.6),
-                  ),
-                  child: const Text(
-                    '아이디',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      clipBehavior: Clip.hardEdge,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 23),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.green[300]!.withOpacity(0.6),
+                      ),
+                      child: const Text(
+                        '아이디',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    checkduplicate
+                        ? Text(
+                            '사용 가능   ',
+                            style: TextStyle(
+                                color: Colors.green[700], fontSize: 13),
+                          )
+                        : Text(
+                            '사용 불가   ',
+                            style:
+                                TextStyle(color: Colors.red[700], fontSize: 13),
+                          ),
+                  ],
                 ),
                 const SizedBox(
                   height: 1,
@@ -190,7 +234,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 5,
+                  height: 6,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
