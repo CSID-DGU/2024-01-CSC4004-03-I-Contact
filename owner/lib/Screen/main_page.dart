@@ -22,7 +22,7 @@ class _MainPageState extends State<MainPage> {
       body: Column(
         children: [
           const SizedBox(
-            height: 40,
+            height: 60,
           ),
           Row(
             children: [
