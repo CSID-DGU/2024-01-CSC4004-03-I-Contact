@@ -21,7 +21,7 @@ class ApiService {
     return duplicateCheck;
   }
 
-  static Future<String> register(
+  static Future<bool> register(
       String username, String name, String email, String password) async {
     var headers = {'Content-Type': 'application/json'};
     var request =
@@ -35,11 +35,45 @@ class ApiService {
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
+      return true;
+      print('회원가입 성공');
       print(await response.stream.bytesToString());
     } else {
-      print(response.reasonPhrase);
+      return false;
+      print('회원가입 실패');
     }
-    throw Error();
+  }
+
+  static Future<bool> storeRegister({
+    required String storeName,
+    required String startTime,
+    required String endTime,
+    required String address,
+    required String storePhone,
+    required String businessNum,
+  }) async {
+    print('API: storeRegister');
+    var duplicateCheck = false;
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            'http://$ipAddress:8080/api/v1/owner/register/store-register'));
+    request.body = jsonEncode({
+      "name": storeName,
+      "startTime": startTime,
+      "endTime": endTime,
+      "address": address,
+      "phone": storePhone,
+      "businessNum": businessNum,
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      duplicateCheck = true;
+    }
+    print(response.statusCode);
+    return duplicateCheck;
   }
 
   static void login(String username, String password) async {
