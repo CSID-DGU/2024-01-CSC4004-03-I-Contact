@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:leftover_is_over_owner/Screen/register_page.dart';
 import 'package:leftover_is_over_owner/Services/api_services.dart';
 
 class LoginPage extends StatefulWidget {
@@ -149,7 +150,13 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RegisterPage()));
+                            },
                             style: TextButton.styleFrom(
                               foregroundColor: Colors.black,
                             ),

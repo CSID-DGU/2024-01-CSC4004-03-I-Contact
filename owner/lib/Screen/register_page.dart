@@ -65,11 +65,14 @@ class _RegisterPageState extends State<RegisterPage> {
         message = '아이디 중복확인을 새로 해주세요.';
         showDialogRegister(message);
       } else {
-        ApiService.register(controllerId.text, controllerName.text,
-            controllerEmail.text, controllerPwd.text);
+        var id = controllerId.text;
+        var name = controllerName.text;
+        var email = controllerEmail.text;
+        var pwd = controllerPwd.text;
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const StoreRegisterPage()),
+          MaterialPageRoute(
+              builder: (context) => StoreRegisterPage(id, name, email, pwd)),
         );
       }
     } else if (checkduplicate) {
