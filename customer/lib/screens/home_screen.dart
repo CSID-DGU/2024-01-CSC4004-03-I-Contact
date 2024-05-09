@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:leftover_is_over_customer/widgets/navigation_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -219,7 +218,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const MyBottomNav(),
     );
   }
 }
@@ -268,22 +266,4 @@ class FoodCategoryWidget extends StatelessWidget {
     super.debugFillProperties(properties);
     properties.add(StringProperty('foodName', foodName));
   }
-}
-
-class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MyAppBar({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Theme.of(context).primaryColor,
-      foregroundColor: Theme.of(context).primaryColorDark,
-      title: const Text('Test'),
-    );
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
