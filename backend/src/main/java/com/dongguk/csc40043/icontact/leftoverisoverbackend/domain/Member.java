@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 
 @Entity
 @Getter
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Owner implements UserDetails {
+public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "owner_id")
+    @Column(name = "member_id")
     private Long id;
 
     private String username;
@@ -35,19 +35,16 @@ public class Owner implements UserDetails {
     private boolean isDeleted;
 
     @Builder.Default
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.PERSIST)
-    private List<Store> stores = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+    private List<Order> orders = new ArrayList<>();
 
-    @Builder
-    public Owner(Long id, String username, String name, String password, String email, boolean isDeleted, List<Store> stores) {
-        this.id = id;
-        this.username = username;
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.isDeleted = isDeleted;
-        this.stores = stores;
-    }
+    @Builder.Default
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+    private List<FavoriteStore> favoriteStores = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+    private List<Store> stores = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

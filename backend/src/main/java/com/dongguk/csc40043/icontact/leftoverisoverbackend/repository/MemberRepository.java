@@ -1,17 +1,17 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.repository;
 
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Owner;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface OwnerRepository extends JpaRepository<Owner, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByUsername(String username);
 
-    Owner findByUsername(String username);
+    Member findByUsername(String username);
 
-    Owner findById(long id);
+    Member findById(long id);
 
 }

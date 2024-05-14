@@ -1,10 +1,7 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -13,6 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store {
 
@@ -23,7 +21,7 @@ public class Store {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
-    private Owner owner;
+    private Member member;
 
     private String name;
 
@@ -49,21 +47,5 @@ public class Store {
     @Builder.Default
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     private List<Food> foods = new ArrayList<>();
-
-    @Builder
-    public Store(Long id, Owner owner, String name, LocalTime startTime, LocalTime endTime, String address, String phone, boolean isDeleted, List<Order> orders, List<FavoriteStore> favoriteStores, List<Food> foods) {
-        this.id = id;
-        this.owner = owner;
-        this.name = name;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.address = address;
-        this.phone = phone;
-        this.isDeleted = isDeleted;
-        this.orders = orders;
-        this.favoriteStores = favoriteStores;
-        this.foods = foods;
-    }
-
 
 }
