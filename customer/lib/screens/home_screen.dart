@@ -230,18 +230,18 @@ class FoodCategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 60,
-      height: 60,
-      margin: const EdgeInsets.all(10),
+      width: 70,
+      height: 70,
+      margin: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.background,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(45),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.7),
+            color: Colors.grey.withOpacity(1),
             spreadRadius: 0,
-            blurRadius: 5.0,
-            offset: const Offset(0, 5), // changes position of shadow
+            blurRadius: 1.0,
+            offset: const Offset(0, 3), // changes position of shadow
           ),
         ],
       ),
@@ -250,7 +250,7 @@ class FoodCategoryWidget extends StatelessWidget {
           Icon(
             Icons.food_bank_rounded,
             color: Theme.of(context).primaryColorDark,
-            size: 30,
+            size: 40,
           ),
           Text(
             foodName,

@@ -11,20 +11,19 @@ class App2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        textTheme: const TextTheme(
-          displayLarge: TextStyle(
-            color: Color(0XFF523B2A),
+        theme: ThemeData(
+          textTheme: const TextTheme(
+            displayLarge: TextStyle(
+              color: Color(0XFF523B2A),
+            ),
           ),
+          cardColor: const Color(0xffDEEABB),
+          primaryColor: const Color(0xffFFC658),
+          primaryColorDark: const Color(0XFF523B2A),
+          primaryColorLight: const Color.fromARGB(255, 255, 246, 225),
+          colorScheme: ColorScheme.fromSwatch(
+              backgroundColor: const Color.fromARGB(255, 253, 255, 249)),
         ),
-        cardColor: const Color(0xffDEEABB),
-        primaryColor: const Color(0xffFFC658),
-        primaryColorDark: const Color(0XFF523B2A),
-        primaryColorLight: const Color.fromARGB(255, 255, 246, 225),
-        colorScheme: ColorScheme.fromSwatch(
-            backgroundColor: const Color.fromARGB(255, 248, 248, 236)),
-      ),
-      home: const MainScreen(),
-    );
+        home: const MainScreen());
   }
 }
