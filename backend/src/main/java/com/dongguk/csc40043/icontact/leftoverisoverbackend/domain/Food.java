@@ -36,7 +36,7 @@ public class Food {
     private boolean isVisible;
 
     @Column(columnDefinition = "boolean default false")
-    private boolean isDeleted;
+    private boolean deleted;
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.PERSIST)
     private List<OrderFood> orderFoods = new ArrayList<>();
