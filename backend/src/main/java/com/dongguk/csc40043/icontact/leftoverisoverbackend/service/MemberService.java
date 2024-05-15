@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
@@ -33,11 +36,18 @@ public class MemberService {
 
     @Transactional
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+        String requestedRole = loginRequestDto.getRoles().get(0);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginRequestDto.getUsername(),
                 loginRequestDto.getPassword()
         );
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequestDto.getUsername());
+        boolean hasRole = userDetails.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals(requestedRole));
+        if (!hasRole) {
+            throw new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다.");
+        }
         return jwtTokenProvider.generateToken(authentication);
     }
 
