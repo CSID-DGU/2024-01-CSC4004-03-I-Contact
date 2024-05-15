@@ -2,6 +2,7 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE member SET deleted = true where member_id = ?")
 public class Member implements UserDetails {
 
     @Id
@@ -32,7 +34,7 @@ public class Member implements UserDetails {
     private String email;
 
     @Column(columnDefinition = "boolean default false")
-    private boolean isDeleted;
+    private boolean deleted;
 
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)

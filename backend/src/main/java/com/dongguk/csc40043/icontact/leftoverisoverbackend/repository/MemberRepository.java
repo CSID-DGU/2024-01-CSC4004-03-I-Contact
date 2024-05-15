@@ -8,10 +8,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    boolean existsByUsername(String username);
+    boolean existsByUsernameAndDeleted(String username, boolean deleted);
 
-    Member findByUsername(String username);
-
-    Member findById(long id);
+    Member findByUsernameAndDeleted(String username, boolean deleted);
 
 }

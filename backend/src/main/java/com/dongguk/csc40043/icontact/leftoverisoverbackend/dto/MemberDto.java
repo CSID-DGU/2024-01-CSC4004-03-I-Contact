@@ -28,7 +28,7 @@ public class MemberDto {
 
     private String email;
 
-    private boolean isDeleted;
+    private boolean deleted;
 
     @Builder.Default
     private List<Order> orders = new ArrayList<>();
@@ -49,7 +49,7 @@ public class MemberDto {
                 .name(name)
                 .password(password)
                 .email(email)
-                .isDeleted(isDeleted)
+                .deleted(deleted)
                 .orders(orders)
                 .favoriteStores(favoriteStores)
                 .stores(stores)

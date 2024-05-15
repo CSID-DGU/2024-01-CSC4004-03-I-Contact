@@ -34,7 +34,7 @@ public class Store {
     private String phone;
 
     @Column(columnDefinition = "boolean default false")
-    private boolean isDeleted;
+    private boolean deleted;
 
     @Builder.Default
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
