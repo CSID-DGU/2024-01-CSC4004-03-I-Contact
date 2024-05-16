@@ -19,12 +19,11 @@ public class Food {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @Column(columnDefinition = "int default 0")
+    private int firstPrice;
 
     @Column(columnDefinition = "int default 0")
-    private int price;
+    private int sellPrice;
 
     @Column(columnDefinition = "int default 0")
     private int capacity;

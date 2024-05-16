@@ -23,6 +23,10 @@ public class Store {
     @JoinColumn(name = "owner_id")
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     private String name;
 
     private LocalTime startTime;
@@ -32,6 +36,9 @@ public class Store {
     private String address;
 
     private String phone;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean isOpen;
 
     @Column(columnDefinition = "boolean default false")
     private boolean deleted;

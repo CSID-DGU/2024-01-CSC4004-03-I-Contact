@@ -18,6 +18,6 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category")
-    private List<Food> foods = new ArrayList<>();
+    private List<Store> stores = new ArrayList<>();
 
 }
