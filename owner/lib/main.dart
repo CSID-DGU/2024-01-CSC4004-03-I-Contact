@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Screen/select_store_page.dart';
 import 'package:leftover_is_over_owner/Screen/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/main_page.dart';
+import 'package:leftover_is_over_owner/Screen/sales_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/register_complete_page.dart';
 import 'package:leftover_is_over_owner/Screen/register_page.dart';
 import 'package:leftover_is_over_owner/Screen/store_register_page.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(home: SelectStore()
+        //SalesManagePage()
         //MainPage()
         //LoginPage(),
         //RegisterCompletePage(),
