@@ -51,4 +51,12 @@ public class StoreService {
                 .build();
     }
 
+    @Transactional
+    public void changeOpenStatus(String username) {
+        Member member = memberRepository.findByUsernameAndDeleted(username, false);
+        Store store = storeRepository.findByMemberAndDeleted(member, false);
+        store.toggleIsOpen();
+        storeRepository.save(store);
+    }
+
 }

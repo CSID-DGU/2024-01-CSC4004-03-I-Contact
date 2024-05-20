@@ -37,4 +37,14 @@ public class StoreController {
         }
     }
 
+    @PostMapping("/store/open")
+    public ResponseEntity<?> openStore() {
+        try {
+            storeService.changeOpenStatus(SecurityUtil.getCurrentUser());
+            return ResponseEntity.ok("Successfully changed open status");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
