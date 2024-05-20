@@ -80,9 +80,6 @@ class _SalesManagePageState extends State<SalesManagePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Color.fromARGB(255, 255, 198, 88),
-        ),
         shadowColor: Colors.black,
         elevation: 1,
         backgroundColor: Colors.white,

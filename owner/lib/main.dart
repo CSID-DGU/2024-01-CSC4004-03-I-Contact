@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:leftover_is_over_owner/Screen/select_store_page.dart';
 import 'package:leftover_is_over_owner/Screen/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/main_page.dart';
@@ -18,13 +19,27 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: SelectStore()
-        //SalesManagePage()
-        //MainPage()
-        //LoginPage(),
-        //RegisterCompletePage(),
-        //RegisterPage(),
-        //StoreRegisterPage('ab', 'av', 'aa', 'aa'),
-        );
+    return MaterialApp(
+      home: const SelectStore(),
+      //SalesManagePage()
+      //MainPage()
+      //LoginPage(),
+      //RegisterCompletePage(),
+      //RegisterPage(),
+      //StoreRegisterPage('ab', 'av', 'aa', 'aa'),
+
+      // 모든 페이지 상단바 색상 지정
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Color.fromARGB(255, 255, 198, 88),
+            statusBarIconBrightness: Brightness.dark,
+          ),
+        ),
+      ),
+      builder: (context, child) {
+        return child!;
+      },
+    );
   }
 }
