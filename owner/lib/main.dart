@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:leftover_is_over_owner/Screen/menu_manage_edit.dart';
 import 'package:leftover_is_over_owner/Screen/select_store_page.dart';
 import 'package:leftover_is_over_owner/Screen/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/main_page.dart';
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const AddMenu(),
+      home: const EditMenu(),
+      //AddMenu(),
       //RegisterPage(),
       //SelectStore(),
       //SalesManagePage()
