@@ -27,7 +27,7 @@ public class StoreService {
 
     @Transactional
     public CreateStoreResponseDto createStore(CreateStoreRequestDto createStoreRequestDto) {
-        Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false);
+        Member member = memberRepository.findByUsernameAndDeleted(createStoreRequestDto.getUsername(), false);
         Category category = categoryRepository.findById(createStoreRequestDto.getCategoryId()).orElse(null);
         StoreDto storeDto = createStoreRequestDto.toServiceDto(member, category);
         Store store = storeRepository.save(storeDto.toEntity(member, category));

@@ -10,6 +10,8 @@ import java.time.LocalTime;
 @Data
 public class CreateStoreRequestDto {
 
+    private String username;
+
     private String name;
 
     private String startTime;
