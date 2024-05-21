@@ -7,12 +7,12 @@ import lombok.Data;
 @Builder
 public class UpdateFoodRequestDto {
 
-    String name;
+    private String name;
 
-    Integer firstPrice;
+    private Integer firstPrice;
 
-    Integer sellPrice;
+    private Integer sellPrice;
 
-    Integer capacity;
+    private Integer capacity;
 
 }
