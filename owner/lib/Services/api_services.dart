@@ -6,9 +6,9 @@ import 'package:leftover_is_over_owner/Services/secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static String ipAddress = '172.20.10.3';
+  static String ipAddress = '10.74.8.132';
   static List<String> roles = ['owner'];
-  static List<StoreModel> storeInstances = [];
+  static late StoreModel store;
 
   static Future<bool> duplicate(String id) async {
     var duplicateCheck = false;
@@ -51,12 +51,13 @@ class ApiService {
 
   static Future<bool> storeRegister({
     // 나중에 확인
+    required String userName,
     required String storeName,
     required String startTime,
     required String endTime,
     required String address,
     required String storePhone,
-    required String businessNum,
+    required int categoryId,
   }) async {
     print('API: storeRegister');
     var duplicateCheck = false;
@@ -64,17 +65,19 @@ class ApiService {
     var request =
         http.Request('POST', Uri.parse('http://$ipAddress:8080/store'));
     request.body = jsonEncode({
+      "userName": userName,
       "name": storeName,
       "startTime": startTime,
       "endTime": endTime,
       "address": address,
       "phone": storePhone,
-      "businessNum": businessNum,
+      "categoryId": categoryId,
     });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       duplicateCheck = true;
+      print(response.statusCode);
     }
     print(response.statusCode);
     return duplicateCheck;
@@ -134,7 +137,7 @@ class ApiService {
     return prefs.getStringList('token')!;
   }
 
-  static Future<List<StoreModel>> getStores() async {
+  static Future<StoreModel> getStore() async {
     var token = await loadToken();
     var headers = {'Authorization': '${token[0]} ${token[1]}'};
     var request =
@@ -143,12 +146,9 @@ class ApiService {
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       String responseBody = await response.stream.bytesToString();
-      List<dynamic> stores = jsonDecode(responseBody);
-      for (var store in stores) {
-        final instance = StoreModel.fromJson(store);
-        storeInstances.add(instance);
-      }
-      return storeInstances;
+      dynamic storeGet = jsonDecode(responseBody);
+      store = StoreModel.fromJson(storeGet);
+      return store;
     }
     throw Error();
   }
