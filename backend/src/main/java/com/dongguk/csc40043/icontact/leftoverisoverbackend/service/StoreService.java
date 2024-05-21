@@ -1,6 +1,5 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Category;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
@@ -14,6 +13,9 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.StoreRepos
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -57,6 +59,25 @@ public class StoreService {
         Store store = storeRepository.findByMemberAndDeleted(member, false);
         store.toggleIsOpen();
         storeRepository.save(store);
+    }
+
+    public List<GetStoreResponseDto> getStoreByKeyword(String keyword) {
+        List<Store> storeList = storeRepository.findByNameContaining(keyword);
+        return storeList.stream()
+                .map(store -> GetStoreResponseDto.builder()
+                        .storeId(store.getId())
+                        .ownerId(store.getMember().getId())
+                        .categoryId(store.getCategory().getId())
+                        .name(store.getName())
+                        .startTime(store.getStartTime().toString())
+                        .endTime(store.getEndTime().toString())
+                        .address(store.getAddress())
+                        .phone(store.getPhone())
+                        .isOpen(store.isOpen())
+                        .deleted(store.isDeleted())
+                        .build()
+                )
+                .collect(Collectors.toList());
     }
 
 }
