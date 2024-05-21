@@ -59,6 +59,15 @@ public class StoreService {
 
     public List<GetStoreResponseDto> getStoreByKeyword(String keyword) {
         List<Store> storeList = storeRepository.findByNameContaining(keyword);
+        return toResponseDto(storeList);
+    }
+
+    public List<GetStoreResponseDto> getStoreByCategory(Long categoryId) {
+        List<Store> storeList = storeRepository.findByCategoryId(categoryId);
+        return toResponseDto(storeList);
+    }
+
+    private List<GetStoreResponseDto> toResponseDto(List<Store> storeList) {
         return storeList.stream()
                 .map(store -> GetStoreResponseDto.builder()
                         .storeId(store.getId())

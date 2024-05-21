@@ -53,4 +53,13 @@ public class StoreController {
         }
     }
 
+    @GetMapping("/store/category/{categoryId}")
+    public ResponseEntity<?> getStoreByCategory(@PathVariable("categoryId") Long categoryId) {
+        try {
+            return ResponseEntity.ok(storeService.getStoreByCategory(categoryId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
