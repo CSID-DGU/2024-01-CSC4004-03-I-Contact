@@ -16,14 +16,14 @@ class _RegisterPageState extends State<RegisterPage> {
   String lastCheckedId = '';
 
   late TextEditingController controllerName,
-      controllerId,
+      controllerUsername,
       controllerEmail,
       controllerPwd,
       controllerPwdChk;
   @override
   void initState() {
     controllerName = TextEditingController();
-    controllerId = TextEditingController();
+    controllerUsername = TextEditingController();
     controllerEmail = TextEditingController();
     controllerPwd = TextEditingController();
     controllerPwdChk = TextEditingController();
@@ -47,7 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (controllerName.text.isEmpty) {
       message = '이름을 입력해주세요.';
       showDialogRegister(message);
-    } else if (controllerId.text.isEmpty) {
+    } else if (controllerUsername.text.isEmpty) {
       message = '아이디를 입력해주세요.';
       showDialogRegister(message);
     } else if (controllerEmail.text.isEmpty) {
@@ -60,12 +60,12 @@ class _RegisterPageState extends State<RegisterPage> {
       message = '비밀번호 확인을 입력해주세요.';
       showDialogRegister(message);
     } else if (checkpassword && checkduplicate) {
-      if (lastCheckedId != controllerId.text) {
+      if (lastCheckedId != controllerUsername.text) {
         // lastCheckedId와 실제 제출된 값이 다른 경우 중복확인을 새로 하도록 오류메세지
         message = '아이디 중복확인을 새로 해주세요.';
         showDialogRegister(message);
       } else {
-        var id = controllerId.text;
+        var id = controllerUsername.text;
         var name = controllerName.text;
         var email = controllerEmail.text;
         var pwd = controllerPwd.text;
@@ -233,7 +233,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     autofocus: true,
-                    controller: controllerId,
+                    controller: controllerUsername,
                   ),
                 ),
                 const SizedBox(
@@ -244,7 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     OutlinedButton(
                       onPressed: () {
-                        checkDuplicate(controllerId.text);
+                        checkDuplicate(controllerUsername.text);
                       },
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(100, 40),

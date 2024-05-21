@@ -26,7 +26,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
       controllerDetailAddress,
       controllerStorePhone,
       controllerBusinessNum;
-  String selectedValue = '업종 선택';
+  String selectedValue = '업종을 선택해주세요';
 
   void showDialogRegister(String message) {
     var errorMessage = message;
@@ -50,6 +50,23 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
         );
       },
     );
+  }
+
+  void testButton() async {
+    var registerCheck = await ApiService.register(
+      username: widget.username,
+      name: widget.name,
+      email: widget.email,
+      password: widget.password,
+    );
+    if (registerCheck) {
+      // 회원가입 성공 시
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const RegisterCompletePage()), //
+      );
+    }
   }
 
   void checkCredentials() async {
@@ -119,9 +136,13 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
         return;
       }
     }
-
     var registerCheck = await ApiService.register(
-        widget.username, widget.name, widget.email, widget.password);
+      username: widget.username,
+      name: widget.name,
+      email: widget.email,
+      password: widget.password,
+    );
+
     if (registerCheck) {
       // 회원가입 완료 되었을 시
       var storeName = controllerName.text;
@@ -134,9 +155,6 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
       var address = controllerAddress.text;
       var storePhone = controllerStorePhone.text;
       var businessNum = controllerBusinessNum.text;
-
-      var registerCheck = await ApiService.register(
-          widget.username, widget.name, widget.email, widget.password);
 
       var registerStoreCheck = await ApiService.storeRegister(
           storeName: storeName,
@@ -493,7 +511,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '    업종을 선택해주세요',
+                        '    $selectedValue',
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -501,8 +519,9 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                       ),
                       PopupMenuButton<String>(
                         onSelected: (String value) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('선택된 값: $value')));
+                          setState(() {
+                            selectedValue = value;
+                          });
                         },
                         itemBuilder: (BuildContext context) =>
                             <PopupMenuEntry<String>>[
@@ -696,7 +715,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                   children: [
                     OutlinedButton(
                       onPressed: () {
-                        // 중복 확인 로직
+                        testButton();
                       },
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.green[300]!.withOpacity(0.6),
