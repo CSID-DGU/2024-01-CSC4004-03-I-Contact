@@ -4,6 +4,7 @@ import 'package:leftover_is_over_owner/Screen/menu_manage_edit.dart';
 import 'package:leftover_is_over_owner/Screen/select_store_page.dart';
 import 'package:leftover_is_over_owner/Screen/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/main_page.dart';
+import 'package:leftover_is_over_owner/Screen/menu_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/sales_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/register_complete_page.dart';
 import 'package:leftover_is_over_owner/Screen/register_page.dart';
@@ -21,8 +22,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const EditMenu(),
+    return const MaterialApp(
+      home: MainPage(),
+      //EditMenu(),
       //AddMenu(),
       //RegisterPage(),
       //SelectStore(),

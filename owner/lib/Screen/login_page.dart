@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:leftover_is_over_owner/Screen/main_page.dart';
 import 'package:leftover_is_over_owner/Screen/register_page.dart';
 import 'package:leftover_is_over_owner/Services/api_services.dart';
 
@@ -12,11 +13,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late TextEditingController controllerId, controllerPwd;
+  late TextEditingController controllerUsername, controllerPwd;
+
   @override
   void initState() {
     // TODO: implement initState
-    controllerId = TextEditingController();
+    controllerUsername = TextEditingController();
     controllerPwd = TextEditingController();
   }
 
@@ -65,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         autofocus: true,
-                        controller: controllerId, // 컨트롤러 예제에서는 주석 처리
+                        controller: controllerUsername, // 컨트롤러 예제에서는 주석 처리
                       ),
                       const SizedBox(
                         height: 10,
@@ -94,13 +96,19 @@ class _LoginPageState extends State<LoginPage> {
                             backgroundColor:
                                 MaterialStateProperty.all(Colors.green[400]),
                           ),
-                          onPressed: () {
-                            ApiService.login(
-                                // 데이터베이스에서 username을 id로 바꿔야댐.
-                                controllerId.text,
-                                controllerPwd.text);
-                            print('Input id: ${controllerId.text}');
-                            print('Input password: ${controllerPwd.text}');
+                          onPressed: () async {
+                            var login = await ApiService.login(
+                              username: controllerUsername.text,
+                              password: controllerPwd.text,
+                            );
+                            if (login) {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MainPage()),
+                                (Route<dynamic> route) => false,
+                              );
+                            }
                           },
                           child: const Text(
                             '로그인',
