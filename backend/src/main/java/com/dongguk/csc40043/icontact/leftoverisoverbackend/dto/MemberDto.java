@@ -4,7 +4,6 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.FavoriteStore;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Order;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -12,12 +11,8 @@ import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor
 public class MemberDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
     private Long id;
 
     private String username;

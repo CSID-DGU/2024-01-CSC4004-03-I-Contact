@@ -33,6 +33,8 @@ public class MemberController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(memberService.login(loginRequestDto));
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
