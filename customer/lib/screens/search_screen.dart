@@ -58,13 +58,15 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
+      appBar: AppBar(
+        title: const Text('검색'),
+      ),
       body: Column(
         children: [
           Container(
             width: screenWidth,
             height: screenHeight * 0.07,
             margin: EdgeInsets.only(
-                top: screenHeight * 0.05,
                 bottom: screenHeight * 0.02,
                 left: screenHeight * 0.03,
                 right: screenHeight * 0.03),

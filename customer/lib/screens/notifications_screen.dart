@@ -24,7 +24,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const RestaurantScreen(),
+              builder: (context) => const RestaurantScreen(
+                restaurantName: '알림',
+              ),
             ),
           );
         },
