@@ -50,4 +50,20 @@ public class Food {
     @OneToMany(mappedBy = "food", cascade = CascadeType.PERSIST)
     private List<OrderFood> orderFoods = new ArrayList<>();
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateFirstPrice(int firstPrice) {
+        this.firstPrice = firstPrice;
+    }
+
+    public void updateSellPrice(int sellPrice) {
+        this.sellPrice = sellPrice;
+    }
+
+    public void updateCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
 }
