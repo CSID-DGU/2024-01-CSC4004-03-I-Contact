@@ -42,7 +42,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
         height: 0.25 * screenHeight,
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: screenHeight * 0.03,
+            vertical: screenHeight * 0.02,
             horizontal: screenWidth * 0.05,
           ),
           child: Column(
@@ -74,8 +74,8 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                     borderRadius: BorderRadius.circular(15),
                     child: Image.asset(
                       'assets/images/chicken.jpg',
-                      width: 0.265 * screenWidth,
-                      height: 0.08 * screenHeight,
+                      width: 0.25 * screenWidth,
+                      height: 0.09 * screenHeight,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -83,8 +83,8 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                     borderRadius: BorderRadius.circular(15),
                     child: Image.asset(
                       'assets/images/chicken.jpg',
-                      width: 0.265 * screenWidth,
-                      height: 0.08 * screenHeight,
+                      width: 0.25 * screenWidth,
+                      height: 0.09 * screenHeight,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -92,8 +92,8 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                     borderRadius: BorderRadius.circular(15),
                     child: Image.asset(
                       'assets/images/chicken.jpg',
-                      width: 0.265 * screenWidth,
-                      height: 0.08 * screenHeight,
+                      width: 0.25 * screenWidth,
+                      height: 0.09 * screenHeight,
                       fit: BoxFit.cover,
                     ),
                   ),

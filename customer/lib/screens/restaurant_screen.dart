@@ -11,6 +11,8 @@ class RestaurantScreen extends StatefulWidget {
 }
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
+  bool isFavorite = false; // Track the favorite state
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -33,6 +35,27 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   fit: BoxFit.cover,
                 ),
               ),
+              actions: [
+                Padding(
+                  padding: EdgeInsets.only(
+                      right: screenWidth * 0.05), // Adjust the padding here
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        // Toggle the favorite state
+                        isFavorite = !isFavorite;
+                      });
+                    },
+                    icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      // Change icon based on favorite state
+                      color: isFavorite
+                          ? Colors.red
+                          : null, // Highlight if favorite
+                    ),
+                  ),
+                ),
+              ],
             ),
             SliverToBoxAdapter(
               child: SizedBox(
