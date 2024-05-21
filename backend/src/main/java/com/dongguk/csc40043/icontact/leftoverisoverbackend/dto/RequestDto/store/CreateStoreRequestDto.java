@@ -1,7 +1,5 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store;
 
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Category;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.StoreDto;
 import lombok.Data;
 
@@ -24,7 +22,7 @@ public class CreateStoreRequestDto {
 
     private Long categoryId;
 
-    public StoreDto toServiceDto(Member member, Category category) {
+    public StoreDto toServiceDto() {
         return StoreDto.builder()
                 .name(name)
                 .startTime(LocalTime.parse(startTime))

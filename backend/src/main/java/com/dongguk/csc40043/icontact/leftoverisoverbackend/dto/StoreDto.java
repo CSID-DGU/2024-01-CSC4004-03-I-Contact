@@ -37,11 +37,11 @@ public class StoreDto {
 
     private List<Food> foods;
 
-    public Store toEntity(Member member, Category category) {
+    public Store toEntity(Member member) {
         return Store.builder()
                 .id(id)
                 .member(member)
-                .category(category)
+                .categoryId(categoryId)
                 .name(name)
                 .startTime(startTime)
                 .endTime(endTime)
