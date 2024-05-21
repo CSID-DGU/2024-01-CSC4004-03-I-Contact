@@ -52,73 +52,74 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    double screenWidth = screenSize.width;
+    double screenHeight = screenSize.height;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Column(
         children: [
-          Flexible(
-            flex: 1,
-            child: Container(
-              width: 400,
-              height: 150,
-              margin: const EdgeInsets.only(
-                  top: 50, bottom: 20, left: 30, right: 30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(45),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 0,
-                    blurRadius: 2.0,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: TextField(
-                controller: _textEditingController,
-                decoration: InputDecoration(
-                  hintText: '검색어를 입력하세요.',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(45),
-                    borderSide: BorderSide.none,
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: Colors.black38,
-                  ),
+          Container(
+            width: screenWidth,
+            height: screenHeight * 0.07,
+            margin: EdgeInsets.only(
+                top: screenHeight * 0.05,
+                bottom: screenHeight * 0.02,
+                left: screenHeight * 0.03,
+                right: screenHeight * 0.03),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(45),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 0,
+                  blurRadius: 2.0,
+                  offset: const Offset(0, 3), // changes position of shadow
                 ),
-                keyboardType: TextInputType.text,
-                onSubmitted: _onSubmitted,
+              ],
+            ),
+            child: TextField(
+              controller: _textEditingController,
+              decoration: InputDecoration(
+                hintText: '검색어를 입력하세요.',
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(45),
+                  borderSide: BorderSide.none,
+                ),
+                prefixIcon: const Icon(
+                  Icons.search,
+                  color: Colors.black38,
+                ),
               ),
+              keyboardType: TextInputType.text,
+              onSubmitted: _onSubmitted,
             ),
           ),
-          Flexible(
-            flex: 5,
-            child: Container(
-              width: 400,
-              height: 2000,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Column(
-                  children: _recentSearches
-                      .asMap()
-                      .entries
-                      .map((entry) {
-                        return RecentSearchWidget(
-                          key: ValueKey(entry
-                              .key), // Use entry key as a unique key for the widget
-                          searchText: entry.value,
-                          onDelete: () => _removeRecentSearch(
-                              entry.key), // Pass index to onDelete callback
-                        );
-                      })
-                      .toList()
-                      .reversed
-                      .toList()),
+          Container(
+            width: screenWidth,
+            height: screenHeight * 0.7,
+            decoration: const BoxDecoration(
+              color: Colors.white,
             ),
+            child: Column(
+                children: _recentSearches
+                    .asMap()
+                    .entries
+                    .map((entry) {
+                      return RecentSearchWidget(
+                        key: ValueKey(entry
+                            .key), // Use entry key as a unique key for the widget
+                        searchText: entry.value,
+                        onDelete: () => _removeRecentSearch(
+                            entry.key), // Pass index to onDelete callback
+                      );
+                    })
+                    .toList()
+                    .reversed
+                    .toList()),
           ),
         ],
       ),
@@ -135,26 +136,30 @@ class RecentSearchWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    double screenWidth = screenSize.width;
+    double screenHeight = screenSize.height;
+
     return Container(
-      width: 1000,
-      height: 60,
+      width: screenWidth,
+      height: screenHeight * 0.07,
       decoration: const BoxDecoration(
         color: Colors.white,
         border: Border(bottom: BorderSide(color: Colors.black54, width: 1)),
       ),
       child: Row(
         children: [
-          const SizedBox(
-            width: 20,
+          SizedBox(
+            width: screenWidth * 0.08,
           ),
           SizedBox(
-            width: 320,
+            width: screenWidth * 0.75,
             child: Text(
               searchText,
-              style: const TextStyle(
+              style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500),
+                  fontSize: screenHeight * 0.022,
+                  fontWeight: FontWeight.w400),
             ),
           ),
           IconButton(

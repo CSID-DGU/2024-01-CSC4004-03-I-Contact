@@ -31,10 +31,14 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    double screenHeight = screenSize.height;
+
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         body: screens[_selectedIndex],
         bottomNavigationBar: NavigationBar(
+          height: screenHeight * 0.1,
           backgroundColor: Theme.of(context).primaryColorLight,
           animationDuration: const Duration(seconds: 1),
           selectedIndex: _selectedIndex,
