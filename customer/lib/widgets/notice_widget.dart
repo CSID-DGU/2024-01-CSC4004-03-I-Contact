@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:leftover_is_over_customer/screens/restaurant_screen.dart';
 
 class NoticeWidget extends StatefulWidget {
   const NoticeWidget({
@@ -30,8 +31,8 @@ class _NoticeWidgetState extends State<NoticeWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => RestaurantScreen(
-                    restaurantName: widget.RestaurantScreen,
+              builder: (context) => const RestaurantScreen(
+                    restaurantName: '식당123',
                   )),
         );
       },
@@ -43,17 +44,20 @@ class _NoticeWidgetState extends State<NoticeWidget> {
           ),
         ),
         width: screenWidth,
-        height: 0.15 * screenHeight,
+        height: 0.12 * screenHeight,
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: screenHeight * 0.01,
-            horizontal: screenWidth * 0.1,
+            horizontal: screenWidth * 0.05,
           ),
           child: Row(
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(
+                    height: screenHeight * 0.005,
+                  ),
                   Row(
                     children: [
                       Text(
@@ -88,14 +92,14 @@ class _NoticeWidgetState extends State<NoticeWidget> {
                           color: widget.isFinished
                               ? const Color(0xFF949494)
                               : Colors.black,
-                          fontSize: screenHeight * 0.03,
+                          fontSize: screenHeight * 0.022,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
                   ),
                   SizedBox(
-                    height: screenHeight * 0.01,
+                    height: screenHeight * 0.003,
                   ),
                   Row(
                     children: [
@@ -107,7 +111,7 @@ class _NoticeWidgetState extends State<NoticeWidget> {
                           color: widget.isFinished
                               ? const Color(0xFF949494)
                               : Colors.black,
-                          fontSize: screenHeight * 0.02,
+                          fontSize: screenHeight * 0.015,
                           fontWeight: FontWeight.w200,
                         ),
                       ),
