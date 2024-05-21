@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:leftover_is_over_customer/screens/bookmark_screen.dart';
 import 'package:leftover_is_over_customer/screens/home_screen.dart';
 import 'package:leftover_is_over_customer/screens/map_screen.dart';
 import 'package:leftover_is_over_customer/screens/my_order_screen.dart';
 import 'package:leftover_is_over_customer/screens/mypage_screen.dart';
-import 'package:leftover_is_over_customer/screens/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -18,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
   static List<Widget> screens = <Widget>[
     const HomeScreen(),
     const MapScreen(),
-    const SearchScreen(),
+    const BookmarkScreen(),
     const MyOrderScreen(),
     const MyPageScreen(),
   ];
@@ -64,9 +64,9 @@ class _MainScreenState extends State<MainScreen> {
       label: '지도',
     ),
     const NavigationDestination(
-      icon: Icon(Icons.search_outlined),
-      selectedIcon: Icon(Icons.search_rounded),
-      label: '검색',
+      icon: Icon(Icons.star_border),
+      selectedIcon: Icon(Icons.star_border_rounded),
+      label: '즐겨찾기',
     ),
     const NavigationDestination(
       icon: Icon(Icons.shopping_bag_outlined),

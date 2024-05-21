@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:leftover_is_over_customer/screens/restaurant_screen.dart';
 
 class RestaurantWidget extends StatefulWidget {
   const RestaurantWidget({
@@ -21,86 +22,85 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
     double screenWidth = screenSize.width;
     double screenHeight = screenSize.height;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: const Color(0xFFF0F0F0), width: 3),
-      ),
-      width: screenWidth,
-      height: 0.3 * screenHeight,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 24,
-          horizontal: 30,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      widget.restaurantName,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w400,
-                      ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => RestaurantScreen(
+                    restaurantName: widget.restaurantName,
+                  )),
+        );
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+            color: Colors.white,
+            border: Border(
+              bottom: BorderSide(color: Colors.black12, width: 1),
+            )),
+        width: screenWidth,
+        height: 0.25 * screenHeight,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: screenHeight * 0.03,
+            horizontal: screenWidth * 0.05,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.restaurantName,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: screenHeight * 0.032,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                widget.restaurantLocation,
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontSize: screenHeight * 0.022,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              SizedBox(
+                height: screenHeight * 0.015,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      'assets/images/chicken.jpg',
+                      width: 0.265 * screenWidth,
+                      height: 0.08 * screenHeight,
+                      fit: BoxFit.cover,
                     ),
-                    const SizedBox(
-                      height: 6,
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      'assets/images/chicken.jpg',
+                      width: 0.265 * screenWidth,
+                      height: 0.08 * screenHeight,
+                      fit: BoxFit.cover,
                     ),
-                    Text(
-                      widget.restaurantLocation,
-                      style: TextStyle(
-                        color: Colors.black.withOpacity(0.5),
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal,
-                      ),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      'assets/images/chicken.jpg',
+                      width: 0.265 * screenWidth,
+                      height: 0.08 * screenHeight,
+                      fit: BoxFit.cover,
                     ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: Image.asset(
-                    'assets/images/chicken.jpg',
-                    width: 0.265 * screenWidth,
-                    height: 0.1 * screenHeight,
-                    fit: BoxFit.cover,
                   ),
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: Image.asset(
-                    'assets/images/chicken.jpg',
-                    width: 0.265 * screenWidth,
-                    height: 0.1 * screenHeight,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: Image.asset(
-                    'assets/images/chicken.jpg',
-                    width: 0.265 * screenWidth,
-                    height: 0.1 * screenHeight,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
