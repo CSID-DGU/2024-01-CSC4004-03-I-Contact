@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:leftover_is_over_customer/widgets/myorder_widget.dart';
 
-class MyOrderScreen extends StatefulWidget {
-  const MyOrderScreen({super.key});
+class BookmarkScreen extends StatefulWidget {
+  const BookmarkScreen({super.key});
 
   @override
-  State<MyOrderScreen> createState() => _MyOrderScreenState();
+  State<BookmarkScreen> createState() => _BookmarkScreenState();
 }
 
-class _MyOrderScreenState extends State<MyOrderScreen> {
+class _BookmarkScreenState extends State<BookmarkScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,15 +19,9 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
           children: [
             Center(
               child: Text(
-                '내 주문 탭',
+                '즐겨찾기 탭',
                 style: TextStyle(fontSize: 40),
               ),
-            ),
-            MyOrderWidget(
-              orderDate: '2024-01-01',
-              orderRestaurant: '동국치킨',
-              orderCount: '32',
-              initialIsFinished: true,
             )
           ],
         ),

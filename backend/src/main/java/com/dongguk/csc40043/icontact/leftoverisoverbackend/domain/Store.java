@@ -22,6 +22,8 @@ public class Store {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private Member member;
+    
+    private Long categoryId;
 
     private String name;
 
@@ -32,6 +34,9 @@ public class Store {
     private String address;
 
     private String phone;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean isOpen;
 
     @Column(columnDefinition = "boolean default false")
     private boolean deleted;
@@ -47,5 +52,9 @@ public class Store {
     @Builder.Default
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     private List<Food> foods = new ArrayList<>();
+
+    public void toggleIsOpen() {
+        this.isOpen = !this.isOpen;
+    }
 
 }

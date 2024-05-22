@@ -1,97 +1,157 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:leftover_is_over_owner/Model/store_model.dart';
+import 'package:leftover_is_over_owner/Services/secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static String ipAddress = '';
+  static String ipAddress = '10.91.5.26';
+  static List<String> roles = ['owner'];
+  static late StoreModel store;
 
   static Future<bool> duplicate(String id) async {
-    print('duplicate');
     var duplicateCheck = false;
     var headers = {'Content-Type': 'application/json'};
-    var request = http.Request('POST',
-        Uri.parse('http://$ipAddress:8080/api/v1/owner/check-duplicate-id'));
-    request.body = jsonEncode({"id": id});
+    var request = http.Request(
+        'POST', Uri.parse('http://$ipAddress:8080/duplicate-username'));
+    request.body = jsonEncode({"username": id});
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       duplicateCheck = true;
     }
-    print(response.statusCode);
     return duplicateCheck;
   }
 
-  static Future<bool> register(
-      String username, String name, String email, String password) async {
+  static Future<bool> register({
+    required String username,
+    required String name,
+    required String email,
+    required String password,
+  }) async {
     var headers = {'Content-Type': 'application/json'};
     var request =
-        http.Request('POST', Uri.parse('http://$ipAddress:8080/api/v1/owner'));
+        http.Request('POST', Uri.parse('http://$ipAddress:8080/member'));
     request.body = jsonEncode({
       "username": username,
       "name": name,
       "email": email,
-      "password": password
+      "password": password,
+      "roles": roles,
     });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       return true;
-      print('회원가입 성공');
-      print(await response.stream.bytesToString());
     } else {
       return false;
-      print('회원가입 실패');
     }
   }
 
   static Future<bool> storeRegister({
+    // 나중에 확인
+    required String userName,
     required String storeName,
     required String startTime,
     required String endTime,
     required String address,
     required String storePhone,
-    required String businessNum,
+    required int categoryId,
   }) async {
-    print('API: storeRegister');
+    print(
+        '$userName $storeName $startTime $endTime $address $storePhone $categoryId');
     var duplicateCheck = false;
     var headers = {'Content-Type': 'application/json'};
-    var request = http.Request(
-        'POST',
-        Uri.parse(
-            'http://$ipAddress:8080/api/v1/owner/register/store-register'));
+    var request =
+        http.Request('POST', Uri.parse('http://$ipAddress:8080/store'));
     request.body = jsonEncode({
+      "userName": userName,
       "name": storeName,
       "startTime": startTime,
       "endTime": endTime,
       "address": address,
       "phone": storePhone,
-      "businessNum": businessNum,
+      "categoryId": categoryId,
     });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       duplicateCheck = true;
+      print(response.statusCode);
     }
     print(response.statusCode);
     return duplicateCheck;
   }
 
-  static void login(String username, String password) async {
+  static Future<bool> login(
+      {required String username, required String password}) async {
     var headers = {'Content-Type': 'application/json'};
-    var request = http.Request(
-        'POST', Uri.parse('http://$ipAddress:8080/api/v1/owner/login'));
-    request.body = json.encode({"username": username, "password": password});
+    var request =
+        http.Request('POST', Uri.parse('http://$ipAddress:8080/login'));
+    request.body = json.encode({
+      "username": username,
+      "password": password,
+      "roles": roles,
+    });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
+      String responseBody = await response.stream.bytesToString();
+      var token = jsonDecode(responseBody);
+      //print(result);
+      await saveToken(token);
+      return true;
       // 로그인 성공
     } else if (response.statusCode == 400) {
       print('login실패');
-
+      return false;
       // 로그인 실패
     } else {
+      print(response.statusCode);
+      return false;
       // 로그인 실패
     }
+  }
+
+  static Future<void> saveToken(Map<String, dynamic> token) async {
+    List<String> tokenList = List.filled(3, '');
+    token.forEach((key, value) {
+      switch (key) {
+        case 'grantType':
+          tokenList[0] = value;
+          break;
+        case 'accessToken':
+          tokenList[1] = value;
+          break;
+        case 'refreshToken':
+          tokenList[2] = value;
+          break;
+      }
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('token', tokenList);
+  }
+
+  static Future<List<String>> loadToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('token')!;
+  }
+
+  static Future<StoreModel> getStore() async {
+    var token = await loadToken();
+    var headers = {'Authorization': '${token[0]} ${token[1]}'};
+    var request =
+        http.Request('POST', Uri.parse('http://$ipAddress:8080/store'));
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      String responseBody = await response.stream.bytesToString();
+      dynamic storeGet = jsonDecode(responseBody);
+      store = StoreModel.fromJson(storeGet);
+      return store;
+    }
+    throw Error();
   }
 
 /*

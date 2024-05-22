@@ -1,17 +1,20 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Owner;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store.CreateStoreRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.CreateStoreResponseDto;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.OwnerRepository;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.GetStoreResponseDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.StoreDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.MemberRepository;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @Transactional(readOnly = true)
@@ -19,36 +22,67 @@ import java.util.List;
 public class StoreService {
 
     private final StoreRepository storeRepository;
-    private final OwnerRepository ownerRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public CreateStoreResponseDto createStore(CreateStoreRequestDto createStoreRequestDto) {
-        Owner owner = ownerRepository.findById(createStoreRequestDto.getOwnerId()).orElseThrow(() -> new RuntimeException("Owner not found"));
-        Store store = Store.builder()
-                .owner(owner)
-                .name(createStoreRequestDto.getName())
-                .startTime(LocalTime.parse(createStoreRequestDto.getStartTime()))
-                .endTime(LocalTime.parse(createStoreRequestDto.getEndTime()))
-                .address(createStoreRequestDto.getAddress())
-                .phone(createStoreRequestDto.getPhone())
-                .isDeleted(false)
-                .build();
-        owner.getStores().add(store);
-        storeRepository.save(store);
+        Member member = memberRepository.findByUsernameAndDeleted(createStoreRequestDto.getUsername(), false);
+        StoreDto storeDto = createStoreRequestDto.toServiceDto();
+        Store store = storeRepository.save(storeDto.toEntity(member));
         return new CreateStoreResponseDto(store.getId());
     }
 
-    public List<Store> getStoreList(Owner owner) {
-        return storeRepository.findAllByOwner(owner);
+    public GetStoreResponseDto getStore(String username) {
+        Member member = memberRepository.findByUsernameAndDeleted(username, false);
+        Store store = storeRepository.findByMemberAndDeleted(member, false);
+        return GetStoreResponseDto.builder()
+                .storeId(store.getId())
+                .ownerId(store.getMember().getId())
+                .categoryId(store.getCategoryId())
+                .name(store.getName())
+                .startTime(store.getStartTime().toString())
+                .endTime(store.getEndTime().toString())
+                .address(store.getAddress())
+                .phone(store.getPhone())
+                .isOpen(store.isOpen())
+                .deleted(store.isDeleted())
+                .build();
     }
-
-    public Store getStore(Long storeId) {
-        return storeRepository.findById(storeId).orElse(null);
-    }
-
 
     @Transactional
-    public void deleteStore(Long storeId) {
-        storeRepository.deleteById(storeId);
+    public void changeOpenStatus(String username) {
+        Member member = memberRepository.findByUsernameAndDeleted(username, false);
+        Store store = storeRepository.findByMemberAndDeleted(member, false);
+        store.toggleIsOpen();
+        storeRepository.save(store);
     }
+
+    public List<GetStoreResponseDto> getStoreByKeyword(String keyword) {
+        List<Store> storeList = storeRepository.findByNameContaining(keyword);
+        return toResponseDto(storeList);
+    }
+
+    public List<GetStoreResponseDto> getStoreByCategory(Long categoryId) {
+        List<Store> storeList = storeRepository.findByCategoryId(categoryId);
+        return toResponseDto(storeList);
+    }
+
+    private List<GetStoreResponseDto> toResponseDto(List<Store> storeList) {
+        return storeList.stream()
+                .map(store -> GetStoreResponseDto.builder()
+                        .storeId(store.getId())
+                        .ownerId(store.getMember().getId())
+                        .categoryId(store.getCategoryId())
+                        .name(store.getName())
+                        .startTime(store.getStartTime().toString())
+                        .endTime(store.getEndTime().toString())
+                        .address(store.getAddress())
+                        .phone(store.getPhone())
+                        .isOpen(store.isOpen())
+                        .deleted(store.isDeleted())
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
+
 }

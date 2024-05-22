@@ -1,11 +1,14 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store;
 
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.StoreDto;
 import lombok.Data;
+
+import java.time.LocalTime;
 
 @Data
 public class CreateStoreRequestDto {
 
-    private Long ownerId;
+    private String username;
 
     private String name;
 
@@ -16,5 +19,18 @@ public class CreateStoreRequestDto {
     private String address;
 
     private String phone;
+
+    private Long categoryId;
+
+    public StoreDto toServiceDto() {
+        return StoreDto.builder()
+                .name(name)
+                .startTime(LocalTime.parse(startTime))
+                .endTime(LocalTime.parse(endTime))
+                .address(address)
+                .phone(phone)
+                .categoryId(categoryId)
+                .build();
+    }
 
 }

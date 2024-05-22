@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_customer/screens/restaurant_screen.dart';
+import 'package:leftover_is_over_customer/widgets/notice_widget.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -24,20 +25,38 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const RestaurantScreen(),
+              builder: (context) => const RestaurantScreen(
+                restaurantName: '알림',
+              ),
             ),
           );
         },
-        child: Column(
+        child: const Column(
           children: [
-            SizedBox(
-              width: screenWidth * 0.5,
-              height: screenHeight * 0.1,
-              child: Text(
-                '알림 : 치킨집A',
-                style: TextStyle(fontSize: screenWidth * 0.05),
-              ),
-            ),
+            NoticeWidget(
+                noticeDate: '05-21',
+                noticeTime: '16:00',
+                noticeRestaurant: '식당123',
+                noticeRemaining: '12',
+                isFinished: false),
+            NoticeWidget(
+                noticeDate: '05-21',
+                noticeTime: '16:00',
+                noticeRestaurant: '식당12',
+                noticeRemaining: '12',
+                isFinished: false),
+            NoticeWidget(
+                noticeDate: '05-21',
+                noticeTime: '16:00',
+                noticeRestaurant: '식당1',
+                noticeRemaining: '12',
+                isFinished: true),
+            NoticeWidget(
+                noticeDate: '05-21',
+                noticeTime: '16:00',
+                noticeRestaurant: '식당3',
+                noticeRemaining: '12',
+                isFinished: true),
           ],
         ),
       ),

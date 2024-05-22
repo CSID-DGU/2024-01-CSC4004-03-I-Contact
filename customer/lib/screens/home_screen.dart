@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_customer/screens/category_search_screen.dart';
 import 'package:leftover_is_over_customer/screens/notifications_screen.dart';
+import 'package:leftover_is_over_customer/screens/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -86,42 +88,50 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            Container(
-              width: screenWidth * 0.9,
-              height: screenHeight * 0.06,
-              margin: const EdgeInsets.only(
-                  top: 5, bottom: 20, left: 10, right: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(45),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 0,
-                    blurRadius: 2.0,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: const Align(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  children: [
-                    Padding(padding: EdgeInsets.all(7)),
-                    Icon(
-                      Icons.search,
-                      size: 32,
-                      color: Colors.black38,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SearchScreen()),
+                );
+              },
+              child: Container(
+                width: screenWidth * 0.9,
+                height: screenHeight * 0.06,
+                margin: const EdgeInsets.only(
+                    top: 5, bottom: 20, left: 10, right: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(45),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 0,
+                      blurRadius: 2.0,
+                      offset: const Offset(0, 3), // changes position of shadow
                     ),
-                    Padding(padding: EdgeInsets.all(5)),
-                    Text(
-                      '검색',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.black38),
-                    )
                   ],
+                ),
+                child: const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      Padding(padding: EdgeInsets.all(7)),
+                      Icon(
+                        Icons.search,
+                        size: 32,
+                        color: Colors.black38,
+                      ),
+                      Padding(padding: EdgeInsets.all(5)),
+                      Text(
+                        '검색',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black38),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
