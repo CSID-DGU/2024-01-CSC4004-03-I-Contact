@@ -6,10 +6,7 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,6 +39,24 @@ public class StoreController {
         try {
             storeService.changeOpenStatus(SecurityUtil.getCurrentUser());
             return ResponseEntity.ok("Successfully changed open status");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/store/keyword/{keyword}")
+    public ResponseEntity<?> getStoreByKeyword(@PathVariable("keyword") String keyword) {
+        try {
+            return ResponseEntity.ok(storeService.getStoreByKeyword(keyword));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/store/category/{categoryId}")
+    public ResponseEntity<?> getStoreByCategory(@PathVariable("categoryId") Long categoryId) {
+        try {
+            return ResponseEntity.ok(storeService.getStoreByCategory(categoryId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
