@@ -6,7 +6,7 @@ import 'package:leftover_is_over_owner/Services/secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static String ipAddress = '10.74.8.132';
+  static String ipAddress = '10.91.5.26';
   static List<String> roles = ['owner'];
   static late StoreModel store;
 
@@ -59,7 +59,8 @@ class ApiService {
     required String storePhone,
     required int categoryId,
   }) async {
-    print('API: storeRegister');
+    print(
+        '$userName $storeName $startTime $endTime $address $storePhone $categoryId');
     var duplicateCheck = false;
     var headers = {'Content-Type': 'application/json'};
     var request =
