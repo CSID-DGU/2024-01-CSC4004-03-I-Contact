@@ -91,7 +91,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
     }
   }
 
-  void checkValidTime() {
+  bool checkValidTime() {
     try {
       int startTimeHour = int.parse(controllerStartTimeHour.text);
       int startTimeMin = int.parse(controllerStartTimeMin.text);
@@ -116,17 +116,21 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
       }
       if (controllerStartTimeHour.text.length == 1) {
         controllerStartTimeHour.text = '0${controllerStartTimeHour.text}';
-      } else if (controllerStartTimeMin.text.length == 1) {
+      }
+      if (controllerStartTimeMin.text.length == 1) {
         controllerStartTimeMin.text = '0${controllerStartTimeMin.text}';
-      } else if (controllerEndTimeHour.text.length == 1) {
+      }
+      if (controllerEndTimeHour.text.length == 1) {
         controllerEndTimeHour.text = '0${controllerEndTimeHour.text}';
-      } else if (controllerEndTimeMin.text.length == 1) {
+      }
+      if (controllerEndTimeMin.text.length == 1) {
         controllerEndTimeMin.text = '0${controllerEndTimeMin.text}';
       }
+      return true;
     } catch (e) {
       var message = '유효한 시간을 입력해주세요';
       showDialogRegister(message);
-      return;
+      return false;
     }
   }
 
@@ -159,39 +163,38 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
       message = '음식점 카테고리를 선택해주세요';
       showDialogRegister(message);
       return;
-    } else {
-      checkValidTime();
-    }
-
-    var registerCheck = await ApiService.register(
-      username: widget.username,
-      name: widget.name,
-      email: widget.email,
-      password: widget.password,
-    );
-
-    if (registerCheck) {
-      // 회원가입 완료 되었을 시
-      var storeName = controllerName.text;
-      var startTimeHour = controllerStartTimeHour.text;
-      var startTimeMin = controllerStartTimeMin.text;
-      var startTime = '$startTimeHour:$startTimeMin';
-      var endTimeHour = controllerEndTimeHour.text;
-      var endTimeMin = controllerEndTimeMin.text;
-      var endTime = '$endTimeHour:$endTimeMin';
-      var address = controllerAddress.text;
-      var storePhone = controllerStorePhone.text;
-      // var category = categoryLabels.elementAt(index)
-      var registerStoreCheck = await ApiService.storeRegister(
-        userName: widget.username,
-        storeName: storeName,
-        startTime: startTime,
-        endTime: endTime,
-        address: address,
-        storePhone: storePhone,
-        categoryId: categoryId,
+    } else if (checkValidTime()) {
+      var registerCheck = await ApiService.register(
+        username: widget.username,
+        name: widget.name,
+        email: widget.email,
+        password: widget.password,
       );
-
+      var registerStoreCheck = false;
+      if (registerCheck) {
+        // 회원가입 완료 되었을 시
+        var storeName = controllerName.text;
+        var startTimeHour = controllerStartTimeHour.text;
+        var startTimeMin = controllerStartTimeMin.text;
+        var startTime = '$startTimeHour:$startTimeMin';
+        var endTimeHour = controllerEndTimeHour.text;
+        var endTimeMin = controllerEndTimeMin.text;
+        var endTime = '$endTimeHour:$endTimeMin';
+        var address = controllerAddress.text;
+        var storePhone = controllerStorePhone.text;
+        // var category = categoryLabels.elementAt(index)
+        print(
+            'register는 완료되었고 storecheck api하기 전!! username:${widget.username} storeName:$storeName $startTime $endTime address:$address storePhone:$storePhone categoryId:$categoryId');
+        registerStoreCheck = await ApiService.storeRegister(
+          userName: widget.username,
+          storeName: storeName,
+          startTime: startTime,
+          endTime: endTime,
+          address: address,
+          storePhone: storePhone,
+          categoryId: categoryId,
+        );
+      }
       if (registerCheck && registerStoreCheck) {
         // 회원가입 성공 시
         Navigator.push(
@@ -201,8 +204,6 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
         );
       }
     }
-
-    {}
   }
 
   @override
@@ -683,23 +684,6 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                     ),
                     const SizedBox(
                       height: 20,
-                    ),
-                    Container(
-                      clipBehavior: Clip.hardEdge,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 23),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.green[300]!.withOpacity(0.6),
-                      ),
-                      child: const Text(
-                        '사업자 등록 번호',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 1,
                     ),
                     const SizedBox(
                       height: 30,
