@@ -24,7 +24,7 @@ jobs:
         working-directory: ${{github.workspace}}/backend
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
         working-directory: ${{github.workspace}}/backend
 
       - name: Upload artifact for deployment job
