@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:leftover_is_over_owner/Screen/sales_manage_page.dart';
+
+enum SalesState { selling, paused, closed }
 
 // 매장의 현재 상태를 AppBar아래에 보여주는 위젯
 // 추후 매장의 상태를 서버로 보내서
