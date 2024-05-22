@@ -56,10 +56,13 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A22975AB70E64F28A10CE76408457170 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_EF9B945544884DE9ADD132FEF1ABCAE1 }}
 
+      - name: List files in deploy directory
+        run: ls -la ./deploy/
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'loio-server'
           slot-name: 'production'
-          package: ./deploy/*.jar
+          package: './deploy/*.jar'
