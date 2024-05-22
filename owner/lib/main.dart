@@ -22,12 +22,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const EditMenu(),
+      home: const MainPage(),
+      //EditMenu(),
       //AddMenu(),
       //RegisterPage(),
       //SelectStore(),
       //SalesManagePage()
-      //MainPage()
+
       //LoginPage(),
       //RegisterCompletePage(),
 

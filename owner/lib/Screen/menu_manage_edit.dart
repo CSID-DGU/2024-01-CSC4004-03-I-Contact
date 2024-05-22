@@ -219,7 +219,7 @@ class _EditMenuState extends State<EditMenu> {
                 Padding(
                   padding: const EdgeInsets.only(top: 120),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       OutlinedButton(
                         onPressed: () {},
@@ -240,7 +240,34 @@ class _EditMenuState extends State<EditMenu> {
                           ),
                         ),
                         child: const Text(
-                          '수정하기',
+                          '삭제',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      OutlinedButton(
+                        onPressed: () {},
+                        style: OutlinedButton.styleFrom(
+                          shadowColor: Colors.black,
+                          elevation: 2,
+                          backgroundColor:
+                              const Color.fromARGB(255, 222, 234, 187),
+                          minimumSize: const Size(120, 60),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          side: const BorderSide(
+                              color: Color.fromARGB(255, 222, 234, 187)),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                        ),
+                        child: const Text(
+                          '수정',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,

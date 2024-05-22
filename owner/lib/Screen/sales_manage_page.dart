@@ -5,8 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_owner/Widget/order_card_widget.dart';
 import 'package:leftover_is_over_owner/Widget/sales_state_widget.dart';
 
-enum SalesState { selling, paused, closed }
-
 class SalesManagePage extends StatefulWidget {
   const SalesManagePage({super.key});
 
