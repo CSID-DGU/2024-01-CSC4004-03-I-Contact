@@ -19,21 +19,19 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Change to backend directory
-        run: cd backend
-
-      - name: Grant execute permission for Gradlew
+      - name: Set executable permissions on Gradlew
         run: chmod +x gradlew
+        working-directory: ${{github.workspace}}/backend
 
       - name: Build with Gradle
         run: ./gradlew build
-        working-directory: ./backend
+        working-directory: ${{github.workspace}}/backend
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: './backend/build/libs/*.jar' # Adjust this path if your Gradle configuration differs
+          path: ${{github.workspace}}/backend/build/libs/*.jar
 
   deploy:
     runs-on: ubuntu-latest
