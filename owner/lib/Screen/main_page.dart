@@ -11,6 +11,7 @@ import 'package:leftover_is_over_owner/Screen/sales_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/store_info_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Services/user_services.dart';
+import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -47,6 +48,27 @@ class _MainPageState extends State<MainPage> {
       _isDropdownVisible = !_isDropdownVisible;
       _opacity = _isDropdownVisible ? 0.95 : 0.0;
     });
+  }
+
+  void _logout() async {
+    _isDropdownVisible = false;
+    var logout = await AuthService
+        .logout(); // async 가 되어있어야하는지 유의 future<bool>이 넘어오기 때문에
+    if (logout) {
+      if (!mounted) {
+        return;
+      }
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+        (Route<dynamic> route) => false,
+      );
+    } else {
+      if (!mounted) {
+        return;
+      }
+      showErrorDialog(context, '로그아웃에 실패했습니다.');
+    }
   }
 
   @override
@@ -372,14 +394,7 @@ class _MainPageState extends State<MainPage> {
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black),
                                 ),
-                                onTap: () {
-                                  _isDropdownVisible = false;
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const LoginPage()));
-                                },
+                                onTap: _logout,
                               ),
                             ),
                           ],

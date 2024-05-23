@@ -149,6 +149,13 @@ class AuthService {
     return prefs.getStringList('token')!;
   }
 
+  static Future<bool> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> emptyToken = List.empty();
+    await prefs.setStringList('token', emptyToken);
+    return true;
+  }
+
 /*
   static List<WebtoonModel> webtoonInstances = [];
 
