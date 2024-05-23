@@ -19,6 +19,6 @@ class StoreModel {
         endTime = json['endTime'],
         address = json['address'],
         phone = json['phone'],
-        isOpen = json['isOpen'],
+        isOpen = json['open'],
         deleted = json['deleted'];
 }
