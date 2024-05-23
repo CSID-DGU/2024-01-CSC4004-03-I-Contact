@@ -23,15 +23,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: // MainPage(),
-          //EditMenu(),
-          //AddMenu(),
-          //RegisterPage(),
-          //SelectStore(),
-          //SalesManagePage()
-          //MainPage()
-          const LoginPage(),
+      home: const SalesManagePage(),
+
+      //EditMenu(),
+      //AddMenu(),
+      //RegisterPage(),
+      //SelectStore(),
+      //SalesManagePage(),
+      //MainPage(),
+      //LoginPage(),
       //RegisterCompletePage(),
+      //MenuManagePage(),
 
       //const StoreRegisterPage('ab', 'av', 'aa', 'aa'),
 
