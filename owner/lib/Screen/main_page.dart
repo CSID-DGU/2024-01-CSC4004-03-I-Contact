@@ -9,7 +9,8 @@ import 'package:leftover_is_over_owner/Screen/menu_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/order_status_page.dart';
 import 'package:leftover_is_over_owner/Screen/sales_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/store_info_page.dart';
-import 'package:leftover_is_over_owner/Services/api_services.dart';
+import 'package:leftover_is_over_owner/Services/auth_services.dart';
+import 'package:leftover_is_over_owner/Services/user_services.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -30,14 +31,14 @@ class _MainPageState extends State<MainPage> {
     // TODO: implement initState
     super.initState();
     _loadStore();
-    currentState = "판매 중";
-    storeName = "식당이름";
   }
 
   void _loadStore() async {
-    store = await ApiService.getStore();
+    store = await UserService.getStore();
     setState(() {
       isLoading = false;
+      currentState = store.isOpen ? "판매 중" : "판매 종료";
+      storeName = store.name;
     });
   }
 
@@ -83,7 +84,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                                 const Icon(Icons.restaurant_outlined),
                                 const SizedBox(
-                                  width: 8,
+                                  width: 15,
                                 ),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -121,7 +122,7 @@ class _MainPageState extends State<MainPage> {
                                   ],
                                 ),
                                 const SizedBox(
-                                  width: 190,
+                                  width: 175,
                                 ),
                                 Container(
                                   height: 30,

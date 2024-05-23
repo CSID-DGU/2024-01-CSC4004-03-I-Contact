@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Screen/store_register_page.dart';
-import 'package:leftover_is_over_owner/Services/api_services.dart';
+import 'package:leftover_is_over_owner/Services/auth_services.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -31,7 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void checkDuplicate(String id) async {
     print(id);
-    checkduplicate = await ApiService.duplicate(id);
+    checkduplicate = await AuthService.duplicate(id);
     if (checkduplicate) {
       // 중복 검사를 통과한 경우
       lastCheckedId = id; // 마지막 중복 검사를 통과한 id를 lastCheckedId에 저장

@@ -23,19 +23,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const SalesManagePage(),
+      home: const
 
-      //EditMenu(),
-      //AddMenu(),
-      //RegisterPage(),
-      //SelectStore(),
-      //SalesManagePage(),
+          //EditMenu(),
+          //AddMenu(),
+          //RegisterPage(),
+          //SelectStore(),
+          //SalesManagePage(),
+          LoginPage(),
       //MainPage(),
-      //LoginPage(),
       //RegisterCompletePage(),
       //MenuManagePage(),
 
-      //const StoreRegisterPage('ab', 'av', 'aa', 'aa'),
+      //StoreRegisterPage('ab', 'av', 'aa', 'aa'),
 
       // 모든 페이지 상단바 색상 지정
       theme: ThemeData(

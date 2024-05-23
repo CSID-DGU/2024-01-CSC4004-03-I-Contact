@@ -5,7 +5,7 @@ import 'package:leftover_is_over_owner/Model/store_model.dart';
 import 'package:leftover_is_over_owner/Services/secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ApiService {
+class AuthService {
   static List<String> roles = ['owner'];
   static late StoreModel store;
 
@@ -92,22 +92,36 @@ class ApiService {
       "roles": roles,
     });
     request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      String responseBody = await response.stream.bytesToString();
-      var token = jsonDecode(responseBody);
-      //print(result);
-      await saveToken(token);
-      return true;
-      // 로그인 성공
-    } else if (response.statusCode == 400) {
-      print('login실패');
+    var client = http.Client();
+    try {
+      // 요청을 보내고 타임아웃을 설정
+      http.StreamedResponse response = await client
+          .send(request)
+          .timeout(const Duration(seconds: 20), onTimeout: () {
+        // 타임아웃 발생 시
+        client.close(); // 클라이언트 닫기
+        throw Exception('Request timeout');
+      });
+
+      if (response.statusCode == 200) {
+        // 로그인 성공
+        String responseBody = await response.stream.bytesToString();
+        var token = jsonDecode(responseBody);
+        await saveToken(token);
+        return true;
+      } else if (response.statusCode == 400) {
+        // 없는 로그인 정보가 입력되었을 경우
+        return false;
+      } else {
+        print(response.statusCode); // 기타 로그인 Service error
+        return false;
+      }
+    } catch (e) {
+      //  request Timeout시
+      print('Error: $e');
       return false;
-      // 로그인 실패
-    } else {
-      print(response.statusCode);
-      return false;
-      // 로그인 실패
+    } finally {
+      client.close(); // 클라이언트 닫기
     }
   }
 
@@ -133,32 +147,6 @@ class ApiService {
   static Future<List<String>> loadToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getStringList('token')!;
-  }
-
-  static Future<StoreModel> getStore() async {
-    try {
-      var token = await loadToken();
-      var headers = {'Authorization': '${token[0]} ${token[1]}'};
-      var request = http.Request(
-          'GET', Uri.parse('http://loio-server.azurewebsites.net/store'));
-      request.headers.addAll(headers);
-      print('여기');
-      http.StreamedResponse response = await request.send();
-      if (response.statusCode == 200) {
-        print('여기2');
-        String responseBody = await response.stream.bytesToString();
-        print('여기3');
-        dynamic storeGet = jsonDecode(responseBody);
-        print('storeGet: $storeGet');
-        store = StoreModel.fromJson(storeGet);
-        print(store);
-        return store;
-      } else {
-        throw Exception('Failed to load store: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error fetching store: $e');
-    }
   }
 
 /*

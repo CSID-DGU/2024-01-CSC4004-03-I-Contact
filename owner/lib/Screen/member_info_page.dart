@@ -7,7 +7,7 @@ class MemberInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("매장 정보"),
+        title: const Text("회원 정보"),
       ),
     );
   }

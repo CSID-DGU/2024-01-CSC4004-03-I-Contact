@@ -7,7 +7,7 @@ import 'package:leftover_is_over_owner/Screen/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/register_complete_page.dart';
 import 'package:leftover_is_over_owner/Screen/register_page.dart';
 import 'package:leftover_is_over_owner/Screen/test.dart';
-import 'package:leftover_is_over_owner/Services/api_services.dart';
+import 'package:leftover_is_over_owner/Services/auth_services.dart';
 
 class StoreRegisterPage extends StatefulWidget {
   final String username, name, email, password;
@@ -30,6 +30,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
   late int categoryId;
   bool _isDropdownVisible = false;
   double _opacity = 0.0;
+  bool isLoading = true;
 
   final List<String> categoryLabels = [
     '한식',
@@ -75,7 +76,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
   }
 
   void testButton() async {
-    var registerCheck = await ApiService.register(
+    var registerCheck = await AuthService.register(
       username: widget.username,
       name: widget.name,
       email: widget.email,
@@ -164,7 +165,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
       showDialogRegister(message);
       return;
     } else if (checkValidTime()) {
-      var registerCheck = await ApiService.register(
+      var registerCheck = await AuthService.register(
         username: widget.username,
         name: widget.name,
         email: widget.email,
@@ -185,7 +186,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
         // var category = categoryLabels.elementAt(index)
         print(
             'register는 완료되었고 storecheck api하기 전!! username:${widget.username} storeName:$storeName $startTime $endTime address:$address storePhone:$storePhone categoryId:$categoryId');
-        registerStoreCheck = await ApiService.storeRegister(
+        registerStoreCheck = await AuthService.storeRegister(
           userName: widget.username,
           storeName: storeName,
           startTime: startTime,
@@ -723,23 +724,19 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                 ),
               ),
             ),
-            Container(
-              child: Visibility(
-                visible: _isDropdownVisible,
-                child: Positioned(
-                  top:
-                      287, // Adjust this to place the dropdown in the correct position
-                  left:
-                      32, // Adjust this to place the dropdown in the correct position
-                  right:
-                      32, // Adjust this to place the dropdown in the correct position
-                  bottom:
-                      180, // Adjust this to place the dropdown in the correct position
-
-                  child: AnimatedOpacity(
-                    opacity: _opacity,
-                    duration: const Duration(milliseconds: 300),
-                    child: Container(
+            Visibility(
+              visible: _isDropdownVisible,
+              child: Positioned(
+                top: 287,
+                left: 32,
+                right: 32,
+                bottom: 120,
+                child: AnimatedOpacity(
+                  opacity: _opacity,
+                  duration: const Duration(milliseconds: 300),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
                       color: const Color.fromARGB(255, 235, 230, 230),
                     ),
                   ),
@@ -749,17 +746,11 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
             Visibility(
               visible: _isDropdownVisible,
               child: Positioned(
-                top:
-                    293, // Adjust this to place the dropdown in the correct position
-                left:
-                    32, // Adjust this to place the dropdown in the correct position
-                right:
-                    32, // Adjust this to place the dropdown in the correct position
-                bottom:
-                    180, // Adjust this to place the dropdown in the correct position
-
+                top: 293,
+                left: 32,
+                right: 32,
+                bottom: 120,
                 child: Padding(
-                  // Padding 시작
                   padding:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
                   child: GridView.builder(
@@ -775,6 +766,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                       return ElevatedButton(
                         onPressed: () {
                           setState(() {
+                            _isDropdownVisible = false;
                             category = categoryLabels[index];
                             categoryId = index;
                           });
@@ -795,7 +787,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                       );
                     },
                   ),
-                ), // Padding 끝
+                ),
               ),
             )
           ],
