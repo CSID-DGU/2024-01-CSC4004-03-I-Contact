@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:leftover_is_over_owner/Screen/sales_manage_edit.dart';
 import 'package:leftover_is_over_owner/Widget/order_card_widget.dart';
 import 'package:leftover_is_over_owner/Widget/sales_state_widget.dart';
 
@@ -97,7 +98,12 @@ class _SalesManagePageState extends State<SalesManagePage> {
               ),
             ),
             IconButton(
-              onPressed: () {}, // 환경 설정 버튼 눌렀을 때 수동 판매 관리로 이동하도록 수정 필요
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EditSalesCard()));
+              },
               icon: const Icon(Icons.settings_outlined),
             ),
           ],
