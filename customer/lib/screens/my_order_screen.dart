@@ -9,6 +9,30 @@ class MyOrderScreen extends StatefulWidget {
 }
 
 class _MyOrderScreenState extends State<MyOrderScreen> {
+  List<Map<String, dynamic>> orders = [
+    {
+      'orderDate': '2023-05-23',
+      'orderRestaurant': '식당314',
+      'orderCount': '4',
+    },
+    {
+      'orderDate': '2023-02-04',
+      'orderRestaurant': '식당315',
+      'orderCount': '3',
+    },
+    {
+      'orderDate': '2023-09-14',
+      'orderRestaurant': '식당316',
+      'orderCount': '2',
+    },
+    // Add more orders here
+  ];
+  void handleOrderFinish(int index) {
+    setState(() {
+      orders.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,36 +40,20 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
         title: const Center(child: Text('내 주문')),
       ),
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: const SingleChildScrollView(
-        child: Column(
-          children: [
-            MyOrderWidget(
-              orderDate: '2024-01-04',
-              orderRestaurant: '동국치킨1',
-              orderCount: '10',
-              initialIsFinished: false,
+      body: orders.isEmpty
+          ? const Center(child: Text('주문이 없습니다.'))
+          : ListView.builder(
+              itemCount: orders.length,
+              itemBuilder: (context, index) {
+                final order = orders[index];
+                return MyOrderWidget(
+                  orderDate: order['orderDate'],
+                  orderRestaurant: order['orderRestaurant'],
+                  orderCount: order['orderCount'],
+                  onFinish: () => handleOrderFinish(index),
+                );
+              },
             ),
-            MyOrderWidget(
-              orderDate: '2024-01-03',
-              orderRestaurant: '동국치킨2',
-              orderCount: '20',
-              initialIsFinished: false,
-            ),
-            MyOrderWidget(
-              orderDate: '2024-01-02',
-              orderRestaurant: '동국치킨3',
-              orderCount: '30',
-              initialIsFinished: true,
-            ),
-            MyOrderWidget(
-              orderDate: '2024-01-01',
-              orderRestaurant: '동국치킨4',
-              orderCount: '40',
-              initialIsFinished: true,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

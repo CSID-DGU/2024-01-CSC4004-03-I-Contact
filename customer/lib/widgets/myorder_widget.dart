@@ -10,27 +10,23 @@ class MyOrderWidget extends StatefulWidget {
     required this.orderDate,
     required this.orderRestaurant,
     required this.orderCount,
-    required this.initialIsFinished,
+    required this.onFinish,
   });
   final String orderDate, orderRestaurant, orderCount;
-  final bool initialIsFinished;
+  final VoidCallback onFinish;
   @override
   State<MyOrderWidget> createState() => _MyOrderWidgetState();
 }
 
 class _MyOrderWidgetState extends State<MyOrderWidget> {
-  late bool isFinished;
-
   @override
   void initState() {
     super.initState();
-    isFinished = widget.initialIsFinished;
   }
 
   void _toggleOrderStatus() {
-    setState(() {
-      isFinished = true;
-    });
+    setState(() {});
+    widget.onFinish();
   }
 
   @override
@@ -71,8 +67,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                   Text(
                     '주문일자(${widget.orderDate})',
                     style: TextStyle(
-                      color:
-                          isFinished ? const Color(0xFF828282) : Colors.black,
+                      color: Colors.black,
                       fontSize: screenHeight * 0.017,
                       fontWeight: FontWeight.normal,
                     ),
@@ -96,8 +91,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                   Text(
                     widget.orderRestaurant,
                     style: TextStyle(
-                      color:
-                          isFinished ? const Color(0xFF828282) : Colors.black,
+                      color: Colors.black,
                       fontSize: screenHeight * 0.023,
                       fontWeight: FontWeight.w500,
                     ),
@@ -105,8 +99,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                   Text(
                     '신청인원 ${widget.orderCount}명',
                     style: TextStyle(
-                      color:
-                          isFinished ? const Color(0xFF828282) : Colors.black,
+                      color: Colors.black,
                       fontSize: screenHeight * 0.017,
                       fontWeight: FontWeight.normal,
                     ),
@@ -117,10 +110,9 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    isFinished ? '마감' : '신청중',
+                    '신청중',
                     style: TextStyle(
-                      color:
-                          isFinished ? const Color(0xFF828282) : Colors.black,
+                      color: Colors.black,
                       fontSize: screenHeight * 0.02,
                       fontWeight: FontWeight.normal,
                     ),
@@ -128,17 +120,14 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                   ElevatedButton(
                     onPressed: _toggleOrderStatus,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isFinished
-                          ? const Color(0xFFF0F0F0)
-                          : const Color(0xFFF0EFFF),
-                      foregroundColor:
-                          isFinished ? const Color(0xFF828282) : Colors.black,
+                      backgroundColor: const Color(0xFFF0EFFF),
+                      foregroundColor: Colors.black,
                       textStyle: TextStyle(
                         fontSize: screenHeight * 0.02,
                       ),
                       minimumSize: const Size(70, 40),
                     ),
-                    child: Text(isFinished ? '주문완료' : '방문 취소'),
+                    child: const Text('방문취소'),
                   ),
                 ],
               )
