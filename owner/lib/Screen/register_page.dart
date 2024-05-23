@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Screen/store_register_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
+import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -46,24 +47,21 @@ class _RegisterPageState extends State<RegisterPage> {
     print('비밀번호 일치 검사 결과: $checkpassword');
     if (controllerName.text.isEmpty) {
       message = '이름을 입력해주세요.';
-      showDialogRegister(message);
     } else if (controllerUsername.text.isEmpty) {
       message = '아이디를 입력해주세요.';
-      showDialogRegister(message);
     } else if (controllerEmail.text.isEmpty) {
       message = '이메일를 입력해주세요.';
-      showDialogRegister(message);
     } else if (controllerPwd.text.isEmpty) {
       message = '비밀번호를 입력해주세요.';
-      showDialogRegister(message);
     } else if (controllerPwdChk.text.isEmpty) {
       message = '비밀번호 확인을 입력해주세요.';
-      showDialogRegister(message);
     } else if (checkpassword && checkduplicate) {
       if (lastCheckedId != controllerUsername.text) {
         // lastCheckedId와 실제 제출된 값이 다른 경우 중복확인을 새로 하도록 오류메세지
         message = '아이디 중복확인을 새로 해주세요.';
-        showDialogRegister(message);
+        setState(() {
+          checkduplicate = false;
+        });
       } else {
         var id = controllerUsername.text;
         var name = controllerName.text;
@@ -77,35 +75,10 @@ class _RegisterPageState extends State<RegisterPage> {
       }
     } else if (checkduplicate) {
       message = '비밀번호가 일치하지 않습니다.';
-      showDialogRegister(message);
     } else {
       message = '아이디 중복 확인을 해주세요.';
-      showDialogRegister(message);
     }
-  }
-
-  void showDialogRegister(String message) {
-    var errorMessage = message;
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Error'),
-          content: Text(
-            errorMessage,
-            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop(); // 대화상자 닫기
-              },
-            ),
-          ],
-        );
-      },
-    );
+    showErrorDialog(context, message);
   }
 
   @override

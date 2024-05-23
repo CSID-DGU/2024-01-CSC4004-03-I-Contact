@@ -8,6 +8,7 @@ import 'package:leftover_is_over_owner/Screen/register_complete_page.dart';
 import 'package:leftover_is_over_owner/Screen/register_page.dart';
 import 'package:leftover_is_over_owner/Screen/test.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
+import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 class StoreRegisterPage extends StatefulWidget {
   final String username, name, email, password;
@@ -130,7 +131,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
       return true;
     } catch (e) {
       var message = '유효한 시간을 입력해주세요';
-      showDialogRegister(message);
+      showErrorDialog(context, message);
       return false;
     }
   }
@@ -139,30 +140,30 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
     var message = '에러';
     if (controllerName.text.isEmpty) {
       message = '매장 이름을 입력해주세요.';
-      showDialogRegister(message);
+      showErrorDialog(context, message);
       return;
     } else if (controllerStartTimeHour.text.isEmpty ||
         controllerStartTimeMin.text.isEmpty) {
       message = '오픈 시간을 입력해주세요.';
-      showDialogRegister(message);
+      showErrorDialog(context, message);
       return;
     } else if (controllerEndTimeMin.text.isEmpty ||
         controllerEndTimeMin.text.isEmpty) {
       message = '마감 시간을 입력해주세요.';
-      showDialogRegister(message);
+      showErrorDialog(context, message);
       return;
     } else if (controllerAddress.text.isEmpty ||
         controllerDetailAddress.text.isEmpty) {
       message = '주소를 입력해주세요.';
-      showDialogRegister(message);
+      showErrorDialog(context, message);
       return;
     } else if (controllerStorePhone.text.isEmpty) {
       message = '가게 전화 번호를 입력해주세요.';
-      showDialogRegister(message);
+      showErrorDialog(context, message);
       return;
     } else if (category.isEmpty) {
       message = '음식점 카테고리를 선택해주세요';
-      showDialogRegister(message);
+      showErrorDialog(context, message);
       return;
     } else if (checkValidTime()) {
       var registerCheck = await AuthService.register(
@@ -184,8 +185,6 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
         var address = controllerAddress.text;
         var storePhone = controllerStorePhone.text;
         // var category = categoryLabels.elementAt(index)
-        print(
-            'register는 완료되었고 storecheck api하기 전!! username:${widget.username} storeName:$storeName $startTime $endTime address:$address storePhone:$storePhone categoryId:$categoryId');
         registerStoreCheck = await AuthService.storeRegister(
           userName: widget.username,
           storeName: storeName,

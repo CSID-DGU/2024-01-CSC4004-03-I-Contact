@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:leftover_is_over_owner/Screen/main_page.dart';
 import 'package:leftover_is_over_owner/Screen/register_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
+import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login() async {
+    // 로그인 버튼이 눌릴 시 호출되는 함수
     setState(() {
       isLoading = true;
     });
@@ -40,26 +42,10 @@ class _LoginPageState extends State<LoginPage> {
         (Route<dynamic> route) => false,
       );
     } else {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: const Text(
-              '아이디/Password를 확인해주세요',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('확인'),
-                onPressed: () {
-                  Navigator.of(context).pop(); // 대화상자 닫기
-                },
-              ),
-            ],
-          );
-        },
-      );
+      if (!mounted) {
+        return;
+      }
+      showErrorDialog(context, '아이디/Password를 확인해주세요.');
     }
   }
 
