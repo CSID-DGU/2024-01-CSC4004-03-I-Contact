@@ -6,15 +6,14 @@ import 'package:leftover_is_over_owner/Services/secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static String ipAddress = '10.91.5.26';
   static List<String> roles = ['owner'];
   static late StoreModel store;
 
   static Future<bool> duplicate(String id) async {
     var duplicateCheck = false;
     var headers = {'Content-Type': 'application/json'};
-    var request = http.Request(
-        'POST', Uri.parse('http://$ipAddress:8080/duplicate-username'));
+    var request = http.Request('POST',
+        Uri.parse('http://loio-server.azurewebsites.net/duplicate-username'));
     request.body = jsonEncode({"username": id});
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
@@ -31,8 +30,8 @@ class ApiService {
     required String password,
   }) async {
     var headers = {'Content-Type': 'application/json'};
-    var request =
-        http.Request('POST', Uri.parse('http://$ipAddress:8080/member'));
+    var request = http.Request(
+        'POST', Uri.parse('http://loio-server.azurewebsites.net/member'));
     request.body = jsonEncode({
       "username": username,
       "name": name,
@@ -59,14 +58,12 @@ class ApiService {
     required String storePhone,
     required int categoryId,
   }) async {
-    print(
-        '$userName $storeName $startTime $endTime $address $storePhone $categoryId');
     var duplicateCheck = false;
     var headers = {'Content-Type': 'application/json'};
-    var request =
-        http.Request('POST', Uri.parse('http://$ipAddress:8080/store'));
+    var request = http.Request(
+        'POST', Uri.parse('http://loio-server.azurewebsites.net/store'));
     request.body = jsonEncode({
-      "userName": userName,
+      "username": userName,
       "name": storeName,
       "startTime": startTime,
       "endTime": endTime,
@@ -87,8 +84,8 @@ class ApiService {
   static Future<bool> login(
       {required String username, required String password}) async {
     var headers = {'Content-Type': 'application/json'};
-    var request =
-        http.Request('POST', Uri.parse('http://$ipAddress:8080/login'));
+    var request = http.Request(
+        'POST', Uri.parse('http://loio-server.azurewebsites.net/login'));
     request.body = json.encode({
       "username": username,
       "password": password,
@@ -139,19 +136,29 @@ class ApiService {
   }
 
   static Future<StoreModel> getStore() async {
-    var token = await loadToken();
-    var headers = {'Authorization': '${token[0]} ${token[1]}'};
-    var request =
-        http.Request('POST', Uri.parse('http://$ipAddress:8080/store'));
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      String responseBody = await response.stream.bytesToString();
-      dynamic storeGet = jsonDecode(responseBody);
-      store = StoreModel.fromJson(storeGet);
-      return store;
+    try {
+      var token = await loadToken();
+      var headers = {'Authorization': '${token[0]} ${token[1]}'};
+      var request = http.Request(
+          'GET', Uri.parse('http://loio-server.azurewebsites.net/store'));
+      request.headers.addAll(headers);
+      print('여기');
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        print('여기2');
+        String responseBody = await response.stream.bytesToString();
+        print('여기3');
+        dynamic storeGet = jsonDecode(responseBody);
+        print('storeGet: $storeGet');
+        store = StoreModel.fromJson(storeGet);
+        print(store);
+        return store;
+      } else {
+        throw Exception('Failed to load store: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching store: $e');
     }
-    throw Error();
   }
 
 /*
