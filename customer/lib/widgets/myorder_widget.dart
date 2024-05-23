@@ -29,7 +29,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
 
   void _toggleOrderStatus() {
     setState(() {
-      isFinished = !isFinished;
+      isFinished = true;
     });
   }
 
