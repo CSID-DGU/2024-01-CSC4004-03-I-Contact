@@ -1,12 +1,20 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_customer/screens/category_search_screen.dart';
+import 'package:leftover_is_over_customer/screens/main_screen.dart';
 import 'package:leftover_is_over_customer/screens/notifications_screen.dart';
 import 'package:leftover_is_over_customer/screens/search_screen.dart';
 
+import '../widgets/food_category_widget.dart';
+
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final VoidCallback onProfileTap;
+  final VoidCallback onMapTap;
+
+  const HomeScreen(
+      {super.key, required this.onProfileTap, required this.onMapTap});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -33,20 +41,24 @@ class _HomeScreenState extends State<HomeScreen> {
               height: screenHeight * 0.1,
               child: Row(
                 children: [
-                  Container(
-                    width: screenWidth * 0.15,
-                    height: screenWidth * 0.15,
-                    margin: EdgeInsets.all(screenWidth * 0.02),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Theme.of(context).primaryColorDark, width: 2),
-                      borderRadius: BorderRadius.circular(45),
-                      color: Colors.white,
-                    ),
-                    child: Icon(
-                      Icons.person_2_rounded,
-                      size: screenWidth * 0.1,
-                      color: Theme.of(context).primaryColorDark,
+                  GestureDetector(
+                    onTap: widget.onProfileTap,
+                    child: Container(
+                      width: screenWidth * 0.15,
+                      height: screenWidth * 0.15,
+                      margin: EdgeInsets.all(screenWidth * 0.02),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Theme.of(context).primaryColorDark,
+                            width: 2),
+                        borderRadius: BorderRadius.circular(45),
+                        color: Colors.white,
+                      ),
+                      child: Icon(
+                        Icons.person_2_rounded,
+                        size: screenWidth * 0.1,
+                        color: Theme.of(context).primaryColorDark,
+                      ),
                     ),
                   ),
                   Container(
@@ -216,28 +228,31 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text('    지도',
-                            style: TextStyle(
-                                fontSize: screenWidth * 0.04,
-                                fontWeight: FontWeight.w600))),
-                    SizedBox(
-                      height: screenHeight * 0.01,
-                    ),
-                    Container(
-                      width: screenWidth * 0.8,
-                      height: screenHeight * 0.35,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Image.asset('assets/images/square_map.png'),
-                    ),
-                  ],
+                child: GestureDetector(
+                  onTap: widget.onMapTap,
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text('    지도',
+                              style: TextStyle(
+                                  fontSize: screenWidth * 0.04,
+                                  fontWeight: FontWeight.w600))),
+                      SizedBox(
+                        height: screenHeight * 0.01,
+                      ),
+                      Container(
+                        width: screenWidth * 0.8,
+                        height: screenHeight * 0.35,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Image.asset('assets/images/square_map.png'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -245,64 +260,5 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-}
-
-class FoodCategoryWidget extends StatelessWidget {
-  final String foodName;
-
-  const FoodCategoryWidget({super.key, required this.foodName});
-
-  @override
-  Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-    double screenWidth = screenSize.width;
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CategorySearchScreen(foodName: foodName)),
-        );
-      },
-      child: Container(
-        width: screenWidth * 0.13,
-        height: screenWidth * 0.13,
-        margin: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
-          borderRadius: BorderRadius.circular(45),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(1),
-              spreadRadius: 0,
-              blurRadius: 1.0,
-              offset: const Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Icon(
-              Icons.food_bank_rounded,
-              color: Theme.of(context).primaryColorDark,
-              size: screenWidth * 0.08,
-            ),
-            Text(
-              foodName,
-              style: TextStyle(
-                  fontSize: screenWidth * 0.025, fontWeight: FontWeight.w800),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(StringProperty('foodName', foodName));
   }
 }

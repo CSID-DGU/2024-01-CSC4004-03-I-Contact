@@ -15,18 +15,29 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  static List<Widget> screens = <Widget>[
-    const HomeScreen(),
-    const MapScreen(),
-    const BookmarkScreen(),
-    const MyOrderScreen(),
-    const MyPageScreen(),
-  ];
-
-  void onDestinationSelected(int index) {
+  void _changeTab(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  final List<Widget> screens;
+
+  _MainScreenState()
+      : screens = [
+          HomeScreen(onProfileTap: () {}, onMapTap: () {}),
+          const MapScreen(),
+          const BookmarkScreen(),
+          const MyOrderScreen(),
+          const MyPageScreen(),
+        ];
+
+  @override
+  void initState() {
+    super.initState();
+    // _MainScreenState 생성자에서 screens 초기화
+    screens[0] = HomeScreen(
+        onProfileTap: () => _changeTab(4), onMapTap: () => _changeTab(1));
   }
 
   @override
@@ -35,21 +46,22 @@ class _MainScreenState extends State<MainScreen> {
     double screenHeight = screenSize.height;
 
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        body: screens[_selectedIndex],
-        bottomNavigationBar: NavigationBar(
-          height: screenHeight * 0.1,
-          backgroundColor: Theme.of(context).primaryColorLight,
-          animationDuration: const Duration(seconds: 1),
-          selectedIndex: _selectedIndex,
-          onDestinationSelected: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-          destinations: _navBarItems,
-          indicatorColor: Theme.of(context).primaryColor,
-        ));
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: screens[_selectedIndex],
+      bottomNavigationBar: NavigationBar(
+        height: screenHeight * 0.1,
+        backgroundColor: Theme.of(context).primaryColorLight,
+        animationDuration: const Duration(seconds: 1),
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        destinations: _navBarItems,
+        indicatorColor: Theme.of(context).primaryColor,
+      ),
+    );
   }
 
   final List<Widget> _navBarItems = [

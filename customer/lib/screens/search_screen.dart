@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'search_result_screen.dart'; // Import the SearchResultScreen
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -48,6 +49,21 @@ class _SearchScreenState extends State<SearchScreen> {
         _saveRecentSearches();
       }
     });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchResultScreen(query: query),
+      ),
+    );
+  }
+
+  void _onRecentSearchTap(String query) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchResultScreen(query: query),
+      ),
+    );
   }
 
   @override
@@ -100,28 +116,29 @@ class _SearchScreenState extends State<SearchScreen> {
               onSubmitted: _onSubmitted,
             ),
           ),
-          Container(
-            width: screenWidth,
-            height: screenHeight * 0.7,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-            ),
-            child: Column(
+          Expanded(
+            child: Container(
+              width: screenWidth,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              child: ListView(
                 children: _recentSearches
                     .asMap()
                     .entries
                     .map((entry) {
                       return RecentSearchWidget(
-                        key: ValueKey(entry
-                            .key), // Use entry key as a unique key for the widget
+                        key: ValueKey(entry.key),
                         searchText: entry.value,
-                        onDelete: () => _removeRecentSearch(
-                            entry.key), // Pass index to onDelete callback
+                        onDelete: () => _removeRecentSearch(entry.key),
+                        onTap: () => _onRecentSearchTap(entry.value),
                       );
                     })
                     .toList()
                     .reversed
-                    .toList()),
+                    .toList(),
+              ),
+            ),
           ),
         ],
       ),
@@ -132,9 +149,14 @@ class _SearchScreenState extends State<SearchScreen> {
 class RecentSearchWidget extends StatelessWidget {
   final String searchText;
   final VoidCallback onDelete;
+  final VoidCallback onTap;
 
-  const RecentSearchWidget(
-      {super.key, required this.searchText, required this.onDelete});
+  const RecentSearchWidget({
+    super.key,
+    required this.searchText,
+    required this.onDelete,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -142,34 +164,38 @@ class RecentSearchWidget extends StatelessWidget {
     double screenWidth = screenSize.width;
     double screenHeight = screenSize.height;
 
-    return Container(
-      width: screenWidth,
-      height: screenHeight * 0.07,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.black54, width: 1)),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: screenWidth * 0.08,
-          ),
-          SizedBox(
-            width: screenWidth * 0.75,
-            child: Text(
-              searchText,
-              style: TextStyle(
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: screenWidth,
+        height: screenHeight * 0.07,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(bottom: BorderSide(color: Colors.black54, width: 1)),
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: screenWidth * 0.08,
+            ),
+            SizedBox(
+              width: screenWidth * 0.75,
+              child: Text(
+                searchText,
+                style: TextStyle(
                   color: Colors.black54,
                   fontSize: screenHeight * 0.022,
-                  fontWeight: FontWeight.w400),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.cancel_sharp),
-            color: Colors.black54,
-            onPressed: onDelete,
-          ),
-        ],
+            IconButton(
+              icon: const Icon(Icons.cancel_sharp),
+              color: Colors.black54,
+              onPressed: onDelete,
+            ),
+          ],
+        ),
       ),
     );
   }
