@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:leftover_is_over_customer/screens/change_password_screen.dart';
+import 'package:leftover_is_over_customer/screens/profile_edit_screen.dart';
+import 'package:leftover_is_over_customer/screens/notification_setting_screen.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
@@ -13,23 +16,15 @@ class MyPageScreen extends StatelessWidget {
           bottom: const TabBar(
             tabs: [
               Tab(
-                text: 'Profile',
+                text: '프로필',
                 icon: Icon(Icons.account_circle),
               ),
               Tab(
-                text: 'Settings',
+                text: '설정',
                 icon: Icon(Icons.settings),
               ),
             ],
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {
-                // Add notification button functionality
-              },
-            ),
-          ],
         ),
         body: const TabBarView(
           children: [
@@ -49,6 +44,9 @@ class ProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    double screenWidth = screenSize.width;
+    double screenHeight = screenSize.height;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -57,22 +55,26 @@ class ProfileSection extends StatelessWidget {
             radius: 50,
             backgroundImage: AssetImage('assets/profile_image.jpg'),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: screenHeight * 0.03),
           const Text(
-            'User Name',
+            '유저 이름',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: screenHeight * 0.01),
           const Text(
-            'user@example.com',
+            '아이디123',
             style: TextStyle(fontSize: 18, color: Colors.grey),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: screenHeight * 0.03),
           ElevatedButton(
             onPressed: () {
-              // Add edit profile functionality
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ProfileEditScreen()),
+              );
             },
-            child: const Text('Edit Profile'),
+            child: const Text('프로필 수정'),
           ),
         ],
       ),
@@ -85,27 +87,45 @@ class SettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    double screenWidth = screenSize.width;
+    double screenHeight = screenSize.height;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            'Settings',
+            '설정',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: screenHeight * 0.05),
           ElevatedButton(
             onPressed: () {
-              // Add settings functionality
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const NotificationSettingScreen()),
+              );
             },
-            child: const Text('Change Password'),
+            child: const Text('알림 설정'),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: screenHeight * 0.01),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ChangePasswordScreen()),
+              );
+            },
+            child: const Text('비밀번호 변경'),
+          ),
+          SizedBox(height: screenHeight * 0.01),
           ElevatedButton(
             onPressed: () {
               // Add logout functionality
             },
-            child: const Text('Logout'),
+            child: const Text('로그아웃'),
           ),
         ],
       ),

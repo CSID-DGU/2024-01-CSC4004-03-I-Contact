@@ -9,7 +9,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  double scrollviewHeight = 300.0; // 스크롤 뷰의 초기 높이
+  double scrollviewHeight = 200.0; // 스크롤 뷰의 초기 높이
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class _MapScreenState extends State<MapScreen> {
     double screenWidth = screenSize.width;
     double screenHeight = screenSize.height;
     double minHeight = screenHeight * 0.03;
-    double maxHeight = screenHeight * 0.815;
+    double maxHeight = screenHeight * 0.8;
 
     return Scaffold(
       appBar: AppBar(

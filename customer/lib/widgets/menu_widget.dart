@@ -40,7 +40,7 @@ class _MenuWidgetState extends State<MenuWidget> {
                       child: Padding(
                         padding: EdgeInsets.only(top: screenHeight * 0.035),
                         child: Text(
-                          '${widget.menuName} 구매',
+                          '${widget.menuName} 주문하기',
                           style: TextStyle(fontSize: screenHeight * 0.035),
                         ),
                       ),
@@ -107,7 +107,7 @@ class _MenuWidgetState extends State<MenuWidget> {
                                 Size(screenWidth * 0.8, screenHeight * 0.06),
                           ),
                           child: Text(
-                            '구매',
+                            '주문',
                             style: TextStyle(fontSize: screenHeight * 0.035),
                           ),
                         ),
