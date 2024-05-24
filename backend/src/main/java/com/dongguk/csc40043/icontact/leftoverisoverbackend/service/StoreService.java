@@ -9,6 +9,7 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.StoreDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.MemberRepository;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,15 +27,18 @@ public class StoreService {
 
     @Transactional
     public CreateStoreResponseDto createStore(CreateStoreRequestDto createStoreRequestDto) {
-        Member member = memberRepository.findByUsernameAndDeleted(createStoreRequestDto.getUsername(), false);
+        Member member = memberRepository.findByUsernameAndDeleted(createStoreRequestDto.getUsername(), false).orElseThrow(() ->
+                new UsernameNotFoundException("존재하지 않는 회원입니다."));
         StoreDto storeDto = createStoreRequestDto.toServiceDto();
         Store store = storeRepository.save(storeDto.toEntity(member));
         return new CreateStoreResponseDto(store.getId());
     }
 
     public GetStoreResponseDto getStore(String username) {
-        Member member = memberRepository.findByUsernameAndDeleted(username, false);
-        Store store = storeRepository.findByMemberAndDeleted(member, false);
+        Member member = memberRepository.findByUsernameAndDeleted(username, false).orElseThrow(() ->
+                new UsernameNotFoundException("존재하지 않는 회원입니다."));
+        Store store = storeRepository.findByMemberAndDeleted(member, false).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 식당입니다."));
         return GetStoreResponseDto.builder()
                 .storeId(store.getId())
                 .ownerId(store.getMember().getId())
@@ -51,8 +55,10 @@ public class StoreService {
 
     @Transactional
     public void changeOpenStatus(String username) {
-        Member member = memberRepository.findByUsernameAndDeleted(username, false);
-        Store store = storeRepository.findByMemberAndDeleted(member, false);
+        Member member = memberRepository.findByUsernameAndDeleted(username, false).orElseThrow(() ->
+                new UsernameNotFoundException("존재하지 않는 회원입니다."));
+        Store store = storeRepository.findByMemberAndDeleted(member, false).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 식당입니다."));
         store.toggleIsOpen();
         storeRepository.save(store);
     }

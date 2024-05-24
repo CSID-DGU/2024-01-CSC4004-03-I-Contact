@@ -62,10 +62,8 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(String username) {
-        Member member = memberRepository.findByUsernameAndDeleted(username, false);
-        if (member == null) {
-            throw new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다.");
-        }
+        Member member = memberRepository.findByUsernameAndDeleted(username, false).orElseThrow(() ->
+                new UsernameNotFoundException("존재하지 않는 회원입니다."));
         memberRepository.delete(member);
     }
 
@@ -77,7 +75,8 @@ public class MemberService {
 
     @Transactional
     public void updateMember(UpdateMemberRequestDto updateMemberRequestDto) {
-        Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false);
+        Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false).orElseThrow(() ->
+                new UsernameNotFoundException("존재하지 않는 회원입니다."));
         if (updateMemberRequestDto.getUsername() != null)
             member.updateUsername(updateMemberRequestDto.getUsername());
         if (updateMemberRequestDto.getName() != null)
@@ -89,7 +88,8 @@ public class MemberService {
     }
 
     public GetMemberResponseDto getMember(String username) {
-        Member member = memberRepository.findByUsernameAndDeleted(username, false);
+        Member member = memberRepository.findByUsernameAndDeleted(username, false).orElseThrow(() ->
+                new UsernameNotFoundException("존재하지 않는 회원입니다."));
         return GetMemberResponseDto.builder()
                 .username(member.getUsername())
                 .name(member.getName())
