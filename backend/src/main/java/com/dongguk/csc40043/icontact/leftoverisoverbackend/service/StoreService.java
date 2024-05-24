@@ -112,4 +112,21 @@ public class StoreService {
 
     }
 
+    public GetStoreResponseDto getStore(Long storeId) {
+        Store store = storeRepository.findByIdAndDeleted(storeId, false).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 식당입니다."));
+        return GetStoreResponseDto.builder()
+                .storeId(store.getId())
+                .ownerId(store.getMember().getId())
+                .categoryId(store.getCategoryId())
+                .name(store.getName())
+                .startTime(store.getStartTime().toString())
+                .endTime(store.getEndTime().toString())
+                .address(store.getAddress())
+                .phone(store.getPhone())
+                .isOpen(store.isOpen())
+                .deleted(store.isDeleted())
+                .build();
+    }
+
 }

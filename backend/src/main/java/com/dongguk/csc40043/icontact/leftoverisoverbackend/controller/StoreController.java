@@ -73,4 +73,13 @@ public class StoreController {
         }
     }
 
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<?> getStore(@PathVariable("storeId") Long storeId) {
+        try {
+            return ResponseEntity.ok(storeService.getStore(storeId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
