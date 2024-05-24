@@ -10,11 +10,13 @@ import java.util.Optional;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
-    
+
     Optional<Store> findByMemberAndDeleted(Member member, boolean deleted);
 
     List<Store> findByNameContaining(String name);
 
     List<Store> findByCategoryId(Long categoryId);
+
+    Optional<Store> findByIdAndDeleted(Long id, boolean deleted);
 
 }
