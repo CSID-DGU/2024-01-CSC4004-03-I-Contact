@@ -79,4 +79,20 @@ public class Member implements UserDetails {
         return true;
     }
 
+    public void updateUsername(String username) {
+        this.username = username;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
 }

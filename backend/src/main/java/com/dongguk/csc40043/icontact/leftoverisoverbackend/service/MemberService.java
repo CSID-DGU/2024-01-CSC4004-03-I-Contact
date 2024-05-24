@@ -1,10 +1,12 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.JwtTokenProvider;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.MemberDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.CheckDuplicateRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.LoginRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.UpdateMemberRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.LoginResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,7 @@ public class MemberService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public void createMember(MemberDto memberDto) {
@@ -64,10 +68,23 @@ public class MemberService {
         memberRepository.delete(member);
     }
 
-    void isDuplicated(String username) {
+    private void isDuplicated(String username) {
         if (memberRepository.existsByUsernameAndDeleted(username, false)) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
+    }
+
+    @Transactional
+    public void updateMember(UpdateMemberRequestDto updateMemberRequestDto) {
+        Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false);
+        if (updateMemberRequestDto.getUsername() != null)
+            member.updateUsername(updateMemberRequestDto.getUsername());
+        if (updateMemberRequestDto.getName() != null)
+            member.updateName(updateMemberRequestDto.getName());
+        if (updateMemberRequestDto.getEmail() != null)
+            member.updateEmail(updateMemberRequestDto.getEmail());
+        if (updateMemberRequestDto.getPassword() != null)
+            member.updatePassword(passwordEncoder.encode(updateMemberRequestDto.getPassword()));
     }
 
 }

@@ -4,6 +4,7 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.CheckDuplicateRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.CreateMemberRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.LoginRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.UpdateMemberRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -58,6 +59,16 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.OK).body("Member deleted successfully");
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/member")
+    public ResponseEntity<?> updateMember(@RequestBody UpdateMemberRequestDto updateMemberRequestDto) {
+        try {
+            memberService.updateMember(updateMemberRequestDto);
+            return ResponseEntity.ok("Successfully updated member");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
