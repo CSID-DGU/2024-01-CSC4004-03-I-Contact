@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_customer/widgets/resturant_widget.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -20,18 +23,10 @@ class _MapScreenState extends State<MapScreen> {
     double maxHeight = screenHeight * 0.8;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('지도')),
-      ),
       body: Stack(
         children: [
-          // Map widget
-          Image.asset(
-            'assets/images/rect_map.png',
-            width: screenWidth,
-            height: screenHeight,
-            fit: BoxFit.cover,
-          ),
+          const NaverMapApp(),
+
           // Draggable scroll view
           Positioned(
             bottom: 0,
@@ -99,6 +94,32 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class NaverMapApp extends StatelessWidget {
+  const NaverMapApp({super.key, Key? key2});
+
+  @override
+  Widget build(BuildContext context) {
+    // NaverMapController 객체의 비동기 작업 완료를 나타내는 Completer 생성
+    final Completer<NaverMapController> mapControllerCompleter = Completer();
+
+    return MaterialApp(
+      home: Scaffold(
+        body: NaverMap(
+          options: const NaverMapViewOptions(
+            indoorEnable: true, // 실내 맵 사용 가능 여부 설정
+            locationButtonEnable: false, // 위치 버튼 표시 여부 설정
+            consumeSymbolTapEvents: false, // 심볼 탭 이벤트 소비 여부 설정
+          ),
+          onMapReady: (controller) async {
+            // 지도 준비 완료 시 호출되는 콜백 함수
+            mapControllerCompleter.complete(controller);
+          },
+        ),
       ),
     );
   }

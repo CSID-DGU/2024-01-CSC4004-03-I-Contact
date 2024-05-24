@@ -1,10 +1,21 @@
+import 'dart:math';
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:leftover_is_over_customer/screens/main_screen.dart';
 import 'package:leftover_is_over_customer/screens/notification_setting_screen.dart';
 import 'package:leftover_is_over_customer/screens/profile_edit_screen.dart';
 
-void main() {
+void main() async {
+  await _initialize();
   runApp(const App2());
+}
+
+Future<void> _initialize() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NaverMapSdk.instance.initialize(clientId: 'nfvpbk98y5');
 }
 
 class App2 extends StatelessWidget {
