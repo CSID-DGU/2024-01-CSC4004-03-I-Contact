@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_customer/screens/category_search_screen.dart';
 import 'package:leftover_is_over_customer/screens/main_screen.dart';
+import 'package:leftover_is_over_customer/screens/map_screen.dart';
 import 'package:leftover_is_over_customer/screens/notifications_screen.dart';
 import 'package:leftover_is_over_customer/screens/search_screen.dart';
 
@@ -28,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double screenHeight = screenSize.height;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Container(
         margin: EdgeInsets.only(
             top: screenHeight * 0.025,
@@ -229,31 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
-                  onTap: widget.onMapTap,
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text('    지도',
-                              style: TextStyle(
-                                  fontSize: screenWidth * 0.04,
-                                  fontWeight: FontWeight.w600))),
-                      SizedBox(
-                        height: screenHeight * 0.01,
-                      ),
-                      Container(
-                        width: screenWidth * 0.8,
-                        height: screenHeight * 0.35,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Image.asset('assets/images/square_map.png'),
-                      ),
-                    ],
-                  ),
-                ),
+                    onTap: widget.onMapTap, child: const NaverMapApp()),
               ),
             ),
           ],
