@@ -74,4 +74,14 @@ public class MemberController {
         }
     }
 
+    @GetMapping("/member")
+    public ResponseEntity<?> getMember() {
+        try {
+            return ResponseEntity.ok(memberService.getMember(SecurityUtil.getCurrentUser()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
 }

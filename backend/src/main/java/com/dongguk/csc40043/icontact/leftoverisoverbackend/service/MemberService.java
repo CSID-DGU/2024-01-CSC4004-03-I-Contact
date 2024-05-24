@@ -7,6 +7,7 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.MemberDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.CheckDuplicateRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.LoginRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.UpdateMemberRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.GetMemberResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.LoginResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -85,6 +86,15 @@ public class MemberService {
             member.updateEmail(updateMemberRequestDto.getEmail());
         if (updateMemberRequestDto.getPassword() != null)
             member.updatePassword(passwordEncoder.encode(updateMemberRequestDto.getPassword()));
+    }
+
+    public GetMemberResponseDto getMember(String username) {
+        Member member = memberRepository.findByUsernameAndDeleted(username, false);
+        return GetMemberResponseDto.builder()
+                .username(member.getUsername())
+                .name(member.getName())
+                .email(member.getEmail())
+                .build();
     }
 
 }
