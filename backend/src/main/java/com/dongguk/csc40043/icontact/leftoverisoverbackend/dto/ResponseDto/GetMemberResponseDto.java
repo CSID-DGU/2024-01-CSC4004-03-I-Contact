@@ -13,4 +13,6 @@ public class GetMemberResponseDto {
 
     private String email;
 
+    private String phone;
+
 }

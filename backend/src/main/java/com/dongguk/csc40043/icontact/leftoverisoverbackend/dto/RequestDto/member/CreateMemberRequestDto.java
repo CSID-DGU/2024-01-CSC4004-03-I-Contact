@@ -14,6 +14,8 @@ public class CreateMemberRequestDto {
 
     private String email;
 
+    private String phone;
+
     private String password;
 
     private List<String> roles;
@@ -23,6 +25,7 @@ public class CreateMemberRequestDto {
                 .username(username)
                 .name(name)
                 .email(email)
+                .phone(phone)
                 .password(encodedPassword)
                 .roles(roles)
                 .build();

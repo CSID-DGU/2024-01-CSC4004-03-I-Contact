@@ -83,6 +83,8 @@ public class MemberService {
             member.updateName(updateMemberRequestDto.getName());
         if (updateMemberRequestDto.getEmail() != null)
             member.updateEmail(updateMemberRequestDto.getEmail());
+        if (updateMemberRequestDto.getPhone() != null)
+            member.updatePhone(updateMemberRequestDto.getPhone());
         if (updateMemberRequestDto.getPassword() != null)
             member.updatePassword(passwordEncoder.encode(updateMemberRequestDto.getPassword()));
     }
@@ -94,6 +96,7 @@ public class MemberService {
                 .username(member.getUsername())
                 .name(member.getName())
                 .email(member.getEmail())
+                .phone(member.getPhone())
                 .build();
     }
 
