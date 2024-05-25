@@ -75,7 +75,7 @@ public class StoreService {
         return toResponseDto(storeList);
     }
 
-    private List<GetStoreResponseDto> toResponseDto(List<Store> storeList) {
+    public List<GetStoreResponseDto> toResponseDto(List<Store> storeList) {
         return storeList.stream()
                 .map(store -> GetStoreResponseDto.builder()
                         .storeId(store.getId())

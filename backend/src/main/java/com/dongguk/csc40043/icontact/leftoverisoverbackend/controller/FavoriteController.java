@@ -4,6 +4,7 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.favori
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,15 @@ public class FavoriteController {
         try {
             favoriteService.addFavorite(addFavoriteRequestDto);
             return ResponseEntity.ok("Successfully added favorite store");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/favorite")
+    public ResponseEntity<?> getFavoriteList() {
+        try {
+            return ResponseEntity.ok(favoriteService.getFavoriteList());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
