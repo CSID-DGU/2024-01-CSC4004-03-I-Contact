@@ -3,7 +3,7 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.favorite.AddFavoriteRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.favorite.FavoriteRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.GetStoreResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.FavoriteRepository;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.MemberRepository;
@@ -26,12 +26,12 @@ public class FavoriteService {
     private final StoreRepository storeRepository;
 
     @Transactional
-    public void addFavorite(AddFavoriteRequestDto addFavoriteRequestDto) {
+    public void addFavorite(FavoriteRequestDto favoriteRequestDto) {
         Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 회원입니다."));
-        Store store = storeRepository.findByIdAndDeleted(addFavoriteRequestDto.getStoreId(), false).orElseThrow(() ->
+        Store store = storeRepository.findByIdAndDeleted(favoriteRequestDto.getStoreId(), false).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 식당입니다."));
-        favoriteRepository.save(addFavoriteRequestDto.toEntity(member, store));
+        favoriteRepository.save(favoriteRequestDto.toEntity(member, store));
     }
 
     public List<GetStoreResponseDto> getFavoriteList() {
@@ -53,6 +53,15 @@ public class FavoriteService {
                         .build()
                 )
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteFavorite(FavoriteRequestDto favoriteRequestDto) {
+        Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 회원입니다."));
+        Store store = storeRepository.findByIdAndDeleted(favoriteRequestDto.getStoreId(), false).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 식당입니다."));
+        favoriteRepository.deleteByMemberAndStore(member, store);
     }
 
 }

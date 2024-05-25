@@ -15,4 +15,6 @@ public interface FavoriteRepository extends JpaRepository<FavoriteStore, Long> {
     @Query("SELECT fs.store FROM FavoriteStore fs WHERE fs.member = :member")
     List<Store> findStoreIdByMember(Member member);
 
+    void deleteByMemberAndStore(Member member, Store store);
+
 }

@@ -6,7 +6,7 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
 import lombok.Data;
 
 @Data
-public class AddFavoriteRequestDto {
+public class FavoriteRequestDto {
 
     private Long storeId;
 
