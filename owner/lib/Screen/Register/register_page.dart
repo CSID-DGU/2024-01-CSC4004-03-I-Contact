@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:leftover_is_over_owner/Screen/store_register_page.dart';
+import 'package:leftover_is_over_owner/Screen/Register/store_register_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
@@ -30,7 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
     controllerPwdChk = TextEditingController();
   }
 
-  void checkDuplicate(String id) async {
+  void _checkDuplicate(String id) async {
     print(id);
     checkduplicate = await AuthService.duplicate(id);
     if (checkduplicate) {
@@ -40,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {});
   }
 
-  void checkCredentials() {
+  void _checkCredentials() {
     var message = '에러';
     checkpassword = controllerPwd.text == controllerPwdChk.text;
     print('아이디 중복 검사 결과: $checkduplicate');
@@ -217,7 +217,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     OutlinedButton(
                       onPressed: () {
-                        checkDuplicate(controllerUsername.text);
+                        _checkDuplicate(controllerUsername.text);
                       },
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(100, 40),
@@ -381,7 +381,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     OutlinedButton(
                       onPressed: () {
-                        checkCredentials();
+                        _checkCredentials();
                       },
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.green[300]!.withOpacity(0.6),

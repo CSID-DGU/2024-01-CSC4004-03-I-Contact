@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:leftover_is_over_owner/Screen/menu_manage_edit.dart';
-import 'package:leftover_is_over_owner/Screen/select_store_page.dart';
-import 'package:leftover_is_over_owner/Screen/login_page.dart';
-import 'package:leftover_is_over_owner/Screen/main_page.dart';
-import 'package:leftover_is_over_owner/Screen/menu_manage_page.dart';
-import 'package:leftover_is_over_owner/Screen/sales_manage_page.dart';
-import 'package:leftover_is_over_owner/Screen/register_complete_page.dart';
-import 'package:leftover_is_over_owner/Screen/register_page.dart';
-import 'package:leftover_is_over_owner/Screen/store_register_page.dart';
+import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_edit.dart';
+import 'package:leftover_is_over_owner/Screen/Main/select_store_page.dart';
+import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
+import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
+import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
+import 'package:leftover_is_over_owner/Screen/Order_Manage/order_manage_page.dart';
+import 'package:leftover_is_over_owner/Screen/Register/register_complete_page.dart';
+import 'package:leftover_is_over_owner/Screen/Register/register_page.dart';
+import 'package:leftover_is_over_owner/Screen/Register/store_register_page.dart';
+import 'package:leftover_is_over_owner/Screen/Sales_Manage/sales_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/test.dart';
-import 'package:leftover_is_over_owner/Screen/menu_manage_add.dart';
+import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_add.dart';
+import 'package:leftover_is_over_owner/Widget/sales_state_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,14 +25,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const
-
-          //EditMenu(),
-          //AddMenu(),
-          //RegisterPage(),
-          //SelectStore(),
+      home: const //SalesManagePage(),
           //SalesManagePage(),
-          LoginPage(),
+          OrderStatusPage(SalesState.selling),
+      //EditMenu(),
+      //AddMenu(),
+      //RegisterPage(),
+      //SelectStore(),
+      //SalesManagePage(),
+      //LoginPage(),
       //MainPage(),
       //RegisterCompletePage(),
       //MenuManagePage(),

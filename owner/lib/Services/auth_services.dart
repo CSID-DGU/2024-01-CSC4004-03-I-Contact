@@ -156,6 +156,32 @@ class AuthService {
     return true;
   }
 
+  static Future<bool> memberModify({
+    // 나중에 수정하기
+    required String username,
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request(
+        'POST', Uri.parse('http://loio-server.azurewebsites.net/member'));
+    request.body = jsonEncode({
+      "username": username,
+      "name": name,
+      "email": email,
+      "password": password,
+      "roles": roles,
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 /*
   static List<WebtoonModel> webtoonInstances = [];
 

@@ -2,17 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:leftover_is_over_owner/Widget/sales_state_widget.dart';
 import 'package:leftover_is_over_owner/Widget/order_card_widget.dart';
+import 'package:leftover_is_over_owner/Widget/sales_state_widget.dart';
 
-class EditSalesCard extends StatefulWidget {
-  const EditSalesCard({super.key});
+class SalesManagePage extends StatefulWidget {
+  const SalesManagePage({super.key});
 
   @override
-  State<EditSalesCard> createState() => EditSalesState();
+  State<SalesManagePage> createState() => SalesManagePageState();
 }
 
-class EditSalesState extends State<EditSalesCard> {
+class SalesManagePageState extends State<SalesManagePage> {
   SalesState currentState = SalesState.selling;
   SalesState? lastState;
 
@@ -83,7 +83,7 @@ class EditSalesState extends State<EditSalesCard> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                '수동 판매 관리  ',
+                '판매 관리  ',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
               ),
             ],

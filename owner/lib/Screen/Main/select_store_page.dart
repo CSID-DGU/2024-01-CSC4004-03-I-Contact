@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:leftover_is_over_owner/Screen/main_page.dart';
+import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
 
 class SelectStore extends StatefulWidget {
   const SelectStore({super.key});
