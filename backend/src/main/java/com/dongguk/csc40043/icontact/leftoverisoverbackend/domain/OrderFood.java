@@ -1,11 +1,14 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 @Entity
 @Table(name = "order_food")
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderFood {
 
     @Id
@@ -22,5 +25,9 @@ public class OrderFood {
     private Order order;
 
     private int count;
+
+    void addOrder(Order order) {
+        this.order = order;
+    }
 
 }

@@ -1,7 +1,7 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,6 +10,9 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
 
     @Id
@@ -30,7 +33,12 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status; // VISIT, ORDER, CANCEL, COMPLETE
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @Builder.Default
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderFood> orderFoods = new ArrayList<>();
 
+    public void addOrderFood(OrderFood orderFood) {
+        this.orderFoods.add(orderFood);
+        orderFood.addOrder(this);
+    }
 }
