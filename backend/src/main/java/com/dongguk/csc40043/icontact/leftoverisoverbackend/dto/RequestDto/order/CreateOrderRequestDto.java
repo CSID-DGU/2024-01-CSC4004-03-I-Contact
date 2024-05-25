@@ -12,6 +12,8 @@ public class CreateOrderRequestDto {
 
     private Long storeId;
 
+    private Boolean appPay;
+
     @JsonProperty("food")
     private List<OrderFoodDto> orderFoodDtos;
 
@@ -20,6 +22,7 @@ public class CreateOrderRequestDto {
                 .member(member)
                 .store(store)
                 .orderDate(orderDate)
+                .appPay(appPay)
                 .status(OrderStatus.VISIT)
                 .build();
     }

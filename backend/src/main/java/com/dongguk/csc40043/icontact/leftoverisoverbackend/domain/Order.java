@@ -30,6 +30,8 @@ public class Order {
 
     private LocalDateTime orderDate;
 
+    private Boolean appPay;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus status; // VISIT, ORDER, CANCEL, COMPLETE
 
