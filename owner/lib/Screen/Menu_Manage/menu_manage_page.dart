@@ -7,7 +7,8 @@ import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_add.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_edit.dart';
 
 class MenuManagePage extends StatefulWidget {
-  const MenuManagePage({super.key});
+  final startState;
+  const MenuManagePage(this.startState, {super.key});
 
   @override
   State<MenuManagePage> createState() => MenuManagePageState();

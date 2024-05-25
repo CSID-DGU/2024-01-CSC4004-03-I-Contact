@@ -41,7 +41,7 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       isLoading = false;
       currentState = store.isOpen ? StoreState.selling : StoreState.closed;
-      currentStateS = currentState == StoreState.selling ? "판매 중" : "판매 종료";
+      currentStateS = currentState == StoreState.selling ? "판매 중" : "마감";
       storeName = store.name;
     });
   }
@@ -147,11 +147,10 @@ class _MainPageState extends State<MainPage> {
                                           style: TextStyle(
                                             color: currentStateS == '판매 중'
                                                 ? Colors.green
-                                                : currentStateS == '판매 종료'
+                                                : currentStateS == '마감'
                                                     ? Colors.red
                                                     : Colors.black,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
                                       ],
@@ -221,7 +220,8 @@ class _MainPageState extends State<MainPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MenuManagePage()));
+                                builder: (context) =>
+                                    MenuManagePage(currentState)));
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(

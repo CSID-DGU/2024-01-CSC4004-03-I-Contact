@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:leftover_is_over_owner/Services/user_services.dart';
+import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 // 현재 틀만 만들어진 상태 기능 구현 필요
 
@@ -10,6 +12,40 @@ class AddMenu extends StatefulWidget {
 }
 
 class _AddMenuState extends State<AddMenu> {
+  late TextEditingController controllerName,
+      controllerFirstPrice,
+      controllerSellPrice;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    controllerName = TextEditingController();
+    controllerFirstPrice = TextEditingController();
+    controllerSellPrice = TextEditingController();
+  }
+
+  void _addMenu() async {
+    var name = controllerName.text;
+    var firstPrice = int.parse(controllerFirstPrice.text);
+    var sellPrice = int.parse(controllerSellPrice.text);
+
+    var addMenu = await UserService.addMenu(
+      name: name,
+      firstPrice: firstPrice,
+      sellPrice: sellPrice,
+    );
+    if (addMenu) {
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } else {
+      var message = '메뉴 등록에 실패했습니다';
+      if (mounted) {
+        showErrorDialog(context, message);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -26,7 +62,7 @@ class _AddMenuState extends State<AddMenu> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                '메뉴 추가  ',
+                '메뉴 등록  ',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
               ),
             ],
@@ -41,7 +77,7 @@ class _AddMenuState extends State<AddMenu> {
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text(
-                    '추가할 메뉴의 정보를 입력해주세요',
+                    '등록할 메뉴의 정보를 입력해주세요',
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                   ),
                 ),
@@ -84,6 +120,7 @@ class _AddMenuState extends State<AddMenu> {
                       ),
                     ),
                     autofocus: true,
+                    controller: controllerName, // 컨트롤러 예제에서는 주석 처리
                   ),
                 ),
                 const SizedBox(
@@ -133,6 +170,7 @@ class _AddMenuState extends State<AddMenu> {
                       ),
                     ),
                     autofocus: true,
+                    controller: controllerFirstPrice, // 컨트롤러 예제에서는 주석 처리
                   ),
                 ),
                 const SizedBox(
@@ -177,6 +215,7 @@ class _AddMenuState extends State<AddMenu> {
                       ),
                     ),
                     autofocus: true,
+                    controller: controllerSellPrice, // 컨트롤러 예제에서는 주석 처리
                   ),
                 ),
                 const SizedBox(
@@ -215,12 +254,12 @@ class _AddMenuState extends State<AddMenu> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 120),
+                  padding: const EdgeInsets.only(top: 100),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       OutlinedButton(
-                        onPressed: () {},
+                        onPressed: _addMenu,
                         style: OutlinedButton.styleFrom(
                           shadowColor: Colors.black,
                           elevation: 2,
