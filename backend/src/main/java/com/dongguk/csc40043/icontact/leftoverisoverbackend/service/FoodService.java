@@ -75,4 +75,23 @@ public class FoodService {
             food.updateCapacity(updateFoodRequestDto.getCapacity());
     }
 
+    public List<GetFoodListResponseDto> getFoodListByStoreId(Long storeId) {
+        Store store = storeRepository.findByIdAndDeleted(storeId, false).orElseThrow(() ->
+                new IllegalArgumentException("Invalid storeId"));
+        return store.getFoods().stream()
+                .map(food -> GetFoodListResponseDto.builder()
+                        .foodId(food.getId())
+                        .storeId(store.getId())
+                        .name(food.getName())
+                        .firstPrice(food.getFirstPrice())
+                        .sellPrice(food.getSellPrice())
+                        .capacity(food.getCapacity())
+                        .visits(food.getVisits())
+                        .isVisible(food.isVisible())
+                        .deleted(food.isDeleted())
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
+
 }

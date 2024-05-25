@@ -9,6 +9,8 @@ public class UpdateMemberRequestDto {
 
     private String email;
 
+    private String phone;
+
     private String name;
 
     private String password;

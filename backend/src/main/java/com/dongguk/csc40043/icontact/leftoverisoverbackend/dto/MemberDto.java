@@ -23,6 +23,8 @@ public class MemberDto {
 
     private String email;
 
+    private String phone;
+
     private boolean deleted;
 
     @Builder.Default
@@ -44,6 +46,7 @@ public class MemberDto {
                 .name(name)
                 .password(password)
                 .email(email)
+                .phone(phone)
                 .deleted(deleted)
                 .orders(orders)
                 .favoriteStores(favoriteStores)

@@ -1,11 +1,13 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 @Entity
 @Table(name = "favorite_store")
-@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FavoriteStore {
 
     @Id

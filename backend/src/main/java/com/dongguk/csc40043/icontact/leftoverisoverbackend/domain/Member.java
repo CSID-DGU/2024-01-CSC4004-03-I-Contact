@@ -33,6 +33,8 @@ public class Member implements UserDetails {
 
     private String email;
 
+    private String phone;
+
     @Column(columnDefinition = "boolean default false")
     private boolean deleted;
 
@@ -89,6 +91,10 @@ public class Member implements UserDetails {
 
     public void updateEmail(String email) {
         this.email = email;
+    }
+
+    public void updatePhone(String phone) {
+        this.phone = phone;
     }
 
     public void updatePassword(String password) {
