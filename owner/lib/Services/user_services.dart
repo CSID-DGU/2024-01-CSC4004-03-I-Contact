@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:leftover_is_over_owner/Model/Menu_model.dart';
 import 'package:leftover_is_over_owner/Model/user_model.dart';
 import 'package:leftover_is_over_owner/Model/order_model.dart';
 import 'package:leftover_is_over_owner/Model/store_model.dart';
@@ -23,7 +24,7 @@ class UserService {
         throw Exception('Failed to load store: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Error fetching store: $e');
+      rethrow;
     }
   }
 
@@ -33,7 +34,7 @@ class UserService {
       var token = await AuthService.loadToken();
       var headers = {'Authorization': '${token[0]} ${token[1]}'};
       var request = http.Request(
-          'GET', Uri.parse('http://loio-server.azurewebsites.net/store'));
+          'GET', Uri.parse('http://loio-server.azurewebsites.net/member'));
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
@@ -45,7 +46,7 @@ class UserService {
         throw Exception('Failed to load ownerInfo: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Error fetching ownerInfo: $e');
+      rethrow;
     }
   }
 
@@ -75,7 +76,7 @@ class UserService {
         throw Exception('Failed to load orderList: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Error fetching orderList: $e');
+      rethrow;
     }
   }
 
@@ -93,7 +94,7 @@ class UserService {
         throw Exception('Failed to load ownerInfo: ${response.statusCode}');
       }
     } catch (e) {
-      return false;
+      rethrow;
     }
   }
 
@@ -103,7 +104,6 @@ class UserService {
     required int sellPrice,
   }) async {
     try {
-      print('1');
       var token = await AuthService.loadToken();
       var headers = {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -117,8 +117,6 @@ class UserService {
         "sellPrice": sellPrice,
       });
       request.headers.addAll(headers);
-      print('2');
-
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
@@ -132,7 +130,32 @@ class UserService {
         throw Exception('Failed to add Menu: ${response.statusCode}');
       }
     } catch (e) {
-      return false;
+      rethrow;
+    }
+  }
+
+  static Future<List<MenuModel>> getMenuList() async {
+    List<MenuModel> menuInstances = [];
+    try {
+      var token = await AuthService.loadToken();
+      var headers = {'Authorization': '${token[0]} ${token[1]}'};
+      var request = http.Request(
+          'GET', Uri.parse('http://loio-server.azurewebsites.net/food'));
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        String responseBody = await response.stream.bytesToString();
+        List<dynamic> menuList = jsonDecode(responseBody);
+        for (var menu in menuList) {
+          var instance = MenuModel.fromJson(menu);
+          menuInstances.add(instance);
+        }
+        return menuInstances;
+      } else {
+        throw Exception('Failed to load menuList: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }
