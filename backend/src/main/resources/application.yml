@@ -17,3 +17,10 @@ spring:
         format_sql: true
 jwt:
   secret: ${SECRET_KEY}
+
+springdoc:
+  swagger-ui:
+    path: /api
+    groups-order: DESC
+    tags-sorter: alpha
+    operations-sorter: method
