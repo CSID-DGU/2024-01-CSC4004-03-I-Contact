@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:leftover_is_over_owner/Model/Menu_model.dart';
+import 'package:leftover_is_over_owner/Services/user_services.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_add.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_edit.dart';
@@ -18,6 +19,8 @@ class MenuManagePageState extends State<MenuManagePage> {
   // 버튼 시연을 위해 현재상태 defalt값을 마감으로 설정함
   StoreState currentState = StoreState.closed;
   StoreState? lastState;
+
+  Future<List<MenuModel>> menuList = UserService.getMenuList();
 
   void getSalesState() {
     // 매장의 현재 상태를 받아오는 함수
@@ -70,11 +73,9 @@ class MenuManagePageState extends State<MenuManagePage> {
 
   @override
   Widget build(BuildContext context) {
-    // 하단 버튼 칸의 비율을 유지하기 위함
-    double bottomSheetHeight = MediaQuery.of(context).size.height * 0.15;
-
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false, // 키보드가 열릴 때 레이아웃을 재조정하지 않음
       appBar: AppBar(
         shadowColor: Colors.black,
         elevation: 1,
@@ -90,63 +91,79 @@ class MenuManagePageState extends State<MenuManagePage> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-              bottom:
-                  // 하단 버튼 칸
-                  bottomSheetHeight + MediaQuery.of(context).viewInsets.bottom),
-          child: Column(
-            children: [
-              ShowSalesStatus(
-                // 매장 현재상태 보여주는 위젯
-                statusMessage: statusMessage(),
-                currentState: currentState,
-              ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 30),
-                child: Column(
-                  // 추후 주문 데이터에 따라 자동으로 OrderCard 생성토록 할 것
-                  children: [
-                    MenuCard(
-                      // 주문 내역 위젯
-                      menuName: '가나다',
-                      salesCost: 123,
-                    ),
-                    MenuCard(
-                      menuName: '라마바',
-                      salesCost: 345,
-                    ),
-                    MenuCard(
-                      menuName: '사아자',
-                      salesCost: 678,
-                    ),
-                    MenuCard(
-                      menuName: '차카타',
-                      salesCost: 1011,
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const AddMenu()));
-                },
-                icon: const Icon(
-                  Icons.add_circle_outline_outlined,
-                  size: 55,
-                  color: Color.fromARGB(255, 120, 120, 120),
-                ),
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            ShowSalesStatus(
+              // 매장 현재상태 보여주는 위젯
+              statusMessage: statusMessage(),
+              currentState: currentState,
+            ),
+            FutureBuilder(
+              future: menuList,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.isNotEmpty) {
+                    return ListView.builder(
+                      shrinkWrap: true, // 스크롤 뷰 내에서 사용될 때 크기를 조정함
+                      physics:
+                          const NeverScrollableScrollPhysics(), // ListView 자체 스크롤을 비활성화
+                      scrollDirection: Axis.vertical,
+                      itemCount: snapshot.data!.length + 1, // 추가 버튼을 위해 +1
+                      itemBuilder: (context, index) {
+                        if (index == snapshot.data!.length) {
+                          // 마지막 항목 다음에 추가 버튼을 넣음
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const AddMenu(),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.add_circle_outline_outlined,
+                                size: 60,
+                                color: Color.fromARGB(255, 120, 120, 120),
+                              ),
+                            ),
+                          );
+                        } else {
+                          var menu = snapshot.data![index];
+                          return Column(
+                            children: [
+                              MenuCard(
+                                salesCost: menu.sellPrice,
+                                menuName: menu.name,
+                              ),
+                              const SizedBox(height: 5), // 항목 사이에 간격 추가
+                            ],
+                          );
+                        }
+                      },
+                    );
+                  } else {
+                    return const Center(child: Text('메뉴를 등록해주세요'));
+                  }
+                }
+                return const Center(
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: Container(
-        height: bottomSheetHeight,
-        color: Colors.white,
         padding:
             const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 30),
+        color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -214,7 +231,7 @@ class _MenuCardState extends State<MenuCard> {
     _controller.text = '0'; // 초기값 설정
   }
 
-// 증가 버튼으로 숫자 증가 함수
+  // 증가 버튼으로 숫자 증가 함수
   void _increment() {
     setState(() {
       if (_controller.text.isEmpty) {
@@ -241,8 +258,7 @@ class _MenuCardState extends State<MenuCard> {
     });
   }
 
-// 숫자가 아닌 값 입력될 경우 0 처리 함수
-
+  // 숫자가 아닌 값 입력될 경우 0 처리 함수
   void _handleInputChange(String value) {
     if (value.isEmpty) {
       _controller.text = "";
@@ -387,7 +403,7 @@ class _MenuCardState extends State<MenuCard> {
                                         borderSide: BorderSide.none,
                                       ),
                                     ),
-                                    autofocus: true,
+                                    autofocus: false,
                                     keyboardType: TextInputType.number,
                                     // 입력값 숫자인지 확인
                                     onChanged: _handleInputChange,
@@ -400,7 +416,6 @@ class _MenuCardState extends State<MenuCard> {
                                   ),
                                 ),
                               ),
-
                               // 개수 증가 버튼
                               IconButton(
                                 onPressed: _increment,

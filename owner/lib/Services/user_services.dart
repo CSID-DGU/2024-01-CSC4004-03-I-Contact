@@ -146,10 +146,13 @@ class UserService {
       if (response.statusCode == 200) {
         String responseBody = await response.stream.bytesToString();
         List<dynamic> menuList = jsonDecode(responseBody);
-        for (var menu in menuList) {
-          var instance = MenuModel.fromJson(menu);
-          menuInstances.add(instance);
+        if (menuList.isNotEmpty) {
+          for (var menu in menuList) {
+            var instance = MenuModel.fromJson(menu);
+            menuInstances.add(instance);
+          }
         }
+        print(menuInstances.length);
         return menuInstances;
       } else {
         throw Exception('Failed to load menuList: ${response.statusCode}');

@@ -6,7 +6,7 @@ class MenuModel {
   final int sellPrice;
   final int capacity;
   final int visits;
-  final bool isVisible;
+  final bool visible;
   final bool deleted;
 
   // 일반 생성자
@@ -18,7 +18,7 @@ class MenuModel {
     required this.sellPrice,
     required this.capacity,
     required this.visits,
-    required this.isVisible,
+    required this.visible,
     required this.deleted,
   });
 
@@ -31,6 +31,6 @@ class MenuModel {
         sellPrice = json['sellPrice'],
         capacity = json['capacity'],
         visits = json['visits'],
-        isVisible = json['isVisible'],
-        deleted = json['deleted'];
+        deleted = json['deleted'],
+        visible = json['visible'];
 }

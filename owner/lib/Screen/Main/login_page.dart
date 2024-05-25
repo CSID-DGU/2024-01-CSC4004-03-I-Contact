@@ -107,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            autofocus: true,
+                            autofocus: false,
                             controller: controllerUsername, // 컨트롤러 예제에서는 주석 처리
                           ),
                           const SizedBox(
@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             obscureText: true,
-                            autofocus: true,
+                            autofocus: false,
                             controller: controllerPwd, // 컨트롤러 예제에서는 주석 처리
                           ),
                           const SizedBox(
