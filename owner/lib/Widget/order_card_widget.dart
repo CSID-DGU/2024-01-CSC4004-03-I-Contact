@@ -5,13 +5,35 @@ import 'package:leftover_is_over_owner/Screen/Order_Manage/order_detail_page.dar
 
 // 판매관리 주문 내역 카드 생성하는 위젯 주문 개수에 따라 자동으로 Contanier가 생성되도록 수정 예정
 
-class OrderCard extends StatelessWidget {
+class OrderCard extends StatefulWidget {
   final OrderModel order;
 
   const OrderCard(
     this.order, {
     super.key,
   });
+
+  @override
+  State<OrderCard> createState() => _OrderCardState();
+}
+
+class _OrderCardState extends State<OrderCard> {
+  late String orderDate;
+  late String orderStatus; // 주문 상태 visit complete order cancel
+  late int orderNum; // 주문번호
+  late List<OrderInfoModel> orderInfo;
+  late String payType;
+  late String firstFood;
+  @override
+  void initState() {
+    orderDate = widget.order.orderDate;
+    orderStatus = widget.order.status;
+    orderNum = widget.order.orderNum;
+    orderInfo = widget.order.orderInfo;
+    widget.order.appPay ? payType = "앱" : payType = "현장";
+    firstFood = orderInfo[0].name; // 주문한 음식 배열 중 첫번째 음식의 이름
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -25,7 +47,7 @@ class OrderCard extends StatelessWidget {
                     // 카드 누를시 orderDetailPage로 이동!!
                     context,
                     MaterialPageRoute(
-                        builder: (context) => OrderDetailPage(order)));
+                        builder: (context) => OrderDetailPage(widget.order)));
               },
               child: Container(
                 height: 150,
@@ -62,7 +84,7 @@ class OrderCard extends StatelessWidget {
                                             Color.fromARGB(255, 222, 234, 187),
                                         width: 3))),
                             child: Text(
-                              '고객 번호: $customerNum',
+                              '주문 번호: $orderNum',
                               style: const TextStyle(
                                   fontSize: 25, fontWeight: FontWeight.w600),
                             ),
@@ -86,7 +108,7 @@ class OrderCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '메뉴: $menuName',
+                                '메뉴: $firstFood',
                                 style: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.w600,

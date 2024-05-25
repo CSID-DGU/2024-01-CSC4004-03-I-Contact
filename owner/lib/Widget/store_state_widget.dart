@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum SalesState { selling, paused, closed }
+enum StoreState { selling, paused, closed }
 
 // 매장의 현재 상태를 AppBar아래에 보여주는 위젯
 // 추후 매장의 상태를 서버로 보내서
@@ -8,7 +8,7 @@ enum SalesState { selling, paused, closed }
 
 class ShowSalesStatus extends StatelessWidget {
   final String statusMessage;
-  final SalesState currentState;
+  final StoreState currentState;
 
   const ShowSalesStatus({
     super.key,
@@ -33,9 +33,9 @@ class ShowSalesStatus extends StatelessWidget {
             statusMessage,
             style: TextStyle(
               fontWeight: FontWeight.w500,
-              color: currentState == SalesState.selling
+              color: currentState == StoreState.selling
                   ? const Color.fromARGB(255, 0, 162, 0)
-                  : currentState == SalesState.paused
+                  : currentState == StoreState.paused
                       ? const Color.fromARGB(255, 186, 85, 28)
                       : Colors.red,
             ),
