@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:leftover_is_over_owner/Widget/sales_state_widget.dart';
+import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_add.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_edit.dart';
 
@@ -15,18 +15,18 @@ class MenuManagePage extends StatefulWidget {
 
 class MenuManagePageState extends State<MenuManagePage> {
   // 버튼 시연을 위해 현재상태 defalt값을 마감으로 설정함
-  SalesState currentState = SalesState.closed;
-  SalesState? lastState;
+  StoreState currentState = StoreState.closed;
+  StoreState? lastState;
 
   void getSalesState() {
     // 매장의 현재 상태를 받아오는 함수
     setState(() {
-      if (currentState == SalesState.selling) {
+      if (currentState == StoreState.selling) {
         lastState = currentState;
-        currentState = SalesState.paused;
-      } else if (currentState == SalesState.paused) {
+        currentState = StoreState.paused;
+      } else if (currentState == StoreState.paused) {
         lastState = currentState;
-        currentState = SalesState.selling;
+        currentState = StoreState.selling;
       }
     });
   }
@@ -34,33 +34,33 @@ class MenuManagePageState extends State<MenuManagePage> {
   void openSales() {
     // 매장 현재 상태 오픈으로 변경하는 함수
     setState(() {
-      currentState = SalesState.selling;
+      currentState = StoreState.selling;
     });
   }
 
   String statusMessage() {
     // 현재 상태 출력
     switch (currentState) {
-      case SalesState.selling:
+      case StoreState.selling:
         return '판매 중';
-      case SalesState.paused:
+      case StoreState.paused:
         return '일시 중단';
-      case SalesState.closed:
+      case StoreState.closed:
         return '마감';
     }
   }
 
   String getButtonText() {
-    if (currentState == SalesState.closed) {
+    if (currentState == StoreState.closed) {
       // 판매가 마감된 상태일 때, 마지막 상태에 따라 왼쪽 버튼 텍스트 결정
-      if (lastState == SalesState.selling) {
+      if (lastState == StoreState.selling) {
         return '일시 중단';
       } else {
         return '판매 재개';
       }
 
       // 마감 상태가 아닐때 왼쪽 버튼 텍스트
-    } else if (currentState == SalesState.selling) {
+    } else if (currentState == StoreState.selling) {
       return '일시 중단';
     } else {
       return '판매 재개';
@@ -163,7 +163,7 @@ class MenuManagePageState extends State<MenuManagePage> {
                       color: Colors.black.withOpacity(0.4),
                     )
                   ],
-                  color: currentState == SalesState.selling
+                  color: currentState == StoreState.selling
                       ? const Color.fromARGB(255, 210, 210, 210)
                       : Colors.white,
                   borderRadius: BorderRadius.circular(100),
@@ -172,7 +172,7 @@ class MenuManagePageState extends State<MenuManagePage> {
                   child: Text(
                     '판매 개시',
                     style: TextStyle(
-                      color: currentState == SalesState.selling
+                      color: currentState == StoreState.selling
                           ? const Color.fromARGB(255, 120, 120, 120)
                           : const Color.fromARGB(255, 57, 124, 57),
                       fontWeight: FontWeight.bold,

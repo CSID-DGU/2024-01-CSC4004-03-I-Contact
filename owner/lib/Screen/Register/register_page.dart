@@ -19,6 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   late TextEditingController controllerName,
       controllerUsername,
       controllerEmail,
+      controllerPhone,
       controllerPwd,
       controllerPwdChk;
   @override
@@ -26,6 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
     controllerName = TextEditingController();
     controllerUsername = TextEditingController();
     controllerEmail = TextEditingController();
+    controllerPhone = TextEditingController();
     controllerPwd = TextEditingController();
     controllerPwdChk = TextEditingController();
   }
@@ -51,6 +53,8 @@ class _RegisterPageState extends State<RegisterPage> {
       message = '아이디를 입력해주세요.';
     } else if (controllerEmail.text.isEmpty) {
       message = '이메일를 입력해주세요.';
+    } else if (controllerPhone.text.isEmpty) {
+      message = '전화번호를 입력해주세요.';
     } else if (controllerPwd.text.isEmpty) {
       message = '비밀번호를 입력해주세요.';
     } else if (controllerPwdChk.text.isEmpty) {
@@ -66,12 +70,15 @@ class _RegisterPageState extends State<RegisterPage> {
         var id = controllerUsername.text;
         var name = controllerName.text;
         var email = controllerEmail.text;
+        var phone = controllerPhone.text;
         var pwd = controllerPwd.text;
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => StoreRegisterPage(id, name, email, pwd)),
+              builder: (context) =>
+                  StoreRegisterPage(id, name, email, phone, pwd)),
         );
+        return;
       }
     } else if (checkduplicate) {
       message = '비밀번호가 일치하지 않습니다.';
@@ -240,7 +247,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 5,
                 ),
                 Container(
                   clipBehavior: Clip.hardEdge,
@@ -284,7 +291,51 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 35,
+                  height: 20,
+                ),
+                Container(
+                  clipBehavior: Clip.hardEdge,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.green[300]!.withOpacity(0.6),
+                  ),
+                  child: const Text(
+                    '전화번호',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                ),
+                const SizedBox(
+                  height: 1,
+                ),
+                Container(
+                  height: 36,
+                  width: 400,
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.4),
+                        offset: const Offset(-2, 5),
+                      )
+                    ],
+                    borderRadius: BorderRadius.circular(70),
+                  ),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(70.0),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    autofocus: true,
+                    controller: controllerPhone,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 Container(
                   clipBehavior: Clip.hardEdge,
