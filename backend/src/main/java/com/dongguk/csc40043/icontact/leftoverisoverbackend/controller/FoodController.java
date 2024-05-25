@@ -42,4 +42,13 @@ public class FoodController {
         }
     }
 
+    @GetMapping("/food/store/{storeId}")
+    public ResponseEntity<?> getFoodListByStoreId(@PathVariable("storeId") Long storeId) {
+        try {
+            return ResponseEntity.ok(foodService.getFoodListByStoreId(storeId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
