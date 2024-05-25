@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_owner/Widget/sales_state_widget.dart';
-import 'package:leftover_is_over_owner/Screen/menu_manage_add.dart';
-import 'package:leftover_is_over_owner/Screen/menu_manage_edit.dart';
+import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_add.dart';
+import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_edit.dart';
 
 class MenuManagePage extends StatefulWidget {
   const MenuManagePage({super.key});

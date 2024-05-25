@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_owner/Model/store_model.dart';
-import 'package:leftover_is_over_owner/Screen/login_page.dart';
-import 'package:leftover_is_over_owner/Screen/member_info_page.dart';
-import 'package:leftover_is_over_owner/Screen/menu_manage_page.dart';
-import 'package:leftover_is_over_owner/Screen/order_status_page.dart';
-import 'package:leftover_is_over_owner/Screen/sales_manage_page.dart';
-import 'package:leftover_is_over_owner/Screen/store_info_page.dart';
+import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
+import 'package:leftover_is_over_owner/Screen/Main/member_info_page.dart';
+import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
+import 'package:leftover_is_over_owner/Screen/Sales_Manage/sales_manage_page.dart';
+import 'package:leftover_is_over_owner/Screen/Order_Manage/order_manage_page.dart';
+import 'package:leftover_is_over_owner/Screen/Main/store_info_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Services/user_services.dart';
+import 'package:leftover_is_over_owner/Widget/sales_state_widget.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 class MainPage extends StatefulWidget {
@@ -22,7 +23,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late StoreModel store;
-  late String currentState; // 매장의 현재 상태 서버로부터 가져와야함. 판매 중인지 일시 정지인지 마감인지
+  late SalesState currentState;
   late String storeName; // 이것도 late로 받아오기
   bool _isDropdownVisible = false;
   bool isLoading = true; // 로딩 중인지
@@ -35,10 +36,10 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _loadStore() async {
-    store = await UserService.getStore();
+    store = await UserService.getStoreInfo();
     setState(() {
       isLoading = false;
-      currentState = store.isOpen ? "판매 중" : "판매 종료";
+      currentState = store.isOpen ? SalesState.selling : SalesState.closed;
       storeName = store.name;
     });
   }
@@ -68,6 +69,18 @@ class _MainPageState extends State<MainPage> {
         return;
       }
       showErrorDialog(context, '로그아웃에 실패했습니다.');
+    }
+  }
+
+  String statusMessage() {
+    // 현재 상태 출력
+    switch (currentState) {
+      case SalesState.selling:
+        return '판매 중';
+      case SalesState.paused:
+        return '일시 중단';
+      case SalesState.closed:
+        return '마감';
     }
   }
 
@@ -127,18 +140,9 @@ class _MainPageState extends State<MainPage> {
                                             color: Colors.black54,
                                           ),
                                         ),
-                                        Text(
-                                          currentState,
-                                          style: TextStyle(
-                                            color: currentState == '판매 중'
-                                                ? Colors.green
-                                                : currentState == '일시정지'
-                                                    ? Colors.red
-                                                    : Colors.black,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 13,
-                                          ),
-                                        ),
+                                        ShowSalesStatus(
+                                            statusMessage: statusMessage(),
+                                            currentState: currentState),
                                       ],
                                     )
                                   ],
@@ -241,7 +245,8 @@ class _MainPageState extends State<MainPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const OrderStatusPage()));
+                                builder: (context) =>
+                                    OrderStatusPage(currentState)));
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -253,7 +258,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                         child: Text(
-                          '주문 현황',
+                          '주문 관리',
                           style: TextStyle(
                             color: Colors.brown[600],
                             fontSize: 30,
@@ -273,15 +278,10 @@ class _MainPageState extends State<MainPage> {
                 Visibility(
                   visible: _isDropdownVisible,
                   child: Positioned(
-                    top:
-                        130, // Adjust this to place the dropdown in the correct position
-                    left:
-                        220, // Adjust this to place the dropdown in the correct position
-                    right:
-                        0, // Adjust this to place the dropdown in the correct position
-                    bottom:
-                        0, // Adjust this to place the dropdown in the correct position
-
+                    top: 130,
+                    left: 220,
+                    right: 0,
+                    bottom: 0,
                     child: AnimatedOpacity(
                       opacity: _opacity,
                       duration: const Duration(milliseconds: 300),
@@ -294,15 +294,10 @@ class _MainPageState extends State<MainPage> {
                 Visibility(
                   visible: _isDropdownVisible,
                   child: Positioned(
-                    top:
-                        130, // Adjust this to place the dropdown in the correct position
-                    left:
-                        220, // Adjust this to place the dropdown in the correct position
-                    right:
-                        0, // Adjust this to place the dropdown in the correct position
-                    bottom:
-                        0, // Adjust this to place the dropdown in the correct position
-
+                    top: 130,
+                    left: 220,
+                    right: 0,
+                    bottom: 0,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [

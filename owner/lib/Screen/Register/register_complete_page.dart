@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:leftover_is_over_owner/Screen/login_page.dart';
+import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
 
 class RegisterCompletePage extends StatelessWidget {
   const RegisterCompletePage({super.key});
