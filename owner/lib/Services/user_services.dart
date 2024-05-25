@@ -96,4 +96,43 @@ class UserService {
       return false;
     }
   }
+
+  static Future<bool> addMenu({
+    required String name,
+    required int firstPrice,
+    required int sellPrice,
+  }) async {
+    try {
+      print('1');
+      var token = await AuthService.loadToken();
+      var headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': '${token[0]} ${token[1]}'
+      };
+      var request = http.Request(
+          'POST', Uri.parse('http://loio-server.azurewebsites.net/food'));
+      request.body = jsonEncode({
+        "name": name,
+        "firstPrice": firstPrice,
+        "sellPrice": sellPrice,
+      });
+      request.headers.addAll(headers);
+      print('2');
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        String responseBody = await response.stream.bytesToString();
+        if (responseBody.isEmpty) {
+          return false; // 실패
+        } else {
+          return true; // 성공
+        }
+      } else {
+        throw Exception('Failed to add Menu: ${response.statusCode}');
+      }
+    } catch (e) {
+      return false;
+    }
+  }
 }
