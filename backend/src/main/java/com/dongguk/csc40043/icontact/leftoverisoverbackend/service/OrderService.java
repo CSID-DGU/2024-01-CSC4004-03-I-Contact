@@ -23,24 +23,28 @@ public class OrderService {
 
     @Transactional
     public CreateOrderResponseDto createOrder(CreateOrderRequestDto createOrderRequestDto) {
-        Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
-        Store store = storeRepository.findByIdAndDeleted(createOrderRequestDto.getStoreId(), false)
-                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
-        Order order = createOrderRequestDto.toEntity(member, store, LocalDateTime.now());
-        createOrderRequestDto.getOrderFoodDtos().forEach(orderFoodDto -> {
-            Food food = foodRepository.findByIdAndDeleted(orderFoodDto.getFoodId(), false)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 음식이 존재하지 않습니다."));
-            OrderFood orderFood = OrderFood.builder()
-                    .food(food)
-                    .count(orderFoodDto.getCount())
+        if (!createOrderRequestDto.getAppPay()) {
+            Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+            Store store = storeRepository.findByIdAndDeleted(createOrderRequestDto.getStoreId(), false)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
+            Order order = createOrderRequestDto.toEntity(member, store, LocalDateTime.now());
+            createOrderRequestDto.getOrderFoodDtos().forEach(orderFoodDto -> {
+                Food food = foodRepository.findByIdAndDeleted(orderFoodDto.getFoodId(), false)
+                        .orElseThrow(() -> new IllegalArgumentException("해당 음식이 존재하지 않습니다."));
+                OrderFood orderFood = OrderFood.builder()
+                        .food(food)
+                        .count(orderFoodDto.getCount())
+                        .build();
+                order.addOrderFood(orderFood);
+            });
+            orderRepository.save(order);
+            return CreateOrderResponseDto.builder()
+                    .orderId(order.getId())
                     .build();
-            order.addOrderFood(orderFood);
-        });
-        orderRepository.save(order);
-        return CreateOrderResponseDto.builder()
-                .orderId(order.getId())
-                .build();
+        } else {
+            throw new IllegalArgumentException("앱 결제는 아직 지원하지 않습니다.");
+        }
     }
 
 }
