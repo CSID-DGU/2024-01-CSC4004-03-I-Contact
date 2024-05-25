@@ -21,7 +21,7 @@ public class FoodController {
     @Operation(summary = "음식 추가", description = "음식을 추가합니다.")
     public ResponseEntity<?> addFood(@RequestBody AddFoodRequestDto addFoodRequestDto) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(foodService.addFood(addFoodRequestDto));
+            return ResponseEntity.status(HttpStatus.OK).body(foodService.addFood(addFoodRequestDto));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
