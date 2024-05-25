@@ -22,7 +22,7 @@ public class Store {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private Member member;
-    
+
     private Long categoryId;
 
     private String name;
@@ -55,6 +55,30 @@ public class Store {
 
     public void toggleIsOpen() {
         this.isOpen = !this.isOpen;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void updateEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public void updateAddress(String address) {
+        this.address = address;
+    }
+
+    public void updatePhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void updateCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
 }

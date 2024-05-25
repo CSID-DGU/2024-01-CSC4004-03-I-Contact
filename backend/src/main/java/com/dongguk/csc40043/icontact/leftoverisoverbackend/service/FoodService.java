@@ -12,6 +12,7 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.FoodReposi
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.MemberRepository;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +30,10 @@ public class FoodService {
 
     @Transactional
     public AddFoodResponseDto addFood(AddFoodRequestDto addFoodRequestDto) {
-        Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false);
-        Store store = storeRepository.findByMemberAndDeleted(member, false);
+        Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false).orElseThrow(() ->
+                new UsernameNotFoundException("존재하지 않는 회원입니다."));
+        Store store = storeRepository.findByMemberAndDeleted(member, false).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 식당입니다."));
         Food food = foodRepository.save(addFoodRequestDto.toEntity(store));
         return AddFoodResponseDto.builder()
                 .foodId(food.getId())
@@ -38,8 +41,10 @@ public class FoodService {
     }
 
     public List<GetFoodListResponseDto> getFoodList() {
-        Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false);
-        Store store = storeRepository.findByMemberAndDeleted(member, false);
+        Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false).orElseThrow(() ->
+                new UsernameNotFoundException("존재하지 않는 회원입니다."));
+        Store store = storeRepository.findByMemberAndDeleted(member, false).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 식당입니다."));
         return store.getFoods().stream()
                 .map(food -> GetFoodListResponseDto.builder()
                         .foodId(food.getId())
@@ -58,7 +63,8 @@ public class FoodService {
 
     @Transactional
     public void updateFood(Long foodId, UpdateFoodRequestDto updateFoodRequestDto) {
-        Food food = foodRepository.findById(foodId).orElseThrow(() -> new IllegalArgumentException("Invalid foodId"));
+        Food food = foodRepository.findById(foodId).orElseThrow(() ->
+                new IllegalArgumentException("Invalid foodId"));
         if (updateFoodRequestDto.getName() != null)
             food.updateName(updateFoodRequestDto.getName());
         if (updateFoodRequestDto.getFirstPrice() != null)

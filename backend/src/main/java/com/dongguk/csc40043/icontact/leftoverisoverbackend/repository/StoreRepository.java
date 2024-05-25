@@ -6,14 +6,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
-    Store findByMemberAndDeleted(Member member, boolean deleted);
+    Optional<Store> findByMemberAndDeleted(Member member, boolean deleted);
 
     List<Store> findByNameContaining(String name);
 
     List<Store> findByCategoryId(Long categoryId);
+
+    Optional<Store> findByIdAndDeleted(Long id, boolean deleted);
 
 }

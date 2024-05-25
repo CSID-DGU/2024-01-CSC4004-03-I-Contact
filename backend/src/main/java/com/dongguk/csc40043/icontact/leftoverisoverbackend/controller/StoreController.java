@@ -2,6 +2,7 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.controller;
 
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store.CreateStoreRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store.UpdateStoreRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -57,6 +58,25 @@ public class StoreController {
     public ResponseEntity<?> getStoreByCategory(@PathVariable("categoryId") Long categoryId) {
         try {
             return ResponseEntity.ok(storeService.getStoreByCategory(categoryId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/store/{storeId}")
+    public ResponseEntity<?> updateStore(@PathVariable("storeId") Long storeId, @RequestBody UpdateStoreRequestDto updateStoreRequestDto) {
+        try {
+            storeService.updateStore(storeId, updateStoreRequestDto);
+            return ResponseEntity.ok("Successfully updated store");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<?> getStore(@PathVariable("storeId") Long storeId) {
+        try {
+            return ResponseEntity.ok(storeService.getStore(storeId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
