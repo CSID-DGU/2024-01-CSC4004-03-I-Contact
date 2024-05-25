@@ -97,23 +97,30 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
           ],
         ),
       ),
-      body: FutureBuilder(
-        future: orderList,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: snapshot.data!
-                  .length, // 이게 처음 주문 리스트가 비어있는 경우도 있는데 그러면 널일 수도 있으니까 나중에 !를 ?로 바꿔서 널인경우 따로 처리해야할 수 도 있음!!!!
-              itemBuilder: (context, index) {
-                var order = snapshot.data![index];
-                return OrderCard(order);
-              },
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+      body: SingleChildScrollView(
+        child: Expanded(
+          child: FutureBuilder(
+            future: orderList,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return ListView.separated(
+                  scrollDirection: Axis.vertical,
+                  itemCount: snapshot.data!
+                      .length, // 이게 처음 주문 리스트가 비어있는 경우도 있는데 그러면 널일 수도 있으니까 나중에 !를 ?로 바꿔서 널인경우 따로 처리해야할 수 도 있음!!!!
+                  itemBuilder: (context, index) {
+                    var order = snapshot.data![index];
+                    return OrderCard(order);
+                  },
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 10,
+                  ),
+                );
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ),
       ),
     );
   }
