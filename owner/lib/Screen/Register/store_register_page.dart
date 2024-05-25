@@ -11,8 +11,9 @@ import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 class StoreRegisterPage extends StatefulWidget {
-  final String username, name, email, password;
-  const StoreRegisterPage(this.username, this.name, this.email, this.password,
+  final String username, name, email, phone, password;
+  const StoreRegisterPage(
+      this.username, this.name, this.email, this.phone, this.password,
       {super.key});
   @override
   State<StoreRegisterPage> createState() => _StoreRegisterPageState();
@@ -74,23 +75,6 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
         );
       },
     );
-  }
-
-  void testButton() async {
-    var registerCheck = await AuthService.register(
-      username: widget.username,
-      name: widget.name,
-      email: widget.email,
-      password: widget.password,
-    );
-    if (registerCheck) {
-      // 회원가입 성공 시
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const RegisterCompletePage()), //
-      );
-    }
   }
 
   bool checkValidTime() {
@@ -170,6 +154,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
         username: widget.username,
         name: widget.name,
         email: widget.email,
+        phone: widget.phone,
         password: widget.password,
       );
       var registerStoreCheck = false;
@@ -649,7 +634,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                         color: Colors.green[300]!.withOpacity(0.6),
                       ),
                       child: const Text(
-                        '매장 전화 번호',
+                        '매장 전화번호',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w500),
                       ),

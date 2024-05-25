@@ -11,7 +11,7 @@ import 'package:leftover_is_over_owner/Screen/Order_Manage/order_manage_page.dar
 import 'package:leftover_is_over_owner/Screen/Main/store_info_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Services/user_services.dart';
-import 'package:leftover_is_over_owner/Widget/sales_state_widget.dart';
+import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 class MainPage extends StatefulWidget {
@@ -23,11 +23,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late StoreModel store;
-  late SalesState currentState;
+  late StoreState currentState;
   late String storeName; // 이것도 late로 받아오기
   bool _isDropdownVisible = false;
   bool isLoading = true; // 로딩 중인지
   double _opacity = 0.0;
+  late String currentStateS;
   @override
   void initState() {
     // TODO: implement initState
@@ -39,7 +40,8 @@ class _MainPageState extends State<MainPage> {
     store = await UserService.getStoreInfo();
     setState(() {
       isLoading = false;
-      currentState = store.isOpen ? SalesState.selling : SalesState.closed;
+      currentState = store.isOpen ? StoreState.selling : StoreState.closed;
+      currentStateS = currentState == StoreState.selling ? "판매 중" : "판매 종료";
       storeName = store.name;
     });
   }
@@ -75,11 +77,11 @@ class _MainPageState extends State<MainPage> {
   String statusMessage() {
     // 현재 상태 출력
     switch (currentState) {
-      case SalesState.selling:
+      case StoreState.selling:
         return '판매 중';
-      case SalesState.paused:
+      case StoreState.paused:
         return '일시 중단';
-      case SalesState.closed:
+      case StoreState.closed:
         return '마감';
     }
   }
@@ -140,9 +142,18 @@ class _MainPageState extends State<MainPage> {
                                             color: Colors.black54,
                                           ),
                                         ),
-                                        ShowSalesStatus(
-                                            statusMessage: statusMessage(),
-                                            currentState: currentState),
+                                        Text(
+                                          currentStateS,
+                                          style: TextStyle(
+                                            color: currentStateS == '판매 중'
+                                                ? Colors.green
+                                                : currentStateS == '판매 종료'
+                                                    ? Colors.red
+                                                    : Colors.black,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 13,
+                                          ),
+                                        ),
                                       ],
                                     )
                                   ],

@@ -27,6 +27,7 @@ class AuthService {
     required String username,
     required String name,
     required String email,
+    required String phone,
     required String password,
   }) async {
     var headers = {'Content-Type': 'application/json'};
@@ -36,6 +37,7 @@ class AuthService {
       "username": username,
       "name": name,
       "email": email,
+      "phone": phone,
       "password": password,
       "roles": roles,
     });
