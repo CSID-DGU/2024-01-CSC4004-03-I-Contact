@@ -12,7 +12,7 @@ import 'package:leftover_is_over_owner/Screen/Register/store_register_page.dart'
 import 'package:leftover_is_over_owner/Screen/Sales_Manage/sales_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/test.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_add.dart';
-import 'package:leftover_is_over_owner/Widget/sales_state_widget.dart';
+import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: const //SalesManagePage(),
           //SalesManagePage(),
-          OrderStatusPage(SalesState.selling),
+          OrderStatusPage(StoreState.selling),
       //EditMenu(),
       //AddMenu(),
       //RegisterPage(),

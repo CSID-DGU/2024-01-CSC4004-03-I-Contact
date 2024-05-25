@@ -49,13 +49,18 @@ class UserService {
     }
   }
 
-  static Future<List<OrderModel>> getOrderList() async {
+  static Future<List<OrderModel>> getOrderList(bool getAll) async {
     List<OrderModel> orderInstances = [];
+    String url;
+    if (getAll) {
+      url = 'http://loio-server.azurewebsites.net/owner/order/all';
+    } else {
+      url = 'http://loio-server.azurewebsites.net/owner/order/visit';
+    }
     try {
       var token = await AuthService.loadToken();
       var headers = {'Authorization': '${token[0]} ${token[1]}'};
-      var request = http.Request(
-          'GET', Uri.parse('http://loio-server.azurewebsites.net/owner/order'));
+      var request = http.Request('GET', Uri.parse(url));
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
