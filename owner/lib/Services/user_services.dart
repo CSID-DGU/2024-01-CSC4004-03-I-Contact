@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:leftover_is_over_owner/Model/Menu_model.dart';
+import 'package:leftover_is_over_owner/Model/menu_model.dart';
 import 'package:leftover_is_over_owner/Model/user_model.dart';
 import 'package:leftover_is_over_owner/Model/order_model.dart';
 import 'package:leftover_is_over_owner/Model/store_model.dart';
@@ -92,70 +92,6 @@ class UserService {
         return true;
       } else {
         throw Exception('Failed to load ownerInfo: ${response.statusCode}');
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  static Future<bool> addMenu({
-    required String name,
-    required int firstPrice,
-    required int sellPrice,
-  }) async {
-    try {
-      var token = await AuthService.loadToken();
-      var headers = {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': '${token[0]} ${token[1]}'
-      };
-      var request = http.Request(
-          'POST', Uri.parse('http://loio-server.azurewebsites.net/food'));
-      request.body = jsonEncode({
-        "name": name,
-        "firstPrice": firstPrice,
-        "sellPrice": sellPrice,
-      });
-      request.headers.addAll(headers);
-      http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 200) {
-        String responseBody = await response.stream.bytesToString();
-        if (responseBody.isEmpty) {
-          return false; // 실패
-        } else {
-          return true; // 성공
-        }
-      } else {
-        throw Exception('Failed to add Menu: ${response.statusCode}');
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  static Future<List<MenuModel>> getMenuList() async {
-    List<MenuModel> menuInstances = [];
-    try {
-      var token = await AuthService.loadToken();
-      var headers = {'Authorization': '${token[0]} ${token[1]}'};
-      var request = http.Request(
-          'GET', Uri.parse('http://loio-server.azurewebsites.net/food'));
-      request.headers.addAll(headers);
-      http.StreamedResponse response = await request.send();
-      if (response.statusCode == 200) {
-        String responseBody = await response.stream.bytesToString();
-        List<dynamic> menuList = jsonDecode(responseBody);
-        if (menuList.isNotEmpty) {
-          for (var menu in menuList) {
-            var instance = MenuModel.fromJson(menu);
-            menuInstances.add(instance);
-          }
-        }
-        print(menuInstances.length);
-        return menuInstances;
-      } else {
-        throw Exception('Failed to load menuList: ${response.statusCode}');
       }
     } catch (e) {
       rethrow;
