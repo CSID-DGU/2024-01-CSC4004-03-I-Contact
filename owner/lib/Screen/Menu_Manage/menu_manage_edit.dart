@@ -1,17 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:leftover_is_over_owner/Model/menu_model.dart';
+import 'package:leftover_is_over_owner/Services/menu_services.dart';
+import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 // 현재 틀만 만들어진 상태 기능 구현 필요
 // 메뉴 선택해서 수정 페이지로 넘어올 때 각 입력창에는 직전에 선택해서 넘어온
 //메뉴의 정보가 회색으로 써있고 수정하고 싶은 정보만 선택적으로 수정할 수 있도록 해야함
 
-class EditMenu extends StatefulWidget {
-  const EditMenu({super.key});
+class MenuManageEditPage extends StatefulWidget {
+  final MenuModel menu;
+  const MenuManageEditPage(this.menu, {super.key});
 
   @override
-  State<EditMenu> createState() => _EditMenuState();
+  State<MenuManageEditPage> createState() => _MenuManageEditPageState();
 }
 
-class _EditMenuState extends State<EditMenu> {
+class _MenuManageEditPageState extends State<MenuManageEditPage> {
+  late TextEditingController controllerName, controllerFP, controllerSP;
+  @override
+  void initState() {
+    super.initState();
+    controllerName = TextEditingController();
+    controllerFP = TextEditingController();
+    controllerSP = TextEditingController();
+    controllerName.text = widget.menu.name;
+    controllerFP.text = widget.menu.firstPrice.toString();
+    controllerSP.text = widget.menu.sellPrice.toString();
+  }
+
+  void _deleteMenu() {}
+  void _updateMenu() async {
+    widget.menu.name = controllerName.text;
+    widget.menu.firstPrice = int.parse(controllerFP.text);
+    widget.menu.sellPrice = int.parse(controllerSP.text);
+    var updatMenuInfo = await MenuService.updateMenuInfo(widget.menu);
+    if (updatMenuInfo) {
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } else {
+      var message = "메뉴 수정에 실패했습니다";
+      if (mounted) {
+        showErrorDialog(context, message);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -28,7 +62,7 @@ class _EditMenuState extends State<EditMenu> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                '메뉴 수정  ',
+                '메뉴 설정  ',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
               ),
             ],
@@ -85,7 +119,8 @@ class _EditMenuState extends State<EditMenu> {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    autofocus: true,
+                    autofocus: false,
+                    controller: controllerName,
                   ),
                 ),
                 const SizedBox(
@@ -134,7 +169,8 @@ class _EditMenuState extends State<EditMenu> {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    autofocus: true,
+                    autofocus: false,
+                    controller: controllerFP,
                   ),
                 ),
                 const SizedBox(
@@ -178,7 +214,8 @@ class _EditMenuState extends State<EditMenu> {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    autofocus: true,
+                    autofocus: false,
+                    controller: controllerSP,
                   ),
                 ),
                 const SizedBox(
@@ -222,7 +259,7 @@ class _EditMenuState extends State<EditMenu> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       OutlinedButton(
-                        onPressed: () {},
+                        onPressed: _deleteMenu,
                         style: OutlinedButton.styleFrom(
                           shadowColor: Colors.black,
                           elevation: 2,
@@ -249,7 +286,7 @@ class _EditMenuState extends State<EditMenu> {
                         ),
                       ),
                       OutlinedButton(
-                        onPressed: () {},
+                        onPressed: _updateMenu,
                         style: OutlinedButton.styleFrom(
                           shadowColor: Colors.black,
                           elevation: 2,

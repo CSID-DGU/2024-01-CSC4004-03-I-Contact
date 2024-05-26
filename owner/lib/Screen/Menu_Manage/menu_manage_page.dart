@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:leftover_is_over_owner/Model/Menu_model.dart';
-import 'package:leftover_is_over_owner/Services/user_services.dart';
+import 'package:leftover_is_over_owner/Model/menu_model.dart';
+import 'package:leftover_is_over_owner/Services/menu_services.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_add.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_edit.dart';
@@ -20,11 +19,11 @@ class MenuManagePageState extends State<MenuManagePage> {
   StoreState currentState = StoreState.closed;
   StoreState? lastState;
 
-  Future<List<MenuModel>> menuList = UserService.getMenuList();
+  Future<List<MenuModel>> menuList = MenuService.getMenuList();
 
   void refreshMenuList() {
     setState(() {
-      menuList = UserService.getMenuList(); // 메뉴 리스트 다시 불러오기
+      menuList = MenuService.getMenuList(); // 메뉴 리스트 다시 불러오기
     });
   }
 
@@ -125,7 +124,8 @@ class MenuManagePageState extends State<MenuManagePage> {
                                 await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const AddMenu(),
+                                    builder: (context) =>
+                                        const MenuMangeAddPage(),
                                   ),
                                 );
                                 refreshMenuList(); // 메뉴 리스트 갱신
@@ -142,8 +142,7 @@ class MenuManagePageState extends State<MenuManagePage> {
                           return Column(
                             children: [
                               MenuCard(
-                                salesCost: menu.sellPrice,
-                                menuName: menu.name,
+                                menu,
                               ),
                               const SizedBox(height: 5), // 항목 사이에 간격 추가
                             ],
@@ -170,7 +169,8 @@ class MenuManagePageState extends State<MenuManagePage> {
                               await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const AddMenu(),
+                                  builder: (context) =>
+                                      const MenuMangeAddPage(),
                                 ),
                               );
                               refreshMenuList();
@@ -186,11 +186,14 @@ class MenuManagePageState extends State<MenuManagePage> {
                     );
                   }
                 }
-                return const Center(
-                  child: SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: CircularProgressIndicator(),
+                return const Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: Center(
+                    child: SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
                 );
               },
@@ -247,13 +250,11 @@ class MenuManagePageState extends State<MenuManagePage> {
 
 // 메뉴카드 생성 위젯
 class MenuCard extends StatefulWidget {
-  final String menuName;
-  final int salesCost;
+  final MenuModel menu;
 
-  const MenuCard({
+  const MenuCard(
+    this.menu, {
     super.key,
-    required this.salesCost,
-    required this.menuName,
   });
 
   @override
@@ -261,12 +262,16 @@ class MenuCard extends StatefulWidget {
 }
 
 class _MenuCardState extends State<MenuCard> {
+  late String menuName;
+  late int salesCost;
   final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _controller.text = '0'; // 초기값 설정
+    _controller.text = '0'; // 초기값 설정'
+    menuName = widget.menu.name;
+    salesCost = widget.menu.sellPrice;
   }
 
   // 증가 버튼으로 숫자 증가 함수
@@ -353,7 +358,7 @@ class _MenuCardState extends State<MenuCard> {
                                       color: Color.fromARGB(255, 222, 234, 187),
                                       width: 3))),
                           child: Text(
-                            widget.menuName,
+                            menuName,
                             style: const TextStyle(
                                 fontSize: 23, fontWeight: FontWeight.w600),
                           ),
@@ -362,11 +367,16 @@ class _MenuCardState extends State<MenuCard> {
                           offset: const Offset(10, -10),
                           child: IconButton(
                             icon: const Icon(Icons.settings_outlined),
-                            onPressed: () {
-                              Navigator.push(
+                            onPressed: () async {
+                              await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const EditMenu()));
+                                      builder: (context) =>
+                                          MenuManageEditPage(widget.menu)));
+                              setState(() {
+                                menuName = widget.menu.name;
+                                salesCost = widget.menu.sellPrice;
+                              });
                             },
                           ),
                         ),
@@ -379,7 +389,7 @@ class _MenuCardState extends State<MenuCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '등록가격: ${widget.salesCost}',
+                              '등록가격: $salesCost',
                               style: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,

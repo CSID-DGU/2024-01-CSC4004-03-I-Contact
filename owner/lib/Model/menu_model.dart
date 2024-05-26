@@ -1,13 +1,13 @@
 class MenuModel {
   final int foodId;
   final int storeId;
-  final String name;
-  final int firstPrice;
-  final int sellPrice;
-  final int capacity;
+  String name;
+  int firstPrice;
+  int sellPrice;
+  int capacity;
   final int visits;
-  final bool visible;
-  final bool deleted;
+  final bool visible; // 무시
+  final bool deleted; // 무시
 
   // 일반 생성자
   MenuModel({

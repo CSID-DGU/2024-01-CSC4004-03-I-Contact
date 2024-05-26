@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:leftover_is_over_owner/Services/menu_services.dart';
 import 'package:leftover_is_over_owner/Services/user_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 // 현재 틀만 만들어진 상태 기능 구현 필요
 
-class AddMenu extends StatefulWidget {
-  const AddMenu({super.key});
+class MenuMangeAddPage extends StatefulWidget {
+  const MenuMangeAddPage({super.key});
 
   @override
-  State<AddMenu> createState() => _AddMenuState();
+  State<MenuMangeAddPage> createState() => _MenuMangeAddPageState();
 }
 
-class _AddMenuState extends State<AddMenu> {
+class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
   late TextEditingController controllerName,
       controllerFirstPrice,
       controllerSellPrice;
@@ -29,7 +30,7 @@ class _AddMenuState extends State<AddMenu> {
     var firstPrice = int.parse(controllerFirstPrice.text);
     var sellPrice = int.parse(controllerSellPrice.text);
 
-    var addMenu = await UserService.addMenu(
+    var addMenu = await MenuService.addMenu(
       name: name,
       firstPrice: firstPrice,
       sellPrice: sellPrice,
