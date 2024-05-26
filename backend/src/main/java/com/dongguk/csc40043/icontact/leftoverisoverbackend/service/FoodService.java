@@ -55,7 +55,6 @@ public class FoodService {
                         .capacity(food.getCapacity())
                         .visits(food.getVisits())
                         .isVisible(food.isVisible())
-                        .deleted(food.isDeleted())
                         .build()
                 )
                 .collect(Collectors.toList());
@@ -88,10 +87,16 @@ public class FoodService {
                         .capacity(food.getCapacity())
                         .visits(food.getVisits())
                         .isVisible(food.isVisible())
-                        .deleted(food.isDeleted())
                         .build()
                 )
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteFood(Long foodId) {
+        Food food = foodRepository.findById(foodId).orElseThrow(() ->
+                new IllegalArgumentException("Invalid foodId"));
+        foodRepository.delete(food);
     }
 
 }

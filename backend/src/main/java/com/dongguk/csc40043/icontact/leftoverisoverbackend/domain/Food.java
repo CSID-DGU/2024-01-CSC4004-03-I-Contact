@@ -43,10 +43,6 @@ public class Food {
     private boolean isVisible = false;
 
     @Builder.Default
-    @Column(columnDefinition = "boolean default false")
-    private boolean deleted = false;
-
-    @Builder.Default
     @OneToMany(mappedBy = "food", cascade = CascadeType.PERSIST)
     private List<OrderFood> orderFoods = new ArrayList<>();
 
