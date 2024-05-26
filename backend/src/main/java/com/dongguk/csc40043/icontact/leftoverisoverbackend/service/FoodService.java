@@ -92,4 +92,11 @@ public class FoodService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void deleteFood(Long foodId) {
+        Food food = foodRepository.findById(foodId).orElseThrow(() ->
+                new IllegalArgumentException("Invalid foodId"));
+        foodRepository.delete(food);
+    }
+
 }

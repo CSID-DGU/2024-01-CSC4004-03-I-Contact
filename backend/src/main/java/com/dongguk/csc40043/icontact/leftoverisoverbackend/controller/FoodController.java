@@ -58,4 +58,14 @@ public class FoodController {
         }
     }
 
+    @DeleteMapping("/food/{foodId}")
+    public ResponseEntity<?> deleteFood(@PathVariable("foodId") Long foodId) {
+        try {
+            foodService.deleteFood(foodId);
+            return ResponseEntity.ok("Successfully deleted food");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

@@ -30,7 +30,7 @@ public class OrderService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
             Order order = createOrderRequestDto.toEntity(member, store, LocalDateTime.now());
             createOrderRequestDto.getOrderFoodDtos().forEach(orderFoodDto -> {
-                Food food = foodRepository.findByIdAndDeleted(orderFoodDto.getFoodId(), false)
+                Food food = foodRepository.findById(orderFoodDto.getFoodId())
                         .orElseThrow(() -> new IllegalArgumentException("해당 음식이 존재하지 않습니다."));
                 OrderFood orderFood = OrderFood.builder()
                         .food(food)
