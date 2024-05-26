@@ -22,6 +22,12 @@ class MenuManagePageState extends State<MenuManagePage> {
 
   Future<List<MenuModel>> menuList = UserService.getMenuList();
 
+  void refreshMenuList() {
+    setState(() {
+      menuList = UserService.getMenuList(); // 메뉴 리스트 다시 불러오기
+    });
+  }
+
   void getSalesState() {
     // 매장의 현재 상태를 받아오는 함수
     setState(() {
@@ -115,13 +121,14 @@ class MenuManagePageState extends State<MenuManagePage> {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             child: IconButton(
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+                                await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => const AddMenu(),
                                   ),
                                 );
+                                refreshMenuList(); // 메뉴 리스트 갱신
                               },
                               icon: const Icon(
                                 Icons.add_circle_outline_outlined,
@@ -145,13 +152,44 @@ class MenuManagePageState extends State<MenuManagePage> {
                       },
                     );
                   } else {
-                    return const Center(child: Text('메뉴를 등록해주세요'));
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 50),
+                        const Text(
+                          '메뉴를 등록해주세요',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          child: IconButton(
+                            onPressed: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const AddMenu(),
+                                ),
+                              );
+                              refreshMenuList();
+                            },
+                            icon: const Icon(
+                              Icons.add_circle_outline_outlined,
+                              size: 60,
+                              color: Color.fromARGB(255, 120, 120, 120),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
                   }
                 }
                 return const Center(
                   child: SizedBox(
-                    width: 40,
-                    height: 40,
+                    width: 50,
+                    height: 50,
                     child: CircularProgressIndicator(),
                   ),
                 );
