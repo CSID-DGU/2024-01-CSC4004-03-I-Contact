@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:leftover_is_over_owner/Screen/Register/store_register_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
@@ -44,6 +45,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _checkCredentials() {
     var message = '에러';
+
+    // 이메일 형식을 확인하기 위한 정규 표현식
+    String pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\\.,;:\s@\"]+\.)+[^<>()[\]\\.,;:\s@\"]{2,})$';
+    RegExp regExp = RegExp(pattern);
+
     checkpassword = controllerPwd.text == controllerPwdChk.text;
     print('아이디 중복 검사 결과: $checkduplicate');
     print('비밀번호 일치 검사 결과: $checkpassword');
@@ -53,16 +60,20 @@ class _RegisterPageState extends State<RegisterPage> {
       message = '아이디를 입력해주세요.';
     } else if (controllerEmail.text.isEmpty) {
       message = '이메일를 입력해주세요.';
+    } else if (!regExp.hasMatch(controllerEmail.text)) {
+      message = '올바른 이메일을 입력해주세요.';
     } else if (controllerPhone.text.isEmpty) {
       message = '전화번호를 입력해주세요.';
+    } else if (controllerPhone.text.length < 11) {
+      message = '올바른 전화번호를 입력해주세요.';
     } else if (controllerPwd.text.isEmpty) {
       message = '비밀번호를 입력해주세요.';
     } else if (controllerPwdChk.text.isEmpty) {
-      message = '비밀번호 확인을 입력해주세요.';
+      message = '비밀번호를 확인해주세요.';
     } else if (checkpassword && checkduplicate) {
       if (lastCheckedId != controllerUsername.text) {
         // lastCheckedId와 실제 제출된 값이 다른 경우 중복확인을 새로 하도록 오류메세지
-        message = '아이디 중복확인을 새로 해주세요.';
+        message = '아이디 중복확인을 다시 해주세요.';
         setState(() {
           checkduplicate = false;
         });
@@ -153,6 +164,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     autofocus: false,
                     controller: controllerName, // 컨트롤러 예제에서는 주석 처리
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]')), // 이름은 한글 또는 영어만 가능
+                    ],
                   ),
                 ),
                 const SizedBox(
@@ -277,7 +292,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ],
                     borderRadius: BorderRadius.circular(70),
                   ),
-                  child: TextField(
+                  // 유효성 검증을 위해 TextFormFeild를 사용하라는데 TextFeild로도 작동하긴 함
+                  child: TextFormField(
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -332,6 +348,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     autofocus: false,
                     controller: controllerPhone,
+                    keyboardType: TextInputType.number,
+                    // 입력값 숫자인지 확인
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(11),
+                      // 전화번호 11자리까지 입력하도록함
+                    ],
                   ),
                 ),
                 const SizedBox(

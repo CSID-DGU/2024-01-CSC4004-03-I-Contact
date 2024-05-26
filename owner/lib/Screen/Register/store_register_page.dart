@@ -39,10 +39,10 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
     '중식',
     '일식',
     '양식',
+    '패스트푸드',
     '아시안',
     '분식',
     '디저트',
-    '도시락',
     '기타'
   ];
 
@@ -142,11 +142,15 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
       showErrorDialog(context, message);
       return;
     } else if (controllerStorePhone.text.isEmpty) {
-      message = '가게 전화 번호를 입력해주세요.';
+      message = '매장 전화 번호를 입력해주세요.';
+      showErrorDialog(context, message);
+      return;
+    } else if (controllerStorePhone.text.length < 10) {
+      message = '올바른 가게 전화 번호를 입력해주세요.';
       showErrorDialog(context, message);
       return;
     } else if (category.isEmpty) {
-      message = '음식점 카테고리를 선택해주세요';
+      message = '매장 카테고리를 선택해주세요';
       showErrorDialog(context, message);
       return;
     } else if (checkValidTime()) {
@@ -665,6 +669,13 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                         ),
                         autofocus: true,
                         controller: controllerStorePhone,
+                        keyboardType: TextInputType.number,
+                        // 입력값 숫자인지 확인
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(11),
+                          // 전화번호 11자리까지만 입력할 수 있음
+                        ],
                       ),
                     ),
                     const SizedBox(
@@ -714,7 +725,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                 top: 287,
                 left: 32,
                 right: 32,
-                bottom: 120,
+                bottom: 100,
                 child: AnimatedOpacity(
                   opacity: _opacity,
                   duration: const Duration(milliseconds: 300),
@@ -733,7 +744,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                 top: 293,
                 left: 32,
                 right: 32,
-                bottom: 120,
+                bottom: 100,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
@@ -741,7 +752,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      childAspectRatio: 2,
+                      childAspectRatio: 1.7,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 20,
                     ),
@@ -764,10 +775,9 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                           shadowColor: Colors.black,
                           elevation: 5,
                         ),
-                        child: Text(
-                          categoryLabels[index],
-                          style: const TextStyle(fontSize: 16),
-                        ),
+                        child: Text(categoryLabels[index],
+                            style: const TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center),
                       );
                     },
                   ),

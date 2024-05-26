@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        backgroundColor: Colors.amber[600],
+        backgroundColor: const Color.fromARGB(255, 255, 198, 88),
         appBar: AppBar(
           title: const Center(
             child: Text(
@@ -93,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                       const CircleAvatar(
                         // Flexible 제거
                         backgroundColor: Colors.white,
-                        radius: 100.0, // 원래는 1000.0이었으나 실제 사용 가능한 크기로 조정
+                        radius: 100.0,
                       ),
                       const SizedBox(height: 70),
                       Column(
@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
-                                    Colors.green[400]),
+                                    const Color.fromARGB(255, 222, 234, 187)),
                               ),
                               onPressed: _login,
                               child: const Text(
@@ -157,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
-                                    Colors.green[600]),
+                                    const Color.fromARGB(255, 173, 190, 122)),
                               ),
                               onPressed: () {},
                               child: const Row(
