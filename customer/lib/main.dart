@@ -4,9 +4,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:leftover_is_over_customer/screens/main_screen.dart';
-import 'package:leftover_is_over_customer/screens/notification_setting_screen.dart';
-import 'package:leftover_is_over_customer/screens/profile_edit_screen.dart';
+import 'package:leftover_is_over_customer/screens/home_screens/main_screen.dart';
+import 'package:leftover_is_over_customer/screens/setting_screens/notification_setting_screen.dart';
+import 'package:leftover_is_over_customer/screens/setting_screens/profile_edit_screen.dart';
 
 void main() async {
   await _initialize();

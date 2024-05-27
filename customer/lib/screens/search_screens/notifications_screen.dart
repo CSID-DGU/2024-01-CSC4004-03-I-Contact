@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:leftover_is_over_customer/screens/restaurant_screen.dart';
+import 'package:leftover_is_over_customer/screens/restaurant_screens/restaurant_screen.dart';
 import 'package:leftover_is_over_customer/widgets/notice_widget.dart';
 
 class NotificationsScreen extends StatefulWidget {

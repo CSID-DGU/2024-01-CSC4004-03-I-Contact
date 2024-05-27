@@ -1,127 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
-class MenuWidget extends StatefulWidget {
-  const MenuWidget(
-      {super.key,
-      required this.menuName,
-      required this.unitCost,
-      required this.remaining,
-      this.numMenu = 0});
+class MenuWidget extends StatelessWidget {
+  const MenuWidget({
+    super.key,
+    required this.menuName,
+    required this.unitCost,
+    required this.remaining,
+    this.numMenu = 0,
+    required this.onMenuTap,
+  });
+
   final String menuName, unitCost, remaining;
   final int numMenu;
-  @override
-  State<MenuWidget> createState() => _MenuWidgetState();
-}
-
-class _MenuWidgetState extends State<MenuWidget> {
-  int numServings = 1;
-  void _showHalfScreenModal() {
-    Size screenSize = MediaQuery.of(context).size;
-    double screenWidth = screenSize.width;
-    double screenHeight = screenSize.height;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return FractionallySizedBox(
-          heightFactor: 0.4,
-          child: Container(
-            color: Colors.white,
-            child: Center(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: screenHeight * 0.035),
-                        child: Text(
-                          '${widget.menuName} 주문하기',
-                          style: TextStyle(fontSize: screenHeight * 0.035),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment
-                            .center, // Center the elements horizontally
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              if (numServings > 1) {
-                                setState(() {
-                                  numServings -= 1;
-                                });
-                              }
-                            },
-                            child: SizedBox(
-                              width: screenHeight * 0.04,
-                              height: screenHeight * 0.04,
-                              child:
-                                  const Icon(Icons.exposure_minus_1_outlined),
-                            ),
-                          ),
-                          SizedBox(
-                            width: screenWidth * 0.1,
-                          ),
-                          Text(
-                            '$numServings인분',
-                            style: TextStyle(fontSize: screenHeight * 0.04),
-                          ),
-                          SizedBox(
-                            width: screenWidth * 0.1,
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                numServings += 1;
-                              });
-                            },
-                            child: SizedBox(
-                              width: screenHeight * 0.04,
-                              height: screenHeight * 0.04,
-                              child: const Icon(Icons.plus_one_outlined),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: screenHeight * 0.035),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            fixedSize:
-                                Size(screenWidth * 0.8, screenHeight * 0.06),
-                          ),
-                          child: Text(
-                            '주문',
-                            style: TextStyle(fontSize: screenHeight * 0.035),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  final void Function(String menuName) onMenuTap;
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +21,7 @@ class _MenuWidgetState extends State<MenuWidget> {
     double screenHeight = screenSize.height;
 
     return GestureDetector(
-      onTap: _showHalfScreenModal,
+      onTap: () => onMenuTap(menuName),
       child: Container(
         decoration: const BoxDecoration(
           color: Color.fromARGB(255, 255, 255, 255),
@@ -151,24 +42,20 @@ class _MenuWidgetState extends State<MenuWidget> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: screenHeight * 0.01,
-                  ),
+                  SizedBox(height: screenHeight * 0.01),
                   Text(
-                    widget.menuName,
+                    menuName,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: screenHeight * 0.03,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  SizedBox(
-                    height: screenHeight * 0.001,
-                  ),
+                  SizedBox(height: screenHeight * 0.001),
                   Row(
                     children: [
                       Text(
-                        widget.unitCost,
+                        unitCost,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: screenHeight * 0.02,
@@ -185,9 +72,7 @@ class _MenuWidgetState extends State<MenuWidget> {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: screenHeight * 0.003,
-                  ),
+                  SizedBox(height: screenHeight * 0.003),
                   Row(
                     children: [
                       Text(
@@ -198,11 +83,9 @@ class _MenuWidgetState extends State<MenuWidget> {
                           fontWeight: FontWeight.normal,
                         ),
                       ),
-                      SizedBox(
-                        width: screenHeight * 0.01,
-                      ),
+                      SizedBox(width: screenHeight * 0.01),
                       Text(
-                        widget.remaining,
+                        remaining,
                         style: TextStyle(
                           color: Colors.black.withOpacity(0.4),
                           fontSize: screenHeight * 0.02,

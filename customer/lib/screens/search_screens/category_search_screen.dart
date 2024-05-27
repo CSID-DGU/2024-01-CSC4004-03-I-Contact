@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:leftover_is_over_customer/screens/restaurant_screen.dart';
+import 'package:leftover_is_over_customer/screens/restaurant_screens/restaurant_screen.dart';
 import 'package:leftover_is_over_customer/widgets/resturant_widget.dart';
 
 class CategorySearchScreen extends StatefulWidget {

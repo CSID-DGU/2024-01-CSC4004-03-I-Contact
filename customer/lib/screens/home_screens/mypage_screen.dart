@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:leftover_is_over_customer/screens/change_password_screen.dart';
-import 'package:leftover_is_over_customer/screens/profile_edit_screen.dart';
-import 'package:leftover_is_over_customer/screens/notification_setting_screen.dart';
+import 'package:leftover_is_over_customer/screens/setting_screens/change_password_screen.dart';
+import 'package:leftover_is_over_customer/screens/setting_screens/profile_edit_screen.dart';
+import 'package:leftover_is_over_customer/screens/setting_screens/notification_setting_screen.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});

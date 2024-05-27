@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:leftover_is_over_customer/screens/category_search_screen.dart';
+import 'package:leftover_is_over_customer/screens/search_screens/category_search_screen.dart';
 
 class FoodCategoryWidget extends StatelessWidget {
   final String foodName;
@@ -26,7 +26,7 @@ class FoodCategoryWidget extends StatelessWidget {
         height: screenWidth * 0.13,
         margin: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(45),
           boxShadow: [
             BoxShadow(
