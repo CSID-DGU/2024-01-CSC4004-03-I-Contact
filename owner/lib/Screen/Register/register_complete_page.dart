@@ -8,7 +8,7 @@ class RegisterCompletePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.amber[600],
+      backgroundColor: const Color.fromARGB(255, 255, 198, 88),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -39,7 +39,8 @@ class RegisterCompletePage extends StatelessWidget {
             height: 60.0,
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.green[300]),
+                backgroundColor: MaterialStateProperty.all(
+                    const Color.fromARGB(255, 173, 190, 122)),
               ),
               onPressed: () {
                 Navigator.pushAndRemoveUntil(

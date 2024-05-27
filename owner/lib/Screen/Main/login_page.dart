@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 255, 198, 88),
-        appBar: AppBar(
+        /*appBar: AppBar(
           title: const Center(
             child: Text(
               '로그인 페이지',
@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-        ),
+        ),*/
         body: isLoading
             ? const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -89,13 +89,19 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min, // Column의 높이를 최소로 설정
                     children: [
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 70),
                       const CircleAvatar(
                         // Flexible 제거
                         backgroundColor: Colors.white,
                         radius: 100.0,
                       ),
-                      const SizedBox(height: 70),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 25),
+                        child: Text(
+                          '로그인',
+                          style: TextStyle(fontSize: 35),
+                        ),
+                      ),
                       Column(
                         children: [
                           TextField(
@@ -104,7 +110,8 @@ class _LoginPageState extends State<LoginPage> {
                               filled: true,
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(20.0),
+                                borderSide: BorderSide.none,
                               ),
                             ),
                             autofocus: false,
@@ -119,7 +126,8 @@ class _LoginPageState extends State<LoginPage> {
                               filled: true,
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(20.0),
+                                borderSide: BorderSide.none,
                               ),
                             ),
                             obscureText: true,

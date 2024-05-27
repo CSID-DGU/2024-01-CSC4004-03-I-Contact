@@ -108,7 +108,9 @@ class _RegisterPageState extends State<RegisterPage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.amber[600],
+          shadowColor: Colors.black,
+          elevation: 1,
+          backgroundColor: Colors.white,
           title: const Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -131,7 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.green[300]!.withOpacity(0.6),
+                    color: const Color.fromARGB(255, 222, 234, 187),
                   ),
                   child: const Text(
                     '이름',
@@ -147,8 +149,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
-                        offset: const Offset(-2, 5),
+                        blurRadius: 2,
+                        color: Colors.black.withOpacity(0.3),
+                        offset: const Offset(1, 3),
                       )
                     ],
                     borderRadius: BorderRadius.circular(70),
@@ -182,7 +185,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           vertical: 4, horizontal: 23),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.green[300]!.withOpacity(0.6),
+                        color: const Color.fromARGB(255, 222, 234, 187),
                       ),
                       child: const Text(
                         '아이디',
@@ -212,8 +215,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
-                        offset: const Offset(-2, 5),
+                        blurRadius: 2,
+                        color: Colors.black.withOpacity(0.3),
+                        offset: const Offset(1, 3),
                       )
                     ],
                     borderRadius: BorderRadius.circular(70),
@@ -244,7 +248,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(100, 40),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
                         side: BorderSide(color: Colors.grey[700]!),
                         padding: const EdgeInsets.symmetric(
@@ -270,7 +274,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.green[300]!.withOpacity(0.6),
+                    color: const Color.fromARGB(255, 222, 234, 187),
                   ),
                   child: const Text(
                     '이메일',
@@ -286,8 +290,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
-                        offset: const Offset(-2, 5),
+                        blurRadius: 2,
+                        color: Colors.black.withOpacity(0.3),
+                        offset: const Offset(1, 3),
                       )
                     ],
                     borderRadius: BorderRadius.circular(70),
@@ -315,7 +320,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.green[300]!.withOpacity(0.6),
+                    color: const Color.fromARGB(255, 222, 234, 187),
                   ),
                   child: const Text(
                     '전화번호',
@@ -331,8 +336,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
-                        offset: const Offset(-2, 5),
+                        blurRadius: 2,
+                        color: Colors.black.withOpacity(0.3),
+                        offset: const Offset(1, 3),
                       )
                     ],
                     borderRadius: BorderRadius.circular(70),
@@ -366,7 +372,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.green[300]!.withOpacity(0.6),
+                    color: const Color.fromARGB(255, 222, 234, 187),
                   ),
                   child: const Text(
                     '비밀번호',
@@ -382,8 +388,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
-                        offset: const Offset(-2, 5),
+                        blurRadius: 2,
+                        color: Colors.black.withOpacity(0.3),
+                        offset: const Offset(1, 3),
                       )
                     ],
                     borderRadius: BorderRadius.circular(70),
@@ -411,7 +418,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.green[300]!.withOpacity(0.6),
+                    color: const Color.fromARGB(255, 222, 234, 187),
                   ),
                   child: const Text(
                     '비밀번호 확인',
@@ -427,8 +434,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
-                        offset: const Offset(-2, 5),
+                        blurRadius: 2,
+                        color: Colors.black.withOpacity(0.3),
+                        offset: const Offset(1, 3),
                       )
                     ],
                     borderRadius: BorderRadius.circular(70),
@@ -458,7 +466,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         _checkCredentials();
                       },
                       style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.green[300]!.withOpacity(0.6),
+                        backgroundColor:
+                            const Color.fromARGB(255, 222, 234, 187),
                         minimumSize: const Size(120, 60),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
