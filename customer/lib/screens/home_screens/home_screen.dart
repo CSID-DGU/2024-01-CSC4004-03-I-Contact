@@ -2,13 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:leftover_is_over_customer/screens/category_search_screen.dart';
-import 'package:leftover_is_over_customer/screens/main_screen.dart';
-import 'package:leftover_is_over_customer/screens/map_screen.dart';
-import 'package:leftover_is_over_customer/screens/notifications_screen.dart';
-import 'package:leftover_is_over_customer/screens/search_screen.dart';
+import 'package:leftover_is_over_customer/screens/search_screens/category_search_screen.dart';
+import 'package:leftover_is_over_customer/screens/home_screens/main_screen.dart';
+import 'package:leftover_is_over_customer/screens/home_screens/map_screen.dart';
+import 'package:leftover_is_over_customer/screens/search_screens/notifications_screen.dart';
+import 'package:leftover_is_over_customer/screens/search_screens/search_screen.dart';
 
-import '../widgets/food_category_widget.dart';
+import '../../widgets/food_category_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback onProfileTap;
