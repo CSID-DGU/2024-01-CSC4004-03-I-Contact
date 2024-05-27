@@ -111,7 +111,18 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("회원 정보"),
+        shadowColor: Colors.black,
+        elevation: 1,
+        backgroundColor: Colors.white,
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              '회원정보  ',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(30),
@@ -125,7 +136,7 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                     const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.green[300]!.withOpacity(0.6),
+                  color: const Color.fromARGB(255, 222, 234, 187),
                 ),
                 child: const Text(
                   '이름',
@@ -141,8 +152,9 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.4),
-                      offset: const Offset(-2, 5),
+                      blurRadius: 2,
+                      color: Colors.black.withOpacity(0.3),
+                      offset: const Offset(1, 3),
                     )
                   ],
                   borderRadius: BorderRadius.circular(70),
@@ -173,7 +185,7 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                         const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.green[300]!.withOpacity(0.6),
+                      color: const Color.fromARGB(255, 222, 234, 187),
                     ),
                     child: const Text(
                       '아이디',
@@ -209,8 +221,9 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.4),
-                      offset: const Offset(-2, 5),
+                      blurRadius: 2,
+                      color: Colors.black.withOpacity(0.3),
+                      offset: const Offset(1, 3),
                     )
                   ],
                   borderRadius: BorderRadius.circular(70),
@@ -271,7 +284,7 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                     const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.green[300]!.withOpacity(0.6),
+                  color: const Color.fromARGB(255, 222, 234, 187),
                 ),
                 child: const Text(
                   '이메일',
@@ -287,8 +300,9 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.4),
-                      offset: const Offset(-2, 5),
+                      blurRadius: 2,
+                      color: Colors.black.withOpacity(0.3),
+                      offset: const Offset(1, 3),
                     )
                   ],
                   borderRadius: BorderRadius.circular(70),
@@ -315,7 +329,7 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                     const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.green[300]!.withOpacity(0.6),
+                  color: const Color.fromARGB(255, 222, 234, 187),
                 ),
                 child: const Text(
                   '비밀번호',
@@ -331,8 +345,9 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.4),
-                      offset: const Offset(-2, 5),
+                      blurRadius: 2,
+                      color: Colors.black.withOpacity(0.3),
+                      offset: const Offset(1, 3),
                     )
                   ],
                   borderRadius: BorderRadius.circular(70),
@@ -383,8 +398,9 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.4),
-                            offset: const Offset(-2, 5),
+                            blurRadius: 2,
+                            color: Colors.black.withOpacity(0.3),
+                            offset: const Offset(1, 3),
                           )
                         ],
                         borderRadius: BorderRadius.circular(70),
@@ -424,7 +440,7 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                       setState(() {}); // readMode 변경한 상태로 저장
                     },
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.green[300]!.withOpacity(0.6),
+                      backgroundColor: const Color.fromARGB(255, 222, 234, 187),
                       minimumSize: const Size(120, 60),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),

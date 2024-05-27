@@ -216,12 +216,14 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.amber[600],
+          shadowColor: Colors.black,
+          elevation: 1,
+          backgroundColor: Colors.white,
           title: const Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                '가게 정보 등록  ',
+                '매장 정보 등록  ',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
               ),
             ],
@@ -241,7 +243,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                           vertical: 4, horizontal: 23),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.green[300]!.withOpacity(0.6),
+                        color: const Color.fromARGB(255, 222, 234, 187),
                       ),
                       child: const Text(
                         '매장 이름',
@@ -258,8 +260,9 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.4),
-                            offset: const Offset(-2, 5),
+                            blurRadius: 2,
+                            color: Colors.black.withOpacity(0.3),
+                            offset: const Offset(1, 3),
                           )
                         ],
                         borderRadius: BorderRadius.circular(70),
@@ -291,7 +294,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                                   vertical: 4, horizontal: 23),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Colors.green[300]!.withOpacity(0.6),
+                                color: const Color.fromARGB(255, 222, 234, 187),
                               ),
                               child: const Text(
                                 '오픈 시간',
@@ -310,8 +313,9 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
+                                blurRadius: 2,
                                 color: Colors.black.withOpacity(0.4),
-                                offset: const Offset(-2, 5),
+                                offset: const Offset(1, 3),
                               )
                             ],
                             borderRadius: BorderRadius.circular(70),
@@ -360,8 +364,9 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
+                                blurRadius: 2,
                                 color: Colors.black.withOpacity(0.4),
-                                offset: const Offset(-2, 5),
+                                offset: const Offset(1, 3),
                               )
                             ],
                             borderRadius: BorderRadius.circular(70),
@@ -400,7 +405,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                                   vertical: 4, horizontal: 23),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Colors.green[300]!.withOpacity(0.6),
+                                color: const Color.fromARGB(255, 222, 234, 187),
                               ),
                               child: const Text(
                                 '마감 시간',
@@ -419,8 +424,9 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
+                                blurRadius: 2,
                                 color: Colors.black.withOpacity(0.4),
-                                offset: const Offset(-2, 5),
+                                offset: const Offset(1, 3),
                               )
                             ],
                             borderRadius: BorderRadius.circular(70),
@@ -469,8 +475,9 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
+                                blurRadius: 2,
                                 color: Colors.black.withOpacity(0.4),
-                                offset: const Offset(-2, 5),
+                                offset: const Offset(1, 3),
                               )
                             ],
                             borderRadius: BorderRadius.circular(70),
@@ -504,7 +511,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                           vertical: 4, horizontal: 23),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.green[300]!.withOpacity(0.6),
+                        color: const Color.fromARGB(255, 222, 234, 187),
                       ),
                       child: const Text(
                         '업종 분류',
@@ -521,12 +528,13 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
+                            blurRadius: 2,
                             color: Colors.black.withOpacity(0.4),
-                            offset: const Offset(-2, 5),
+                            offset: const Offset(1, 3),
                           )
                         ],
-                        color: Colors.white,
                         borderRadius: BorderRadius.circular(70),
+                        color: Colors.white,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -562,7 +570,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                           vertical: 4, horizontal: 23),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.green[300]!.withOpacity(0.6),
+                        color: const Color.fromARGB(255, 222, 234, 187),
                       ),
                       child: const Text(
                         '주소',
@@ -579,8 +587,9 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
+                            blurRadius: 2,
                             color: Colors.black.withOpacity(0.4),
-                            offset: const Offset(-2, 5),
+                            offset: const Offset(1, 3),
                           )
                         ],
                         borderRadius: BorderRadius.circular(70),
@@ -607,8 +616,9 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
+                            blurRadius: 2,
                             color: Colors.black.withOpacity(0.4),
-                            offset: const Offset(-2, 5),
+                            offset: const Offset(1, 3),
                           )
                         ],
                         borderRadius: BorderRadius.circular(70),
@@ -635,7 +645,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                           vertical: 4, horizontal: 23),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.green[300]!.withOpacity(0.6),
+                        color: const Color.fromARGB(255, 222, 234, 187),
                       ),
                       child: const Text(
                         '매장 전화번호',
@@ -652,8 +662,9 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
+                            blurRadius: 2,
                             color: Colors.black.withOpacity(0.4),
-                            offset: const Offset(-2, 5),
+                            offset: const Offset(1, 3),
                           )
                         ],
                         borderRadius: BorderRadius.circular(70),
@@ -693,7 +704,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                           },
                           style: OutlinedButton.styleFrom(
                             backgroundColor:
-                                Colors.green[300]!.withOpacity(0.6),
+                                const Color.fromARGB(255, 222, 234, 187),
                             minimumSize: const Size(120, 60),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
@@ -732,7 +743,8 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: const Color.fromARGB(255, 235, 230, 230),
+                      color: const Color.fromARGB(255, 112, 120, 91)
+                          .withOpacity(0.85),
                     ),
                   ),
                 ),
@@ -770,7 +782,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                           foregroundColor: Colors.black,
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(15),
                           ),
                           shadowColor: Colors.black,
                           elevation: 5,
