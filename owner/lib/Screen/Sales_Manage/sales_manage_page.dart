@@ -106,7 +106,7 @@ class SalesManagePageState extends State<SalesManagePage> {
                   future: menuList,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      if (snapshot.data!.isEmpty) {
+                      if (snapshot.data!.isNotEmpty) {
                         return ListView.separated(
                           shrinkWrap: true, // 스크롤 뷰 내에서 사용될 때 크기를 조정함
                           physics:
@@ -153,7 +153,7 @@ class SalesManagePageState extends State<SalesManagePage> {
             ],
           ),
         ),
-        bottomSheet: Container(
+        bottomNavigationBar: Container(
           color: Colors.white,
           padding:
               const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 30),

@@ -9,10 +9,10 @@ import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 // 메뉴카드 생성 위젯
 class MenuCard extends StatefulWidget {
   final MenuModel menu;
-  final VoidCallback onRefresh;
+  final TextEditingController controller;
   const MenuCard(
     this.menu,
-    this.onRefresh, {
+    this.controller, {
     super.key,
   });
 
@@ -23,12 +23,10 @@ class MenuCard extends StatefulWidget {
 class _MenuCardState extends State<MenuCard> {
   late String menuName;
   late int salesCost;
-  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _controller.text = '0'; // 초기값 설정'
     menuName = widget.menu.name;
     salesCost = widget.menu.sellPrice;
   }
@@ -36,12 +34,12 @@ class _MenuCardState extends State<MenuCard> {
   // 증가 버튼으로 숫자 증가 함수
   void _increment() {
     setState(() {
-      if (_controller.text.isEmpty) {
-        _controller.text = "0";
+      if (widget.controller.text.isEmpty) {
+        widget.controller.text = "0";
       } else {
-        int currentValue = int.parse(_controller.text);
+        int currentValue = int.parse(widget.controller.text);
 
-        _controller.text = (currentValue + 1).toString();
+        widget.controller.text = (currentValue + 1).toString();
       }
     });
   }
@@ -49,12 +47,12 @@ class _MenuCardState extends State<MenuCard> {
   // 감소 버튼으로 숫자 감소 함수
   void _decrement() {
     setState(() {
-      if (_controller.text.isEmpty) {
-        _controller.text = "0";
+      if (widget.controller.text.isEmpty) {
+        widget.controller.text = "0";
       } else {
-        int currentValue = int.parse(_controller.text);
+        int currentValue = int.parse(widget.controller.text);
         if (currentValue > 0) {
-          _controller.text = (currentValue - 1).toString();
+          widget.controller.text = (currentValue - 1).toString();
         }
       }
     });
@@ -63,17 +61,17 @@ class _MenuCardState extends State<MenuCard> {
   // 숫자가 아닌 값 입력될 경우 0 처리 함수
   void _handleInputChange(String value) {
     if (value.isEmpty) {
-      _controller.text = "";
+      widget.controller.text = "";
     } else if (int.tryParse(value) == null) {
-      _controller.text = "";
+      widget.controller.text = "";
     } else {
       // 숫자가 유효한 경우, 그대로 둠
-      _controller.text = value;
+      widget.controller.text = value;
     }
 
     // 커서를 텍스트 끝으로 이동
-    _controller.selection = TextSelection.fromPosition(
-      TextPosition(offset: _controller.text.length),
+    widget.controller.selection = TextSelection.fromPosition(
+      TextPosition(offset: widget.controller.text.length),
     );
   }
 
@@ -197,7 +195,7 @@ class _MenuCardState extends State<MenuCard> {
                                     maxWidth: 100,
                                   ),
                                   child: TextField(
-                                    controller: _controller,
+                                    controller: widget.controller,
                                     decoration: const InputDecoration(
                                       filled: true,
                                       fillColor:
