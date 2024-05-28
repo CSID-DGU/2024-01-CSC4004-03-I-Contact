@@ -21,11 +21,10 @@ class MenuManagePageState extends State<MenuManagePage> {
 
   Future<List<MenuModel>> menuList = MenuService.getMenuList();
 
-  void refreshMenuList() {
-    print('새로고침');
-    setState(() {
-      menuList = MenuService.getMenuList(); // 메뉴 리스트 다시 불러오기
-    });
+  Map<int, TextEditingController> controllers = {};
+
+  List<String> getAllText() {
+    return controllers.values.map((controller) => controller.text).toList();
   }
 
   void getSalesState() {
@@ -41,8 +40,15 @@ class MenuManagePageState extends State<MenuManagePage> {
     });
   }
 
-  void openSales() {
+  void openSales() async {
+    print(getAllText());
     // 매장 현재 상태 오픈으로 변경하는 함수
+    List<Future> futures = [];
+    controllers.forEach((foodId, controller) {
+      futures.add(MenuService.setInitialCapacity(
+          foodId: foodId, capacity: controller.text));
+    });
+    await Future.wait(futures);
     setState(() {
       currentState = StoreState.selling;
     });
@@ -121,15 +127,14 @@ class MenuManagePageState extends State<MenuManagePage> {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             child: IconButton(
-                              onPressed: () async {
-                                await Navigator.push(
+                              onPressed: () {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         const MenuMangeAddPage(),
                                   ),
                                 );
-                                refreshMenuList(); // 메뉴 리스트 갱신
                               },
                               icon: const Icon(
                                 Icons.add_circle_outline_outlined,
@@ -139,10 +144,17 @@ class MenuManagePageState extends State<MenuManagePage> {
                             ),
                           );
                         } else {
+                          if (controllers.isEmpty) {
+                            controllers = {
+                              for (var menu in snapshot.data!)
+                                menu.foodId: TextEditingController(
+                                    text: menu.capacity.toString())
+                            };
+                          }
                           var menu = snapshot.data![index];
                           return Column(
                             children: [
-                              MenuCard(menu, refreshMenuList),
+                              MenuCard(menu, controllers[menu.foodId]!),
                               const SizedBox(height: 5), // 항목 사이에 간격 추가
                             ],
                           );
@@ -172,7 +184,6 @@ class MenuManagePageState extends State<MenuManagePage> {
                                       const MenuMangeAddPage(),
                                 ),
                               );
-                              refreshMenuList();
                             },
                             icon: const Icon(
                               Icons.add_circle_outline_outlined,

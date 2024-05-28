@@ -118,12 +118,8 @@ class MenuService {
     }
   }
 
-  static Future<bool> updateMenuInitialCapacity({
-    required int foodId,
-    required String name,
-    required String firstPrice,
-    required String sellPrice,
-  }) async {
+  static Future<bool> setInitialCapacity(
+      {required int foodId, required String capacity}) async {
     try {
       final url =
           Uri.parse('http://loio-server.azurewebsites.net/food/$foodId');
@@ -133,17 +129,14 @@ class MenuService {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          "name": name,
-          "firstPrice": firstPrice,
-          "sellPrice": sellPrice,
+          "foodId": foodId,
+          "capacity": capacity,
         }),
       );
-
       if (response.statusCode == 200) {
         return true;
       } else {
-        // 오류 처리
-        throw Exception('Failed to update menu.');
+        throw Exception('Failed to update initial capacity.');
       }
     } catch (e) {
       print(e);
