@@ -44,6 +44,24 @@ class MenuService {
     }
   }
 
+  static Future<bool> deleteMenu(int foodId) async {
+    try {
+      var request = http.Request('DELETE',
+          Uri.parse('http://loio-server.azurewebsites.net/food/$foodId'));
+
+      http.StreamedResponse streamedResponse = await request.send();
+      http.Response response = await http.Response.fromStream(streamedResponse);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Failed to delete Menu: ${response.statusCode}');
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
   static Future<List<MenuModel>> getMenuList() async {
     List<MenuModel> menuInstances = [];
     try {

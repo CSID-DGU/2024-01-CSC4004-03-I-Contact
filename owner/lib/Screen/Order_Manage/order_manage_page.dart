@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Model/order_model.dart';
+import 'package:leftover_is_over_owner/Services/order_services.dart';
 import 'package:leftover_is_over_owner/Services/user_services.dart';
 import 'package:leftover_is_over_owner/Widget/order_card_widget.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 
-class OrderStatusPage extends StatefulWidget {
+class OrderManagePage extends StatefulWidget {
   final StoreState startState;
-  const OrderStatusPage(this.startState, {super.key});
+  const OrderManagePage(this.startState, {super.key});
 
   @override
-  State<OrderStatusPage> createState() => _OrderStatusPageState();
+  State<OrderManagePage> createState() => _OrderManagePageState();
 }
 
-class _OrderStatusPageState extends State<OrderStatusPage> {
+class _OrderManagePageState extends State<OrderManagePage> {
   late StoreState currentState = widget.startState;
   StoreState? lastState;
   late Future<List<OrderModel>> orderList;
@@ -21,7 +22,7 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
   void initState() {
     // TODO: implement initState
     var getAll = false;
-    orderList = UserService.getOrderList(getAll);
+    orderList = OrderService.getOrderList(getAll);
   }
 
   void getSalesState() {
