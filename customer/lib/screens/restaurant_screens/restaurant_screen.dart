@@ -1,19 +1,196 @@
 import 'package:flutter/material.dart';
+import 'package:leftover_is_over_customer/models/store_model.dart';
+import 'package:leftover_is_over_customer/services/store_services.dart';
 import 'package:leftover_is_over_customer/widgets/menu_widget.dart';
 import 'cart_screen.dart';
 
 class RestaurantScreen extends StatefulWidget {
-  final String restaurantName;
+  final int storeId;
 
-  const RestaurantScreen({super.key, required this.restaurantName});
+  const RestaurantScreen({super.key, required this.storeId});
 
   @override
   State<RestaurantScreen> createState() => _RestaurantScreenState();
 }
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
+  late Future<StoreModel> _futureStore;
+
   bool isFavorite = false; // Track the favorite state
   int numServings = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureStore = StoreService.getStoreById(widget.storeId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    double screenWidth = screenSize.width;
+    double screenHeight = screenSize.height;
+
+    return FutureBuilder<StoreModel>(
+      future: _futureStore,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (snapshot.hasData) {
+          StoreModel store = snapshot.data!;
+          return Scaffold(
+            body: NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    expandedHeight: screenHeight * 0.3,
+                    floating: false,
+                    pinned: true,
+                    stretch: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      collapseMode: CollapseMode.parallax,
+                      background: Image.asset(
+                        'assets/images/chicken.jpg',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    actions: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                            right:
+                                screenWidth * 0.05), // Adjust the padding here
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              // Toggle the favorite state
+                              isFavorite = !isFavorite;
+                            });
+                          },
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            // Change icon based on favorite state
+                            color: isFavorite
+                                ? Colors.red
+                                : null, // Highlight if favorite
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      width: screenWidth * 0.9,
+                      height: screenHeight * 0.2,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: screenHeight * 0.01,
+                          left: screenWidth * 0.05,
+                          right: screenWidth * 0.07,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              store.name,
+                              style: TextStyle(fontSize: screenHeight * 0.035),
+                            ),
+                            Text(
+                              store.address,
+                              style: TextStyle(
+                                  fontSize: screenHeight * 0.025,
+                                  color: Colors.black54),
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            Text(
+                              '식수인원 N명',
+                              style: TextStyle(fontSize: screenHeight * 0.02),
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      '이용예정 N명',
+                                      style: TextStyle(
+                                        fontSize: screenHeight * 0.015,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      '마감시간 ${store.endTime}',
+                                      style: TextStyle(
+                                        fontSize: screenHeight * 0.02,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ];
+              },
+              body: ListView.builder(
+                itemCount: 10,
+                itemBuilder: (BuildContext context, int index) {
+                  return MenuWidget(
+                    menuName: '메뉴 $index',
+                    unitCost: '1000',
+                    remaining: '1',
+                    onMenuTap: (String menuName) {
+                      _showHalfScreenModal(menuName);
+                    },
+                  );
+                },
+              ),
+            ),
+            bottomNavigationBar: BottomAppBar(
+              child: Container(
+                width: screenWidth,
+                height: screenHeight * 0.08, // 버튼 높이 조절
+                margin: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.05,
+                    vertical: screenHeight * 0.01), // 좌우 및 상하 간격 조절
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CartScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Theme.of(context).primaryColor,
+                    backgroundColor: Colors.white,
+                  ),
+                  child: Text(
+                    '장바구니',
+                    style: TextStyle(
+                      fontSize: screenHeight * 0.025,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        } else {
+          return const Center(child: Text('No data available'));
+        }
+      },
+    );
+  }
 
   void _showHalfScreenModal(String menuName) {
     setState(() {
@@ -139,156 +316,6 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           },
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-    double screenWidth = screenSize.width;
-    double screenHeight = screenSize.height;
-
-    return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              expandedHeight: screenHeight * 0.3,
-              floating: false,
-              pinned: true,
-              stretch: true,
-              flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.parallax,
-                background: Image.asset(
-                  'assets/images/chicken.jpg',
-                  fit: BoxFit.cover,
-                ),
-              ),
-              actions: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      right: screenWidth * 0.05), // Adjust the padding here
-                  child: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        // Toggle the favorite state
-                        isFavorite = !isFavorite;
-                      });
-                    },
-                    icon: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      // Change icon based on favorite state
-                      color: isFavorite
-                          ? Colors.red
-                          : null, // Highlight if favorite
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                width: screenWidth * 0.9,
-                height: screenHeight * 0.2,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    top: screenHeight * 0.01,
-                    left: screenWidth * 0.05,
-                    right: screenWidth * 0.07,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.restaurantName,
-                        style: TextStyle(fontSize: screenHeight * 0.035),
-                      ),
-                      Text(
-                        '위치',
-                        style: TextStyle(
-                            fontSize: screenHeight * 0.025,
-                            color: Colors.black54),
-                      ),
-                      SizedBox(height: screenHeight * 0.02),
-                      Text(
-                        '식수인원 N명',
-                        style: TextStyle(fontSize: screenHeight * 0.02),
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                '이용예정 N명',
-                                style: TextStyle(
-                                  fontSize: screenHeight * 0.015,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                '마감시간 23:00',
-                                style: TextStyle(
-                                  fontSize: screenHeight * 0.02,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ];
-        },
-        body: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (BuildContext context, int index) {
-            return MenuWidget(
-              menuName: '메뉴 $index',
-              unitCost: '1000',
-              remaining: '1',
-              onMenuTap: (String menuName) {
-                _showHalfScreenModal(menuName);
-              },
-            );
-          },
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          width: screenWidth,
-          height: screenHeight * 0.08, // 버튼 높이 조절
-          margin: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.05,
-              vertical: screenHeight * 0.01), // 좌우 및 상하 간격 조절
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const CartScreen()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Theme.of(context).primaryColor,
-              backgroundColor: Colors.white,
-            ),
-            child: Text(
-              '장바구니',
-              style: TextStyle(
-                fontSize: screenHeight * 0.025,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

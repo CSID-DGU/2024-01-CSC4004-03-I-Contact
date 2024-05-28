@@ -26,7 +26,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => const RestaurantScreen(
-                restaurantName: '알림',
+                storeId: 1,
               ),
             ),
           );
