@@ -185,8 +185,7 @@ class _MainPageState extends State<MainPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    OrderStatusPage(currentState)));
+                                builder: (context) => const SalesManagePage()));
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -205,7 +204,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                         child: Text(
-                          '이용 확인',
+                          '판매 관리',
                           style: TextStyle(
                             color: Colors.brown[600],
                             fontSize: 30,
@@ -271,7 +270,8 @@ class _MainPageState extends State<MainPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const SalesManagePage()));
+                                builder: (context) =>
+                                    OrderManagePage(currentState)));
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -290,7 +290,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                         child: Text(
-                          '판매 관리',
+                          '주문 관리',
                           style: TextStyle(
                             color: Colors.brown[600],
                             fontSize: 30,
