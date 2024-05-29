@@ -32,7 +32,7 @@ class _NoticeWidgetState extends State<NoticeWidget> {
           context,
           MaterialPageRoute(
               builder: (context) => const RestaurantScreen(
-                    restaurantName: '식당123',
+                    storeId: 1,
                   )),
         );
       },

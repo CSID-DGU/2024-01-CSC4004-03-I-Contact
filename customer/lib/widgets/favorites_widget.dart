@@ -47,7 +47,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
           context,
           MaterialPageRoute(
               builder: (context) => const RestaurantScreen(
-                    restaurantName: '식당123',
+                    storeId: 1,
                   )),
         );
       },

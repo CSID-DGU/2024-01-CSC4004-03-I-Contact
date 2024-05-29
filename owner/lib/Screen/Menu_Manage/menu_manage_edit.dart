@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Model/menu_model.dart';
+import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
+import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
+import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 
 // 현재 틀만 만들어진 상태 기능 구현 필요
 // 메뉴 선택해서 수정 페이지로 넘어올 때 각 입력창에는 직전에 선택해서 넘어온
@@ -28,7 +31,32 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
     controllerSP.text = widget.menu.sellPrice.toString();
   }
 
-  void _deleteMenu() {}
+  void _deleteMenu() async {
+    var deleteMenu = await MenuService.deleteMenu(widget.menu.foodId);
+    if (deleteMenu) {
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MainPage()),
+          (route) => false,
+        );
+
+        Future.delayed(Duration.zero, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const MenuManagePage(StoreState.selling)),
+          );
+        });
+      }
+    } else {
+      var message = "메뉴 삭제에 실패했습니다";
+      if (mounted) {
+        showErrorDialog(context, message);
+      }
+    }
+  }
+
   void _updateMenu() async {
     widget.menu.name = controllerName.text;
     widget.menu.firstPrice = int.parse(controllerFP.text);
@@ -36,7 +64,19 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
     var updatMenuInfo = await MenuService.updateMenuInfo(widget.menu);
     if (updatMenuInfo) {
       if (mounted) {
-        Navigator.pop(context);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MainPage()),
+          (route) => false,
+        );
+
+        Future.delayed(Duration.zero, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const MenuManagePage(StoreState.selling)),
+          );
+        });
       }
     } else {
       var message = "메뉴 수정에 실패했습니다";
@@ -170,6 +210,7 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
                       ),
                     ),
                     autofocus: false,
+                    keyboardType: TextInputType.number,
                     controller: controllerFP,
                   ),
                 ),
@@ -215,6 +256,7 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
                       ),
                     ),
                     autofocus: false,
+                    keyboardType: TextInputType.number,
                     controller: controllerSP,
                   ),
                 ),

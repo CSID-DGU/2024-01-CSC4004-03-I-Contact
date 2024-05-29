@@ -4,9 +4,11 @@ import 'package:flutter/rendering.dart';
 import 'package:leftover_is_over_customer/screens/search_screens/category_search_screen.dart';
 
 class FoodCategoryWidget extends StatelessWidget {
+  final int categoryNumber;
   final String foodName;
 
-  const FoodCategoryWidget({super.key, required this.foodName});
+  const FoodCategoryWidget(
+      {super.key, required this.categoryNumber, required this.foodName});
 
   @override
   Widget build(BuildContext context) {
