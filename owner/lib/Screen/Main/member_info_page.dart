@@ -257,7 +257,7 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(100, 40),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
                         side: BorderSide(color: Colors.grey[700]!),
                         padding: const EdgeInsets.symmetric(
@@ -381,7 +381,7 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                           vertical: 4, horizontal: 23),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.green[300]!.withOpacity(0.6),
+                        color: const Color.fromARGB(255, 222, 234, 187),
                       ),
                       child: const Text(
                         '비밀번호 확인',
