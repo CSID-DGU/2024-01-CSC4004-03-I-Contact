@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:leftover_is_over_customer/screens/restaurant_screen.dart';
+import 'package:leftover_is_over_customer/screens/restaurant_screens/restaurant_screen.dart';
 
 class NoticeWidget extends StatefulWidget {
   const NoticeWidget({
@@ -32,7 +32,7 @@ class _NoticeWidgetState extends State<NoticeWidget> {
           context,
           MaterialPageRoute(
               builder: (context) => const RestaurantScreen(
-                    restaurantName: '식당123',
+                    storeId: 1,
                   )),
         );
       },

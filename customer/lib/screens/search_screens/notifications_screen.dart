@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:leftover_is_over_customer/screens/restaurant_screen.dart';
+import 'package:leftover_is_over_customer/screens/restaurant_screens/restaurant_screen.dart';
 import 'package:leftover_is_over_customer/widgets/notice_widget.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -26,7 +26,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => const RestaurantScreen(
-                restaurantName: '알림',
+                storeId: 1,
               ),
             ),
           );

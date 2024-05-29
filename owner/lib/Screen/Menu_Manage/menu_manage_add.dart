@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
+import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';
 import 'package:leftover_is_over_owner/Services/user_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
+import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 
 // 현재 틀만 만들어진 상태 기능 구현 필요
 
@@ -37,7 +40,22 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
     );
     if (addMenu) {
       if (mounted) {
-        Navigator.pop(context);
+        if (mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MainPage()),
+            (route) => false,
+          );
+
+          Future.delayed(Duration.zero, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      const MenuManagePage(StoreState.selling)),
+            );
+          });
+        }
       }
     } else {
       var message = '메뉴 등록에 실패했습니다';

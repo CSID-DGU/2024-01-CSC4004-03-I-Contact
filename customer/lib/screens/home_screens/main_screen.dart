@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:leftover_is_over_customer/screens/bookmark_screen.dart';
-import 'package:leftover_is_over_customer/screens/home_screen.dart';
-import 'package:leftover_is_over_customer/screens/map_screen.dart';
-import 'package:leftover_is_over_customer/screens/my_order_screen.dart';
-import 'package:leftover_is_over_customer/screens/mypage_screen.dart';
+import 'package:leftover_is_over_customer/screens/home_screens/bookmark_screen.dart';
+import 'package:leftover_is_over_customer/screens/home_screens/home_screen.dart';
+import 'package:leftover_is_over_customer/screens/home_screens/map_screen.dart';
+import 'package:leftover_is_over_customer/screens/home_screens/my_order_screen.dart';
+import 'package:leftover_is_over_customer/screens/home_screens/mypage_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -46,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
     double screenHeight = screenSize.height;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: screens[_selectedIndex],
       bottomNavigationBar: NavigationBar(
         height: screenHeight * 0.1,

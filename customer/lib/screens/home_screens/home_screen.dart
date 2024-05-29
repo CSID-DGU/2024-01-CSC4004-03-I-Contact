@@ -2,13 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:leftover_is_over_customer/screens/category_search_screen.dart';
-import 'package:leftover_is_over_customer/screens/main_screen.dart';
-import 'package:leftover_is_over_customer/screens/map_screen.dart';
-import 'package:leftover_is_over_customer/screens/notifications_screen.dart';
-import 'package:leftover_is_over_customer/screens/search_screen.dart';
+import 'package:leftover_is_over_customer/screens/search_screens/category_search_screen.dart';
+import 'package:leftover_is_over_customer/screens/home_screens/main_screen.dart';
+import 'package:leftover_is_over_customer/screens/home_screens/map_screen.dart';
+import 'package:leftover_is_over_customer/screens/search_screens/notifications_screen.dart';
+import 'package:leftover_is_over_customer/screens/search_screens/search_screen.dart';
 
-import '../widgets/food_category_widget.dart';
+import '../../widgets/food_category_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback onProfileTap;
@@ -185,11 +185,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(
                           width: screenWidth * 0.03,
                         ),
-                        const FoodCategoryWidget(foodName: '한식'),
-                        const FoodCategoryWidget(foodName: '중식'),
-                        const FoodCategoryWidget(foodName: '일식'),
-                        const FoodCategoryWidget(foodName: '양식'),
-                        const FoodCategoryWidget(foodName: '카페'),
+                        const FoodCategoryWidget(
+                            categoryNumber: 1, foodName: '한식'),
+                        const FoodCategoryWidget(
+                            categoryNumber: 2, foodName: '중식'),
+                        const FoodCategoryWidget(
+                            categoryNumber: 3, foodName: '일식'),
+                        const FoodCategoryWidget(
+                            categoryNumber: 4, foodName: '양식'),
+                        const FoodCategoryWidget(
+                            categoryNumber: 5, foodName: '카페'),
                       ],
                     ),
                     SizedBox(
@@ -200,11 +205,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(
                           width: screenWidth * 0.03,
                         ),
-                        const FoodCategoryWidget(foodName: '분식'),
-                        const FoodCategoryWidget(foodName: '디저트'),
-                        const FoodCategoryWidget(foodName: '야식'),
-                        const FoodCategoryWidget(foodName: '도시락'),
-                        const FoodCategoryWidget(foodName: '기사'),
+                        const FoodCategoryWidget(
+                            categoryNumber: 6, foodName: '분식'),
+                        const FoodCategoryWidget(
+                            categoryNumber: 7, foodName: '디저트'),
+                        const FoodCategoryWidget(
+                            categoryNumber: 8, foodName: '야식'),
+                        const FoodCategoryWidget(
+                            categoryNumber: 9, foodName: '도시락'),
+                        const FoodCategoryWidget(
+                            categoryNumber: 10, foodName: '기타'),
                       ],
                     ),
                   ],

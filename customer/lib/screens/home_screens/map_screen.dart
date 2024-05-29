@@ -62,28 +62,7 @@ class _MapScreenState extends State<MapScreen> {
                       padding: EdgeInsets.zero,
                       children: const [
                         ListTile(
-                          title: RestaurantWidget(
-                            restaurantName: '식당1',
-                            restaurantLocation: '위치1',
-                          ),
-                        ),
-                        ListTile(
-                          title: RestaurantWidget(
-                            restaurantName: '식당2',
-                            restaurantLocation: '위치2',
-                          ),
-                        ),
-                        ListTile(
-                          title: RestaurantWidget(
-                            restaurantName: '식당3',
-                            restaurantLocation: '위치3',
-                          ),
-                        ),
-                        ListTile(
-                          title: RestaurantWidget(
-                            restaurantName: '식당4',
-                            restaurantLocation: '위치4',
-                          ),
+                          title: RestaurantWidget(storeId: 1),
                         ),
                         // 필요한 만큼 더 많은 RestaurantWidget 항목 추가
                       ],
@@ -99,25 +78,36 @@ class _MapScreenState extends State<MapScreen> {
   }
 }
 
-class NaverMapApp extends StatelessWidget {
-  const NaverMapApp({super.key, Key? key2});
+class NaverMapApp extends StatefulWidget {
+  const NaverMapApp({super.key});
+
+  @override
+  _NaverMapAppState createState() => _NaverMapAppState();
+}
+
+class _NaverMapAppState extends State<NaverMapApp> {
+  final Completer<NaverMapController> _mapControllerCompleter = Completer();
 
   @override
   Widget build(BuildContext context) {
-    // NaverMapController 객체의 비동기 작업 완료를 나타내는 Completer 생성
-    final Completer<NaverMapController> mapControllerCompleter = Completer();
-
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: NaverMap(
-          options: const NaverMapViewOptions(
-            indoorEnable: true, // 실내 맵 사용 가능 여부 설정
-            locationButtonEnable: false, // 위치 버튼 표시 여부 설정
-            consumeSymbolTapEvents: false, // 심볼 탭 이벤트 소비 여부 설정
-          ),
-          onMapReady: (controller) async {
-            // 지도 준비 완료 시 호출되는 콜백 함수
-            mapControllerCompleter.complete(controller);
+          onMapReady: (controller) {
+            final marker = NMarker(
+                id: 'test',
+                position:
+                    const NLatLng(37.506932467450326, 127.05578661133796));
+            final marker1 = NMarker(
+                id: 'test1',
+                position:
+                    const NLatLng(37.606932467450326, 127.05578661133796));
+            controller.addOverlayAll({marker, marker1});
+
+            final onMarkerInfoWindow =
+                NInfoWindow.onMarker(id: marker.info.id, text: "멋쟁이 사자처럼");
+            marker.openInfoWindow(onMarkerInfoWindow);
           },
         ),
       ),

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:leftover_is_over_customer/screens/restaurant_screen.dart';
+import 'package:leftover_is_over_customer/screens/restaurant_screens/restaurant_screen.dart';
 
 class FavoritesWidget extends StatefulWidget {
   const FavoritesWidget({
@@ -47,7 +47,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
           context,
           MaterialPageRoute(
               builder: (context) => const RestaurantScreen(
-                    restaurantName: '식당123',
+                    storeId: 1,
                   )),
         );
       },

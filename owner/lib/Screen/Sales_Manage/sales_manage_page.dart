@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:leftover_is_over_owner/Widget/order_card_widget.dart';
+import 'package:leftover_is_over_owner/Model/menu_model.dart';
+import 'package:leftover_is_over_owner/Services/menu_services.dart';
+import 'package:leftover_is_over_owner/Widget/sales_card_widget.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 
 class SalesManagePage extends StatefulWidget {
@@ -15,6 +17,8 @@ class SalesManagePage extends StatefulWidget {
 class SalesManagePageState extends State<SalesManagePage> {
   StoreState currentState = StoreState.selling;
   StoreState? lastState;
+
+  Future<List<MenuModel>> visibleMenuList = MenuService.getVisibleMenuList();
 
   void getSalesState() {
     // 매장의 현재 상태를 받아오는 함수
@@ -89,49 +93,67 @@ class SalesManagePageState extends State<SalesManagePage> {
             ],
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.only(
-              bottom:
-                  // 하단 버튼 칸
-                  bottomSheetHeight + MediaQuery.of(context).viewInsets.bottom),
-          child: Column(children: [
-            ShowSalesStatus(
-              // 매장 현재상태 보여주는 위젯
-              statusMessage: statusMessage(),
-              currentState: currentState,
-            ),
-            const Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 50),
-                  child: Column(
-                    // 추후 주문 데이터에 따라 자동으로 OrderCard 생성토록 할 것
-                    children: [
-                      EditOderCard(
-                        // 주문 내역 위젯
-                        menuName: '가나다',
-                        remainderNum: 5,
-                      ),
-                      EditOderCard(
-                        menuName: '라마바',
-                        remainderNum: 3,
-                      ),
-                      EditOderCard(
-                        menuName: '사아자',
-                        remainderNum: 3,
-                      ),
-                      EditOderCard(
-                        menuName: '차카타',
-                        remainderNum: 1,
-                      ),
-                    ],
-                  ),
-                ),
+        resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              ShowSalesStatus(
+                // 매장 현재상태 보여주는 위젯
+                statusMessage: statusMessage(),
+                currentState: currentState,
               ),
-            ),
-          ]),
+              FutureBuilder(
+                  future: visibleMenuList,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.isNotEmpty) {
+                        return ListView.separated(
+                          shrinkWrap: true, // 스크롤 뷰 내에서 사용될 때 크기를 조정함
+                          physics:
+                              const NeverScrollableScrollPhysics(), // ListView 자체 스크롤을 비활성화
+                          scrollDirection: Axis.vertical,
+                          itemCount: snapshot.data!.length, // 추가 버튼을 위해 +1
+                          itemBuilder: (context, index) {
+                            var menu = snapshot.data![index];
+                            return SalesCard(
+                                menuName: menu.name,
+                                remainderNum: menu.capacity);
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              height: 5,
+                            );
+                          },
+                        );
+                      } else {
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 50.0),
+                          child: Text(
+                            '메뉴를 등록해주세요',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey),
+                          ),
+                        );
+                      }
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 20),
+                        child: Center(
+                          child: SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      );
+                    }
+                  })
+            ],
+          ),
         ),
-        bottomSheet: Container(
+        bottomNavigationBar: Container(
           color: Colors.white,
           padding:
               const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 30),

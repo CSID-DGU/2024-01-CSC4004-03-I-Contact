@@ -15,8 +15,7 @@ class SearchResultScreen extends StatelessWidget {
       body: ListView.builder(
         itemCount: 10,
         itemBuilder: (BuildContext context, int index) {
-          return RestaurantWidget(
-              restaurantName: '$query $index', restaurantLocation: '위치 $index');
+          return const RestaurantWidget(storeId: 1);
         },
       ),
     );
