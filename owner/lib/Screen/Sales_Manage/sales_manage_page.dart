@@ -18,7 +18,7 @@ class SalesManagePageState extends State<SalesManagePage> {
   StoreState currentState = StoreState.selling;
   StoreState? lastState;
 
-  Future<List<MenuModel>> menuList = MenuService.getMenuList();
+  Future<List<MenuModel>> visibleMenuList = MenuService.getVisibleMenuList();
 
   void getSalesState() {
     // 매장의 현재 상태를 받아오는 함수
@@ -103,7 +103,7 @@ class SalesManagePageState extends State<SalesManagePage> {
                 currentState: currentState,
               ),
               FutureBuilder(
-                  future: menuList,
+                  future: visibleMenuList,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data!.isNotEmpty) {

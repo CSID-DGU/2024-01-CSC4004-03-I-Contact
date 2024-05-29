@@ -22,6 +22,7 @@ class MenuManagePageState extends State<MenuManagePage> {
   Future<List<MenuModel>> menuList = MenuService.getMenuList();
 
   Map<int, TextEditingController> controllers = {};
+  Map<int, bool> selectedMenuItems = {};
 
   List<String> getAllText() {
     return controllers.values.map((controller) => controller.text).toList();
@@ -45,8 +46,9 @@ class MenuManagePageState extends State<MenuManagePage> {
     // 매장 현재 상태 오픈으로 변경하는 함수
     List<Future> futures = [];
     controllers.forEach((foodId, controller) {
-      futures.add(MenuService.setInitialCapacity(
-          foodId: foodId, capacity: controller.text));
+      bool visible = selectedMenuItems[foodId]!;
+      futures.add(MenuService.setMenu(
+          foodId: foodId, capacity: controller.text, visible: visible));
     });
     await Future.wait(futures);
     setState(() {
@@ -81,6 +83,12 @@ class MenuManagePageState extends State<MenuManagePage> {
     } else {
       return '판매 재개';
     }
+  }
+
+  void toggleSelection(int menuId) {
+    setState(() {
+      selectedMenuItems[menuId] = !(selectedMenuItems[menuId] ?? false);
+    });
   }
 
   @override
@@ -154,7 +162,12 @@ class MenuManagePageState extends State<MenuManagePage> {
                           var menu = snapshot.data![index];
                           return Column(
                             children: [
-                              MenuCard(menu, controllers[menu.foodId]!),
+                              MenuCard(
+                                menu,
+                                controllers[menu.foodId]!,
+                                selectedMenuItems[menu.foodId] ?? false,
+                                onSelected: () => toggleSelection(menu.foodId),
+                              ),
                               const SizedBox(height: 5), // 항목 사이에 간격 추가
                             ],
                           );

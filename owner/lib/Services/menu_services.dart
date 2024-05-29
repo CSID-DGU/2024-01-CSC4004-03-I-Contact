@@ -90,6 +90,36 @@ class MenuService {
     }
   }
 
+  static Future<List<MenuModel>> getVisibleMenuList() async {
+    List<MenuModel> menuInstances = [];
+    try {
+      var token = await AuthService.loadToken();
+      var headers = {'Authorization': '${token[0]} ${token[1]}'};
+      var request = http.Request(
+          'GET', Uri.parse('http://loio-server.azurewebsites.net/food'));
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        String responseBody = await response.stream.bytesToString();
+        List<dynamic> menuList = jsonDecode(responseBody);
+        if (menuList.isNotEmpty) {
+          for (var menu in menuList) {
+            var instance = MenuModel.fromJson(menu);
+            if (instance.visible) {
+              menuInstances.add(instance);
+            }
+          }
+        }
+        return menuInstances;
+      } else {
+        throw Exception('Failed to load menuList: ${response.statusCode}');
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
   static Future<bool> updateMenuInfo(MenuModel menu) async {
     try {
       final url =
@@ -118,8 +148,10 @@ class MenuService {
     }
   }
 
-  static Future<bool> setInitialCapacity(
-      {required int foodId, required String capacity}) async {
+  static Future<bool> setMenu(
+      {required int foodId,
+      required String capacity,
+      required bool visible}) async {
     try {
       final url =
           Uri.parse('http://loio-server.azurewebsites.net/food/$foodId');
@@ -131,6 +163,7 @@ class MenuService {
         body: jsonEncode({
           "foodId": foodId,
           "capacity": capacity,
+          "visible": visible,
         }),
       );
       if (response.statusCode == 200) {
