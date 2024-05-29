@@ -31,6 +31,32 @@ class StoreService {
       rethrow;
     }
   }
+}
 
-  // 다른 메서드들...
+class CategorySearchService {
+  static Future<List<StoreModel>> getStoreListBycategoryId(
+      int categoryId) async {
+    List<StoreModel> storeInstances = [];
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'http://loio-server.azurewebsites.net/store/category/$categoryId'),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> datas = jsonDecode(response.body);
+        for (var data in datas) {
+          storeInstances.add(StoreModel.fromJson(data));
+          print(data);
+        }
+        print(storeInstances);
+        return storeInstances;
+      } else {
+        throw Exception('Failed to load store: ${response.statusCode}');
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
 }

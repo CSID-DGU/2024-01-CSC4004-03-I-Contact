@@ -7,8 +7,11 @@ class FoodCategoryWidget extends StatelessWidget {
   final int categoryNumber;
   final String foodName;
 
-  const FoodCategoryWidget(
-      {super.key, required this.categoryNumber, required this.foodName});
+  const FoodCategoryWidget({
+    super.key,
+    required this.categoryNumber,
+    required this.foodName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,10 @@ class FoodCategoryWidget extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => CategorySearchScreen(foodName: foodName)),
+              builder: (context) => CategorySearchScreen(
+                    foodName: foodName,
+                    categoryNumber: categoryNumber,
+                  )),
         );
       },
       child: Container(
