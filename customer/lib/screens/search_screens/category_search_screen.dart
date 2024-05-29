@@ -5,27 +5,23 @@ import 'package:leftover_is_over_customer/widgets/resturant_widget.dart';
 
 class CategorySearchScreen extends StatefulWidget {
   final String foodName;
+  final int categoryNumber;
 
-  const CategorySearchScreen({super.key, required this.foodName});
+  const CategorySearchScreen(
+      {super.key, required this.foodName, required this.categoryNumber});
 
   @override
   _CategorySearchScreenState createState() => _CategorySearchScreenState();
 }
 
 class _CategorySearchScreenState extends State<CategorySearchScreen> {
-  late Future<List<int>> _futureStoreIds;
+  late Future<List<StoreModel>> _futureStore;
 
   @override
   void initState() {
     super.initState();
-    _futureStoreIds = fetchStoreIdsByCategory(widget.foodName);
-  }
-
-  Future<List<int>> fetchStoreIdsByCategory(String category) async {
-    // 여기에서 카테고리로 식당 ID 목록을 가져오는 로직을 추가
-    // 예를 들어, http 요청을 통해 API에서 식당 ID 목록을 가져오는 방식
-    // 여기서는 예시로 임의의 ID 목록을 반환
-    return [1, 2, 3, 4, 5];
+    _futureStore =
+        CategorySearchService.getStoreListBycategoryId(widget.categoryNumber);
   }
 
   @override
@@ -34,15 +30,15 @@ class _CategorySearchScreenState extends State<CategorySearchScreen> {
       appBar: AppBar(
         title: Text(widget.foodName),
       ),
-      body: FutureBuilder<List<int>>(
-        future: _futureStoreIds,
+      body: FutureBuilder<List<StoreModel>>(
+        future: _futureStore,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
-            List<int> storeIds = snapshot.data!;
+            List<StoreModel> storeIds = snapshot.data!;
             return ListView.builder(
               itemCount: storeIds.length,
               itemBuilder: (BuildContext context, int index) {
