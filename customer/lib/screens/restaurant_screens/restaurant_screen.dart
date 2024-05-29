@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_customer/models/store_model.dart';
+import 'package:leftover_is_over_customer/models/food_model.dart';
 import 'package:leftover_is_over_customer/services/store_services.dart';
+import 'package:leftover_is_over_customer/services/food_services.dart';
 import 'package:leftover_is_over_customer/widgets/menu_widget.dart';
 import 'cart_screen.dart';
 
@@ -14,15 +16,27 @@ class RestaurantScreen extends StatefulWidget {
 }
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
-  late Future<StoreModel> _futureStore;
+  late Future<Map<String, dynamic>> _futureData;
 
-  bool isFavorite = false; // Track the favorite state
+  bool isFavorite = false;
   int numServings = 1;
 
   @override
   void initState() {
     super.initState();
-    _futureStore = StoreService.getStoreById(widget.storeId);
+    _futureData = _fetchData();
+  }
+
+  Future<Map<String, dynamic>> _fetchData() async {
+    final storeFuture = StoreService.getStoreById(widget.storeId);
+    final foodsFuture = FoodService.getFoodListByStoreId(widget.storeId);
+
+    final results = await Future.wait([storeFuture, foodsFuture]);
+
+    return {
+      'store': results[0],
+      'foods': results[1],
+    };
   }
 
   @override
@@ -31,15 +45,18 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     double screenWidth = screenSize.width;
     double screenHeight = screenSize.height;
 
-    return FutureBuilder<StoreModel>(
-      future: _futureStore,
+    return FutureBuilder<Map<String, dynamic>>(
+      future: _futureData,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
-          StoreModel store = snapshot.data!;
+          final store = snapshot.data!['store'] as StoreModel;
+          final foods = snapshot.data!['foods'] as List<FoodModel>;
+          int totalCapacity = foods.fold(0, (sum, food) => sum + food.capacity);
+
           return Scaffold(
             body: NestedScrollView(
               headerSliverBuilder:
@@ -105,7 +122,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                             ),
                             SizedBox(height: screenHeight * 0.02),
                             Text(
-                              '식수인원 N명',
+                              '식수인원 $totalCapacity명',
                               style: TextStyle(fontSize: screenHeight * 0.02),
                             ),
                             Row(
@@ -143,12 +160,13 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 ];
               },
               body: ListView.builder(
-                itemCount: 10,
+                itemCount: foods.length,
                 itemBuilder: (BuildContext context, int index) {
+                  final food = foods[index];
                   return MenuWidget(
-                    menuName: '메뉴 $index',
-                    unitCost: '1000',
-                    remaining: '1',
+                    menuName: food.name,
+                    unitCost: food.sellPrice.toString(),
+                    remaining: food.capacity.toString(),
                     onMenuTap: (String menuName) {
                       _showHalfScreenModal(menuName);
                     },
@@ -161,8 +179,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 width: screenWidth,
                 height: screenHeight * 0.08, // 버튼 높이 조절
                 margin: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.05,
-                    vertical: screenHeight * 0.01), // 좌우 및 상하 간격 조절
+                  horizontal: screenWidth * 0.05,
+                  vertical: screenHeight * 0.01, // 좌우 및 상하 간격 조절
+                ),
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(

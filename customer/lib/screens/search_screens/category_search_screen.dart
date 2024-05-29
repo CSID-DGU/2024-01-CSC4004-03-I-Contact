@@ -38,12 +38,12 @@ class _CategorySearchScreenState extends State<CategorySearchScreen> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
-            List<StoreModel> storeIds = snapshot.data!;
+            List<StoreModel> stores = snapshot.data!;
             return ListView.builder(
-              itemCount: storeIds.length,
+              itemCount: stores.length,
               itemBuilder: (BuildContext context, int index) {
-                int storeId = index + 1; // storeId를 1부터 시작하도록 설정
-                return RestaurantWidget(storeId: storeId);
+                final StoreModel store = stores[index]; // storeId를 1부터 시작하도록 설정
+                return RestaurantWidget(storeId: store.storeId);
               },
             );
           } else {
