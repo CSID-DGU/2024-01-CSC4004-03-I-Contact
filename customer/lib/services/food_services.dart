@@ -11,13 +11,14 @@ class FoodService {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> datas = jsonDecode(response.body);
+        final responseBody = utf8.decode(response.bodyBytes); // UTF-8 디코딩
+        final List<dynamic> datas = jsonDecode(responseBody);
         for (var data in datas) {
           foodInstances.add(FoodModel.fromJson(data));
         }
         return foodInstances;
       } else {
-        throw Exception('Failed to load store: ${response.statusCode}');
+        throw Exception('Failed to load food list: ${response.statusCode}');
       }
     } catch (e) {
       print(e);
