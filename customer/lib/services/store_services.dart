@@ -9,19 +9,9 @@ class StoreService {
         Uri.parse('http://loio-server.azurewebsites.net/store/$storeId'),
       );
 
-      /*
-      - POST할 때
-      final response = await http.post(
-      Uri.parse('http://loio-server.azurewebsites.net/store/$storeId'),
-        body: {
-          'key1': 'value1',
-          'key2': 'value2',
-        },
-      );
-      */
-
       if (response.statusCode == 200) {
-        Map<String, dynamic> data = jsonDecode(response.body);
+        final responseBody = utf8.decode(response.bodyBytes); // UTF-8 디코딩
+        Map<String, dynamic> data = jsonDecode(responseBody);
         return StoreModel.fromJson(data);
       } else {
         throw Exception('Failed to load store: ${response.statusCode}');
@@ -34,7 +24,7 @@ class StoreService {
 }
 
 class CategorySearchService {
-  static Future<List<StoreModel>> getStoreListBycategoryId(
+  static Future<List<StoreModel>> getStoreListByCategoryId(
       int categoryId) async {
     List<StoreModel> storeInstances = [];
     try {
@@ -44,7 +34,8 @@ class CategorySearchService {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> datas = jsonDecode(response.body);
+        final responseBody = utf8.decode(response.bodyBytes); // UTF-8 디코딩
+        final List<dynamic> datas = jsonDecode(responseBody);
         for (var data in datas) {
           storeInstances.add(StoreModel.fromJson(data));
           print(data);
@@ -52,7 +43,7 @@ class CategorySearchService {
         print(storeInstances);
         return storeInstances;
       } else {
-        throw Exception('Failed to load store: ${response.statusCode}');
+        throw Exception('Failed to load stores: ${response.statusCode}');
       }
     } catch (e) {
       print(e);
@@ -67,11 +58,12 @@ class GetStoreByKeywordService {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://loio-server.azurewebsites.net//store/keyword/$keyword'),
+            'http://loio-server.azurewebsites.net/store/keyword/$keyword'),
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> datas = jsonDecode(response.body);
+        final responseBody = utf8.decode(response.bodyBytes); // UTF-8 디코딩
+        final List<dynamic> datas = jsonDecode(responseBody);
         for (var data in datas) {
           storeInstances.add(StoreModel.fromJson(data));
           print(data);
@@ -79,7 +71,7 @@ class GetStoreByKeywordService {
         print(storeInstances);
         return storeInstances;
       } else {
-        throw Exception('Failed to load store: ${response.statusCode}');
+        throw Exception('Failed to load stores: ${response.statusCode}');
       }
     } catch (e) {
       print(e);
