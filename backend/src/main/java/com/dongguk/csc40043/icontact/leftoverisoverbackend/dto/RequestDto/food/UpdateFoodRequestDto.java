@@ -15,4 +15,6 @@ public class UpdateFoodRequestDto {
 
     private Integer capacity;
 
+    private Boolean isVisible;
+
 }

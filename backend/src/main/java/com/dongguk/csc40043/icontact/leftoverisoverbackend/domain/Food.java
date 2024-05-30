@@ -62,4 +62,8 @@ public class Food {
         this.capacity = capacity;
     }
 
+    public void updateIsVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+    }
+
 }
