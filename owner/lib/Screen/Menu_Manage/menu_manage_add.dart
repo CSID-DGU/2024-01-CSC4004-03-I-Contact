@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';
-import 'package:leftover_is_over_owner/Services/user_services.dart';
+import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 
 // 현재 틀만 만들어진 상태 기능 구현 필요
 
 class MenuMangeAddPage extends StatefulWidget {
-  const MenuMangeAddPage({super.key});
-
+  final VoidCallback changeStoreState;
+  const MenuMangeAddPage(this.changeStoreState, {super.key});
   @override
   State<MenuMangeAddPage> createState() => _MenuMangeAddPageState();
 }
@@ -19,13 +19,18 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
   late TextEditingController controllerName,
       controllerFirstPrice,
       controllerSellPrice;
-
+  late bool isOpen;
   @override
   void initState() {
     // TODO: implement initState
     controllerName = TextEditingController();
     controllerFirstPrice = TextEditingController();
     controllerSellPrice = TextEditingController();
+    loadStoreState();
+  }
+
+  loadStoreState() async {
+    isOpen = await StoreService.getStoreState();
   }
 
   void _addMenu() async {
@@ -51,8 +56,10 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      const MenuManagePage(StoreState.selling)),
+                  builder: (context) => MenuManagePage(
+                        isOpen: isOpen,
+                        changeStoreState: () => widget.changeStoreState(),
+                      )),
             );
           });
         }

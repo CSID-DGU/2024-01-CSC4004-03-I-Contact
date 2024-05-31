@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Model/order_model.dart';
 import 'package:leftover_is_over_owner/Services/order_services.dart';
-import 'package:leftover_is_over_owner/Services/user_services.dart';
+import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/order_card_widget.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 
@@ -46,18 +46,6 @@ class _OrderManagePageState extends State<OrderManagePage> {
       }
       currentState = StoreState.closed;
     });
-  }
-
-  String statusMessage() {
-    // 현재 상태 출력
-    switch (currentState) {
-      case StoreState.selling:
-        return '판매 중';
-      case StoreState.paused:
-        return '일시 중단';
-      case StoreState.closed:
-        return '마감';
-    }
   }
 
   String getButtonText() {

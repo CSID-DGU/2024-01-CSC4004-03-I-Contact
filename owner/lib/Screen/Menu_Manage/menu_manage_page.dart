@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:leftover_is_over_owner/Model/menu_model.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';
+import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/menu_card_widget.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_add.dart';
 
 class MenuManagePage extends StatefulWidget {
-  final startState;
-  const MenuManagePage(this.startState, {super.key});
-
+  final bool isOpen;
+  final VoidCallback changeStoreState;
+  const MenuManagePage(
+      {required this.isOpen, required this.changeStoreState, super.key});
   @override
   State<MenuManagePage> createState() => MenuManagePageState();
 }
 
 class MenuManagePageState extends State<MenuManagePage> {
   // 버튼 시연을 위해 현재상태 defalt값을 마감으로 설정함
-  StoreState currentState = StoreState.closed;
-  StoreState? lastState;
+  late bool isOpen; // widget.isOpen이랑 합체
 
   Future<List<MenuModel>> menuList = MenuService.getMenuList();
-
   Map<int, TextEditingController> controllers = {};
   Map<int, bool> selectedMenuItems = {};
 
@@ -28,61 +28,28 @@ class MenuManagePageState extends State<MenuManagePage> {
     return controllers.values.map((controller) => controller.text).toList();
   }
 
-  void getSalesState() {
-    // 매장의 현재 상태를 받아오는 함수
-    setState(() {
-      if (currentState == StoreState.selling) {
-        lastState = currentState;
-        currentState = StoreState.paused;
-      } else if (currentState == StoreState.paused) {
-        lastState = currentState;
-        currentState = StoreState.selling;
-      }
-    });
+  @override
+  void initState() {
+    // TODO: implement initState
+    isOpen = widget.isOpen;
   }
 
-  void openSales() async {
-    print(getAllText());
-    // 매장 현재 상태 오픈으로 변경하는 함수
-    List<Future> futures = [];
-    controllers.forEach((foodId, controller) {
-      bool visible = selectedMenuItems[foodId]!;
-      futures.add(MenuService.setMenu(
-          foodId: foodId, capacity: controller.text, visible: visible));
-    });
-    await Future.wait(futures);
-    setState(() {
-      currentState = StoreState.selling;
-    });
-  }
-
-  String statusMessage() {
-    // 현재 상태 출력
-    switch (currentState) {
-      case StoreState.selling:
-        return '판매 중';
-      case StoreState.paused:
-        return '일시 중단';
-      case StoreState.closed:
-        return '마감';
-    }
-  }
-
-  String getButtonText() {
-    if (currentState == StoreState.closed) {
-      // 판매가 마감된 상태일 때, 마지막 상태에 따라 왼쪽 버튼 텍스트 결정
-      if (lastState == StoreState.selling) {
-        return '일시 중단';
-      } else {
-        return '판매 재개';
-      }
-
-      // 마감 상태가 아닐때 왼쪽 버튼 텍스트
-    } else if (currentState == StoreState.selling) {
-      return '일시 중단';
+  void changeButtonState() async {
+    widget.changeStoreState();
+    if (!isOpen) {
+      List<Future> futures = [];
+      controllers.forEach((foodId, controller) {
+        bool visible = selectedMenuItems[foodId] ?? false;
+        futures.add(MenuService.setMenu(
+            foodId: foodId, capacity: controller.text, visible: visible));
+      });
+      await Future.wait(futures);
     } else {
-      return '판매 재개';
+      // 화면이 고정되도록 하기
     }
+    setState(() {
+      isOpen = !isOpen;
+    });
   }
 
   void toggleSelection(int menuId) {
@@ -114,9 +81,7 @@ class MenuManagePageState extends State<MenuManagePage> {
         child: Column(
           children: [
             ShowSalesStatus(
-              // 매장 현재상태 보여주는 위젯
-              statusMessage: statusMessage(),
-              currentState: currentState,
+              isOpen: isOpen,
             ),
             FutureBuilder(
               future: menuList,
@@ -139,8 +104,8 @@ class MenuManagePageState extends State<MenuManagePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const MenuMangeAddPage(),
+                                    builder: (context) => MenuMangeAddPage(
+                                        () => widget.changeStoreState()),
                                   ),
                                 );
                               },
@@ -163,10 +128,13 @@ class MenuManagePageState extends State<MenuManagePage> {
                           return Column(
                             children: [
                               MenuCard(
-                                menu,
-                                controllers[menu.foodId]!,
-                                selectedMenuItems[menu.foodId] ?? false,
+                                menu: menu,
+                                controller: controllers[menu.foodId]!,
+                                isSelected:
+                                    selectedMenuItems[menu.foodId] ?? false,
                                 onSelected: () => toggleSelection(menu.foodId),
+                                changeStoreState: () =>
+                                    widget.changeStoreState(), // call이 필요할수도 잇어
                               ),
                               const SizedBox(height: 5), // 항목 사이에 간격 추가
                             ],
@@ -193,8 +161,8 @@ class MenuManagePageState extends State<MenuManagePage> {
                               await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const MenuMangeAddPage(),
+                                  builder: (context) => MenuMangeAddPage(
+                                      () => widget.changeStoreState),
                                 ),
                               );
                             },
@@ -234,7 +202,7 @@ class MenuManagePageState extends State<MenuManagePage> {
           children: [
             GestureDetector(
               // 판매 개시 버튼
-              onTap: openSales,
+              onTap: changeButtonState,
               child: Container(
                 height: 70,
                 width: 150,
@@ -246,16 +214,16 @@ class MenuManagePageState extends State<MenuManagePage> {
                       color: Colors.black.withOpacity(0.4),
                     )
                   ],
-                  color: currentState == StoreState.selling
+                  color: isOpen
                       ? const Color.fromARGB(255, 210, 210, 210)
                       : Colors.white,
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Center(
                   child: Text(
-                    '판매 개시',
+                    isOpen ? "판매 마감" : "판매 개시",
                     style: TextStyle(
-                      color: currentState == StoreState.selling
+                      color: isOpen
                           ? const Color.fromARGB(255, 120, 120, 120)
                           : const Color.fromARGB(255, 57, 124, 57),
                       fontWeight: FontWeight.bold,
