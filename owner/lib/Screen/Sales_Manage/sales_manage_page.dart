@@ -15,62 +15,10 @@ class SalesManagePage extends StatefulWidget {
 }
 
 class SalesManagePageState extends State<SalesManagePage> {
-  StoreState currentState = StoreState.selling;
-  StoreState? lastState;
-
+  late bool isOpen;
   Future<List<MenuModel>> visibleMenuList = MenuService.getVisibleMenuList();
 
-  void getSalesState() {
-    // 매장의 현재 상태를 받아오는 함수
-    setState(() {
-      if (currentState == StoreState.selling) {
-        lastState = currentState;
-        currentState = StoreState.paused;
-      } else if (currentState == StoreState.paused) {
-        lastState = currentState;
-        currentState = StoreState.selling;
-      }
-    });
-  }
-
-  void closeSales() {
-    // 매장 현재 상태 마감으로 변경하는 함수
-    setState(() {
-      if (currentState != StoreState.closed) {
-        lastState = currentState; // 판매 마감 전 현재 상태를 lastState에 저장
-      }
-      currentState = StoreState.closed;
-    });
-  }
-
-  String statusMessage() {
-    // 현재 상태 출력
-    switch (currentState) {
-      case StoreState.selling:
-        return '판매 중';
-      case StoreState.paused:
-        return '일시 중단';
-      case StoreState.closed:
-        return '마감';
-    }
-  }
-
-  String getButtonText() {
-    if (currentState == StoreState.closed) {
-      // 판매가 마감된 상태일 때, 마지막 상태에 따라 왼쪽 버튼 텍스트 결정
-      if (lastState == StoreState.selling) {
-        return '일시 중단';
-      } else {
-        return '판매 재개';
-      }
-
-      // 마감 상태가 아닐때 왼쪽 버튼 텍스트
-    } else if (currentState == StoreState.selling) {
-      return '일시 중단';
-    } else {
-      return '판매 재개';
-    }
-  }
+  void changeState() {}
 
   @override
   Widget build(BuildContext context) {
@@ -99,8 +47,7 @@ class SalesManagePageState extends State<SalesManagePage> {
             children: [
               ShowSalesStatus(
                 // 매장 현재상태 보여주는 위젯
-                statusMessage: statusMessage(),
-                currentState: currentState,
+                isOpen: isOpen,
               ),
               FutureBuilder(
                   future: visibleMenuList,
@@ -162,7 +109,7 @@ class SalesManagePageState extends State<SalesManagePage> {
             children: [
               GestureDetector(
                 // 왼쪽 하단 버튼
-                onTap: getSalesState,
+                onTap: () {},
                 child: Container(
                   height: 70,
                   width: 150,
@@ -174,20 +121,18 @@ class SalesManagePageState extends State<SalesManagePage> {
                         color: Colors.black.withOpacity(0.4),
                       )
                     ],
-                    color: currentState == StoreState.closed
+                    color: !isOpen
                         ? const Color.fromARGB(255, 210, 210, 210)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Center(
                     child: Text(
-                      getButtonText(),
+                      isOpen ? "판매 중단" : "판매 개시",
                       style: TextStyle(
-                        color: currentState == StoreState.selling
+                        color: isOpen
                             ? const Color.fromARGB(255, 186, 85, 28)
-                            : currentState == StoreState.paused
-                                ? const Color.fromARGB(255, 57, 124, 57)
-                                : const Color.fromARGB(255, 120, 120, 120),
+                            : const Color.fromARGB(255, 120, 120, 120),
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       ),
@@ -197,7 +142,7 @@ class SalesManagePageState extends State<SalesManagePage> {
               ),
               GestureDetector(
                 // 오른쪽 하단 버튼
-                onTap: closeSales,
+                onTap: changeState,
                 child: Container(
                   height: 70,
                   width: 150,
@@ -209,7 +154,7 @@ class SalesManagePageState extends State<SalesManagePage> {
                         color: Colors.black.withOpacity(0.4),
                       )
                     ],
-                    color: currentState == StoreState.closed
+                    color: !isOpen
                         ? const Color.fromARGB(255, 210, 210, 210)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(100),
@@ -218,7 +163,7 @@ class SalesManagePageState extends State<SalesManagePage> {
                     child: Text(
                       '판매 마감',
                       style: TextStyle(
-                        color: currentState == StoreState.closed
+                        color: !isOpen
                             ? const Color.fromARGB(255, 120, 120, 120)
                             : Colors.red,
                         fontWeight: FontWeight.bold,

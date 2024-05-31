@@ -1,17 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_owner/Model/store_model.dart';
 import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/Main/member_info_page.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
+import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_edit.dart';
 import 'package:leftover_is_over_owner/Screen/Sales_Manage/sales_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/Order_Manage/order_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/Main/store_info_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
-import 'package:leftover_is_over_owner/Services/user_services.dart';
+import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 import 'dart:ui';
@@ -25,12 +22,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late StoreModel store;
-  late StoreState currentState;
+
   late String storeName; // 이것도 late로 받아오기
   bool _isDropdownVisible = false;
   bool isLoading = true; // 로딩 중인지
   double _opacity = 0.0;
-  late String currentStateS;
+  late bool isOpen;
   @override
   void initState() {
     // TODO: implement initState
@@ -39,13 +36,20 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _loadStore() async {
-    store = await UserService.getStoreInfo();
+    store = await StoreService.getStoreInfo();
     setState(() {
       isLoading = false;
-      currentState = store.isOpen ? StoreState.selling : StoreState.closed;
-      currentStateS = currentState == StoreState.selling ? "판매 중" : "마감";
+      isOpen = store.isOpen;
       storeName = store.name;
     });
+  }
+
+  void changeStoreState() async {
+    bool changeStoreState = await StoreService.changeStoreState();
+    if (changeStoreState) {
+      isOpen = !isOpen;
+      setState(() {});
+    }
   }
 
   void _toggleDropdown() {
@@ -76,81 +80,65 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  String statusMessage() {
-    // 현재 상태 출력
-    switch (currentState) {
-      case StoreState.selling:
-        return '판매 중';
-      case StoreState.paused:
-        return '일시 중단';
-      case StoreState.closed:
-        return '마감';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 198, 88),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 5,
-        shadowColor: Colors.black.withOpacity(0.3),
-        title: Row(
-          children: [
-            const Icon(Icons.restaurant_outlined, color: Colors.black),
-            const SizedBox(width: 15),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  storeName,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Scaffold(
+            backgroundColor: const Color.fromARGB(255, 255, 198, 88),
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              elevation: 5,
+              shadowColor: Colors.black.withOpacity(0.3),
+              title: Row(
+                children: [
+                  const Icon(Icons.restaurant_outlined, color: Colors.black),
+                  const SizedBox(width: 15),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        storeName,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const Text(
+                            '현재상태: ',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          Text(
+                            isOpen ? "판매 중" : "판매 마감",
+                            style: TextStyle(
+                              color: isOpen ? Colors.green : Colors.black,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ),
-                Row(
-                  children: [
-                    const Text(
-                      '현재상태: ',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black54,
-                      ),
-                    ),
-                    Text(
-                      currentStateS,
-                      style: TextStyle(
-                        color: currentStateS == '판매 중'
-                            ? Colors.green
-                            : currentStateS == '마감'
-                                ? Colors.red
-                                : Colors.black,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      _toggleDropdown();
+                    },
+                    icon: const Icon(Icons.menu, color: Colors.black),
+                  ),
+                ],
+              ),
             ),
-            const Spacer(),
-            IconButton(
-              onPressed: () {
-                _toggleDropdown();
-              },
-              icon: const Icon(Icons.menu, color: Colors.black),
-            ),
-          ],
-        ),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Stack(
+            body: Stack(
               children: [
                 Align(
                   alignment: Alignment.center,
@@ -163,7 +151,7 @@ class _MainPageState extends State<MainPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      OrderStatusPage(currentState)));
+                                      const SalesManagePage()));
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -182,7 +170,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ),
                           child: Text(
-                            '이용 확인',
+                            '판매 관리',
                             style: TextStyle(
                               color: Colors.brown[600],
                               fontSize: 30,
@@ -205,8 +193,10 @@ class _MainPageState extends State<MainPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      MenuManagePage(currentState)));
+                                  builder: (context) => MenuManagePage(
+                                      isOpen: isOpen,
+                                      changeStoreState: () =>
+                                          changeStoreState())));
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -248,8 +238,8 @@ class _MainPageState extends State<MainPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SalesManagePage()));
+                                  builder: (context) => const OrderManagePage(
+                                      StoreState.paused)));
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -268,7 +258,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ),
                           child: Text(
-                            '판매 관리',
+                            '이용 확인',
                             style: TextStyle(
                               color: Colors.brown[600],
                               fontSize: 30,
@@ -453,6 +443,6 @@ class _MainPageState extends State<MainPage> {
                 )
               ],
             ),
-    );
+          );
   }
 }
