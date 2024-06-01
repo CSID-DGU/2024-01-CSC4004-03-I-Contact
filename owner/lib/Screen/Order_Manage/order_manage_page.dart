@@ -6,16 +6,14 @@ import 'package:leftover_is_over_owner/Widget/order_card_widget.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 
 class OrderManagePage extends StatefulWidget {
-  final StoreState startState;
-  const OrderManagePage(this.startState, {super.key});
+  const OrderManagePage({super.key});
 
   @override
   State<OrderManagePage> createState() => _OrderManagePageState();
 }
 
 class _OrderManagePageState extends State<OrderManagePage> {
-  late StoreState currentState = widget.startState;
-  StoreState? lastState;
+  late bool isOpen;
   late Future<List<OrderModel>> orderList;
 
   @override
@@ -23,46 +21,6 @@ class _OrderManagePageState extends State<OrderManagePage> {
     // TODO: implement initState
     var getAll = false;
     orderList = OrderService.getOrderList(getAll);
-  }
-
-  void getSalesState() {
-    // 매장의 현재 상태를 받아오는 함수
-    setState(() {
-      if (currentState == StoreState.selling) {
-        lastState = currentState;
-        currentState = StoreState.paused;
-      } else if (currentState == StoreState.paused) {
-        lastState = currentState;
-        currentState = StoreState.selling;
-      }
-    });
-  }
-
-  void closeSales() {
-    // 매장 현재 상태 마감으로 변경하는 함수
-    setState(() {
-      if (currentState != StoreState.closed) {
-        lastState = currentState; // 판매 마감 전 현재 상태를 lastState에 저장
-      }
-      currentState = StoreState.closed;
-    });
-  }
-
-  String getButtonText() {
-    if (currentState == StoreState.closed) {
-      // 판매가 마감된 상태일 때, 마지막 상태에 따라 왼쪽 버튼 텍스트 결정
-      if (lastState == StoreState.selling) {
-        return '일시 중단';
-      } else {
-        return '판매 재개';
-      }
-
-      // 마감 상태가 아닐때 왼쪽 버튼 텍스트
-    } else if (currentState == StoreState.selling) {
-      return '일시 중단';
-    } else {
-      return '판매 재개';
-    }
   }
 
   @override

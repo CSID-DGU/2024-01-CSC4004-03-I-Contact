@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_owner/Model/menu_model.dart';
+import 'package:leftover_is_over_owner/Provider/store_state.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';
 import 'package:leftover_is_over_owner/Widget/sales_card_widget.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
+import 'package:provider/provider.dart';
 
 class SalesManagePage extends StatefulWidget {
-  const SalesManagePage({super.key});
-
+  final bool isOpen;
+  final VoidCallback changeStoreState;
+  const SalesManagePage(
+      {required this.isOpen, required this.changeStoreState, super.key});
   @override
   State<SalesManagePage> createState() => SalesManagePageState();
 }
@@ -18,7 +22,22 @@ class SalesManagePageState extends State<SalesManagePage> {
   late bool isOpen;
   Future<List<MenuModel>> visibleMenuList = MenuService.getVisibleMenuList();
 
-  void changeState() {}
+  @override
+  void initState() {
+    // TODO: implement initState
+    isOpen = widget.isOpen;
+    var storeState = context.read<StoreState>();
+  }
+
+  void closeStoreState() async {
+    if (isOpen) {
+      // 열려있는 상태라면
+      widget.changeStoreState();
+      setState(() {
+        isOpen = !isOpen;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,54 +68,57 @@ class SalesManagePageState extends State<SalesManagePage> {
                 // 매장 현재상태 보여주는 위젯
                 isOpen: isOpen,
               ),
-              FutureBuilder(
-                  future: visibleMenuList,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data!.isNotEmpty) {
-                        return ListView.separated(
-                          shrinkWrap: true, // 스크롤 뷰 내에서 사용될 때 크기를 조정함
-                          physics:
-                              const NeverScrollableScrollPhysics(), // ListView 자체 스크롤을 비활성화
-                          scrollDirection: Axis.vertical,
-                          itemCount: snapshot.data!.length, // 추가 버튼을 위해 +1
-                          itemBuilder: (context, index) {
-                            var menu = snapshot.data![index];
-                            return SalesCard(
-                                menuName: menu.name,
-                                remainderNum: menu.capacity);
-                          },
-                          separatorBuilder: (context, index) {
-                            return const SizedBox(
-                              height: 5,
-                            );
-                          },
-                        );
+              IgnorePointer(
+                ignoring: !isOpen, // 닫혀있으면 수정할 수 없어!!
+                child: FutureBuilder(
+                    future: visibleMenuList,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.isNotEmpty) {
+                          return ListView.separated(
+                            shrinkWrap: true, // 스크롤 뷰 내에서 사용될 때 크기를 조정함
+                            physics:
+                                const NeverScrollableScrollPhysics(), // ListView 자체 스크롤을 비활성화
+                            scrollDirection: Axis.vertical,
+                            itemCount: snapshot.data!.length, // 추가 버튼을 위해 +1
+                            itemBuilder: (context, index) {
+                              var menu = snapshot.data![index];
+                              return SalesCard(
+                                  menuName: menu.name,
+                                  remainderNum: menu.capacity);
+                            },
+                            separatorBuilder: (context, index) {
+                              return const SizedBox(
+                                height: 5,
+                              );
+                            },
+                          );
+                        } else {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 50.0),
+                            child: Text(
+                              '메뉴를 등록해주세요',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey),
+                            ),
+                          );
+                        }
                       } else {
                         return const Padding(
-                          padding: EdgeInsets.only(top: 50.0),
-                          child: Text(
-                            '메뉴를 등록해주세요',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey),
+                          padding: EdgeInsets.only(top: 20),
+                          child: Center(
+                            child: SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
                         );
                       }
-                    } else {
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: Center(
-                          child: SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      );
-                    }
-                  })
+                    }),
+              )
             ],
           ),
         ),
@@ -105,44 +127,11 @@ class SalesManagePageState extends State<SalesManagePage> {
           padding:
               const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 30),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               GestureDetector(
-                // 왼쪽 하단 버튼
-                onTap: () {},
-                child: Container(
-                  height: 70,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
-                        color: Colors.black.withOpacity(0.4),
-                      )
-                    ],
-                    color: !isOpen
-                        ? const Color.fromARGB(255, 210, 210, 210)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: Center(
-                    child: Text(
-                      isOpen ? "판매 중단" : "판매 개시",
-                      style: TextStyle(
-                        color: isOpen
-                            ? const Color.fromARGB(255, 186, 85, 28)
-                            : const Color.fromARGB(255, 120, 120, 120),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              GestureDetector(
                 // 오른쪽 하단 버튼
-                onTap: changeState,
+                onTap: closeStoreState,
                 child: Container(
                   height: 70,
                   width: 150,

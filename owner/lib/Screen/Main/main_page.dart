@@ -150,8 +150,10 @@ class _MainPageState extends State<MainPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SalesManagePage()));
+                                  builder: (context) => SalesManagePage(
+                                      isOpen: isOpen,
+                                      changeStoreState: () =>
+                                          changeStoreState())));
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -238,8 +240,8 @@ class _MainPageState extends State<MainPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const OrderManagePage(
-                                      StoreState.paused)));
+                                  builder: (context) =>
+                                      const OrderManagePage()));
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
