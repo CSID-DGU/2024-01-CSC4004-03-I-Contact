@@ -186,15 +186,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: screenWidth * 0.03,
                         ),
                         const FoodCategoryWidget(
-                            categoryNumber: 1, foodName: '한식'),
+                            categoryNumber: 0, foodName: '한식'),
                         const FoodCategoryWidget(
-                            categoryNumber: 2, foodName: '중식'),
+                            categoryNumber: 1, foodName: '중식'),
                         const FoodCategoryWidget(
-                            categoryNumber: 3, foodName: '일식'),
+                            categoryNumber: 2, foodName: '일식'),
                         const FoodCategoryWidget(
-                            categoryNumber: 4, foodName: '양식'),
+                            categoryNumber: 3, foodName: '양식'),
                         const FoodCategoryWidget(
-                            categoryNumber: 5, foodName: '카페'),
+                            categoryNumber: 4, foodName: '패스트푸드'),
                       ],
                     ),
                     SizedBox(
@@ -206,15 +206,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: screenWidth * 0.03,
                         ),
                         const FoodCategoryWidget(
+                            categoryNumber: 5, foodName: '아시안'),
+                        const FoodCategoryWidget(
                             categoryNumber: 6, foodName: '분식'),
                         const FoodCategoryWidget(
                             categoryNumber: 7, foodName: '디저트'),
                         const FoodCategoryWidget(
-                            categoryNumber: 8, foodName: '야식'),
+                            categoryNumber: 8, foodName: '기타'),
                         const FoodCategoryWidget(
-                            categoryNumber: 9, foodName: '도시락'),
-                        const FoodCategoryWidget(
-                            categoryNumber: 10, foodName: '기타'),
+                            categoryNumber: 9, foodName: '추천'),
                       ],
                     ),
                   ],

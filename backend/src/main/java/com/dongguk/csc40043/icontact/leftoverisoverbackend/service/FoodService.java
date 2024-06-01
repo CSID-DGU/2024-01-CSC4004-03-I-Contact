@@ -72,6 +72,8 @@ public class FoodService {
             food.updateSellPrice(updateFoodRequestDto.getSellPrice());
         if (updateFoodRequestDto.getCapacity() != null)
             food.updateCapacity(updateFoodRequestDto.getCapacity());
+        if (updateFoodRequestDto.getIsVisible() != null)
+            food.updateIsVisible(updateFoodRequestDto.getIsVisible());
     }
 
     public List<GetFoodListResponseDto> getFoodListByStoreId(Long storeId) {

@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_owner/Model/menu_model.dart';
+import 'package:leftover_is_over_owner/Provider/store_state.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';
+import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/menu_card_widget.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_add.dart';
+import 'package:provider/provider.dart';
 
 class MenuManagePage extends StatefulWidget {
-  final startState;
-  const MenuManagePage(this.startState, {super.key});
-
+  const MenuManagePage({super.key});
   @override
   State<MenuManagePage> createState() => MenuManagePageState();
 }
 
 class MenuManagePageState extends State<MenuManagePage> {
   // 버튼 시연을 위해 현재상태 defalt값을 마감으로 설정함
-  StoreState currentState = StoreState.closed;
-  StoreState? lastState;
-
   Future<List<MenuModel>> menuList = MenuService.getMenuList();
-
   Map<int, TextEditingController> controllers = {};
   Map<int, bool> selectedMenuItems = {};
 
@@ -28,60 +26,50 @@ class MenuManagePageState extends State<MenuManagePage> {
     return controllers.values.map((controller) => controller.text).toList();
   }
 
-  void getSalesState() {
-    // 매장의 현재 상태를 받아오는 함수
-    setState(() {
-      if (currentState == StoreState.selling) {
-        lastState = currentState;
-        currentState = StoreState.paused;
-      } else if (currentState == StoreState.paused) {
-        lastState = currentState;
-        currentState = StoreState.selling;
-      }
-    });
+  @override
+  void initState() {
+    // TODO: implement initState
+    menuList = MenuService.getMenuList();
+    var storeState = Provider.of<StoreState>(context, listen: false);
+    storeState.setRefreshMenuCallback(refreshMenuPage);
   }
 
-  void openSales() async {
-    print(getAllText());
-    // 매장 현재 상태 오픈으로 변경하는 함수
-    List<Future> futures = [];
-    controllers.forEach((foodId, controller) {
-      bool visible = selectedMenuItems[foodId]!;
-      futures.add(MenuService.setMenu(
-          foodId: foodId, capacity: controller.text, visible: visible));
-    });
-    await Future.wait(futures);
-    setState(() {
-      currentState = StoreState.selling;
-    });
-  }
-
-  String statusMessage() {
-    // 현재 상태 출력
-    switch (currentState) {
-      case StoreState.selling:
-        return '판매 중';
-      case StoreState.paused:
-        return '일시 중단';
-      case StoreState.closed:
-        return '마감';
+  void refreshMenuPage() async {
+    print("refreshMenuPage");
+    var storeState = context.read<StoreState>();
+    if (!storeState.isOpen) {
+      // 만약에 닫힌걸로 바뀌었어
+      List<Future> futures = []; // 싹 다 초기화!!
+      controllers.forEach((foodId, controller) {
+        bool visible = false;
+        controller.text = '0';
+        futures.add(MenuService.setMenu(
+            foodId: foodId, capacity: controller.text = '0', visible: visible));
+      });
+      await Future.wait(futures);
+      refreshMenuList();
     }
   }
 
-  String getButtonText() {
-    if (currentState == StoreState.closed) {
-      // 판매가 마감된 상태일 때, 마지막 상태에 따라 왼쪽 버튼 텍스트 결정
-      if (lastState == StoreState.selling) {
-        return '일시 중단';
-      } else {
-        return '판매 재개';
-      }
+  void refreshMenuList() {
+    setState(() {
+      menuList = MenuService.getMenuList();
+    });
+  }
 
-      // 마감 상태가 아닐때 왼쪽 버튼 텍스트
-    } else if (currentState == StoreState.selling) {
-      return '일시 중단';
-    } else {
-      return '판매 재개';
+  void changeButtonState() async {
+    var storeState = context.read<StoreState>();
+    if (!storeState.isOpen) {
+      // 현재 상태 마감인데 판매 게시로 바꿀때
+      storeState.toggleStore();
+      List<Future> futures = [];
+      controllers.forEach((foodId, controller) {
+        bool visible = selectedMenuItems[foodId] ?? false;
+        futures.add(MenuService.setMenu(
+            foodId: foodId, capacity: controller.text, visible: visible));
+      });
+      await Future.wait(futures);
+      refreshMenuList();
     }
   }
 
@@ -113,115 +101,123 @@ class MenuManagePageState extends State<MenuManagePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ShowSalesStatus(
-              // 매장 현재상태 보여주는 위젯
-              statusMessage: statusMessage(),
-              currentState: currentState,
-            ),
-            FutureBuilder(
-              future: menuList,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data!.isNotEmpty) {
-                    return ListView.builder(
-                      shrinkWrap: true, // 스크롤 뷰 내에서 사용될 때 크기를 조정함
-                      physics:
-                          const NeverScrollableScrollPhysics(), // ListView 자체 스크롤을 비활성화
-                      scrollDirection: Axis.vertical,
-                      itemCount: snapshot.data!.length + 1, // 추가 버튼을 위해 +1
-                      itemBuilder: (context, index) {
-                        if (index == snapshot.data!.length) {
-                          // 마지막 항목 다음에 추가 버튼을 넣음
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const MenuMangeAddPage(),
+            Consumer<StoreState>(builder: (context, storeState, child) {
+              return ShowSalesStatus(
+                isOpen: storeState.isOpen,
+              );
+            }),
+            Consumer<StoreState>(builder: (context, storeState, child) {
+              return IgnorePointer(
+                ignoring: storeState.isOpen, // 매장이 판매중이면 더 이상 수정할 수 없어
+                child: FutureBuilder(
+                  future: menuList,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.isNotEmpty) {
+                        return ListView.builder(
+                          shrinkWrap: true, // 스크롤 뷰 내에서 사용될 때 크기를 조정함
+                          physics:
+                              const NeverScrollableScrollPhysics(), // ListView 자체 스크롤을 비활성화
+                          scrollDirection: Axis.vertical,
+                          itemCount: snapshot.data!.length + 1, // 추가 버튼을 위해 +1
+                          itemBuilder: (context, index) {
+                            if (index == snapshot.data!.length) {
+                              // 마지막 항목 다음에 추가 버튼을 넣음
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MenuMangeAddPage(),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.add_circle_outline_outlined,
+                                    size: 60,
+                                    color: Color.fromARGB(255, 120, 120, 120),
                                   ),
-                                );
-                              },
-                              icon: const Icon(
-                                Icons.add_circle_outline_outlined,
-                                size: 60,
-                                color: Color.fromARGB(255, 120, 120, 120),
-                              ),
-                            ),
-                          );
-                        } else {
-                          if (controllers.isEmpty) {
-                            controllers = {
-                              for (var menu in snapshot.data!)
-                                menu.foodId: TextEditingController(
-                                    text: menu.capacity.toString())
-                            };
-                          }
-                          var menu = snapshot.data![index];
-                          return Column(
-                            children: [
-                              MenuCard(
-                                menu,
-                                controllers[menu.foodId]!,
-                                selectedMenuItems[menu.foodId] ?? false,
-                                onSelected: () => toggleSelection(menu.foodId),
-                              ),
-                              const SizedBox(height: 5), // 항목 사이에 간격 추가
-                            ],
-                          );
-                        }
-                      },
-                    );
-                  } else {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 50),
-                        const Text(
-                          '메뉴를 등록해주세요',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          child: IconButton(
-                            onPressed: () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const MenuMangeAddPage(),
                                 ),
                               );
-                            },
-                            icon: const Icon(
-                              Icons.add_circle_outline_outlined,
-                              size: 60,
-                              color: Color.fromARGB(255, 120, 120, 120),
+                            } else {
+                              if (controllers.isEmpty) {
+                                controllers = {
+                                  for (var menu in snapshot.data!)
+                                    menu.foodId: TextEditingController(
+                                        text: menu.capacity.toString())
+                                };
+                              }
+                              var menu = snapshot.data![index];
+                              return Column(
+                                children: [
+                                  MenuCard(
+                                    menu: menu,
+                                    controller: controllers[menu.foodId]!,
+                                    isSelected:
+                                        selectedMenuItems[menu.foodId] ?? false,
+                                    onSelected: () =>
+                                        toggleSelection(menu.foodId),
+                                  ),
+                                  const SizedBox(height: 5), // 항목 사이에 간격 추가
+                                ],
+                              );
+                            }
+                          },
+                        );
+                      } else {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 50),
+                            const Text(
+                              '메뉴를 등록해주세요',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey),
                             ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: IconButton(
+                                onPressed: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const MenuMangeAddPage(),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(
+                                  Icons.add_circle_outline_outlined,
+                                  size: 60,
+                                  color: Color.fromARGB(255, 120, 120, 120),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 20),
+                        child: Center(
+                          child: SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: CircularProgressIndicator(),
                           ),
                         ),
-                      ],
-                    );
-                  }
-                } else {
-                  return const Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: Center(
-                      child: SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
+                      );
+                    }
+                  },
+                ),
+              );
+            }),
           ],
         ),
       ),
@@ -234,7 +230,7 @@ class MenuManagePageState extends State<MenuManagePage> {
           children: [
             GestureDetector(
               // 판매 개시 버튼
-              onTap: openSales,
+              onTap: changeButtonState,
               child: Container(
                 height: 70,
                 width: 150,
@@ -246,16 +242,16 @@ class MenuManagePageState extends State<MenuManagePage> {
                       color: Colors.black.withOpacity(0.4),
                     )
                   ],
-                  color: currentState == StoreState.selling
+                  color: context.watch<StoreState>().isOpen
                       ? const Color.fromARGB(255, 210, 210, 210)
                       : Colors.white,
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Center(
                   child: Text(
-                    '판매 개시',
+                    context.watch<StoreState>().isOpen ? "판매 중" : "판매 개시",
                     style: TextStyle(
-                      color: currentState == StoreState.selling
+                      color: context.watch<StoreState>().isOpen
                           ? const Color.fromARGB(255, 120, 120, 120)
                           : const Color.fromARGB(255, 57, 124, 57),
                       fontWeight: FontWeight.bold,

@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:leftover_is_over_owner/Model/user_model.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
-import 'package:leftover_is_over_owner/Services/user_services.dart';
+import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 class MemberInfoPage extends StatefulWidget {
@@ -40,7 +40,7 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
   }
 
   void _loadClient() async {
-    user = await UserService.getUserInfo();
+    user = await StoreService.getUserInfo();
     setState(() {
       isLoading = false;
       controllerName.text = user.name;

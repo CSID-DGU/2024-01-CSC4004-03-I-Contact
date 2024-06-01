@@ -3,6 +3,7 @@ import 'package:leftover_is_over_owner/Model/menu_model.dart';
 import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';
+import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 
@@ -20,6 +21,7 @@ class MenuManageEditPage extends StatefulWidget {
 
 class _MenuManageEditPageState extends State<MenuManageEditPage> {
   late TextEditingController controllerName, controllerFP, controllerSP;
+  late bool isOpen;
   @override
   void initState() {
     super.initState();
@@ -29,6 +31,11 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
     controllerName.text = widget.menu.name;
     controllerFP.text = widget.menu.firstPrice.toString();
     controllerSP.text = widget.menu.sellPrice.toString();
+    loadStoreState();
+  }
+
+  loadStoreState() async {
+    isOpen = await StoreService.getStoreState();
   }
 
   void _deleteMenu() async {
@@ -44,8 +51,7 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
         Future.delayed(Duration.zero, () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => const MenuManagePage(StoreState.selling)),
+            MaterialPageRoute(builder: (context) => const MenuManagePage()),
           );
         });
       }
@@ -73,8 +79,7 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
         Future.delayed(Duration.zero, () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => const MenuManagePage(StoreState.selling)),
+            MaterialPageRoute(builder: (context) => const MenuManagePage()),
           );
         });
       }

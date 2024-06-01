@@ -12,10 +12,10 @@ class MenuCard extends StatefulWidget {
   final TextEditingController controller;
   final bool isSelected;
   final VoidCallback onSelected;
-  const MenuCard(
-    this.menu,
-    this.controller,
-    this.isSelected, {
+  const MenuCard({
+    required this.menu,
+    required this.controller,
+    required this.isSelected,
     required this.onSelected,
     super.key,
   });
@@ -91,15 +91,18 @@ class _MenuCardState extends State<MenuCard> {
               child: Container(
                 height: 150,
                 decoration: BoxDecoration(
-                  color: widget.isSelected ? Colors.grey[100] : Colors.white,
+                  color: widget.isSelected || widget.menu.visible
+                      ? Colors.grey[100]
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
-                      blurRadius: widget.isSelected ? 5 : 5,
-                      color: widget.isSelected
+                      blurRadius:
+                          widget.isSelected || widget.menu.visible ? 5 : 5,
+                      color: widget.isSelected || widget.menu.visible
                           ? Colors.yellow.shade800
                           : Colors.black.withOpacity(0.3),
-                      offset: widget.isSelected
+                      offset: widget.isSelected || widget.menu.visible
                           ? const Offset(0, 0)
                           : const Offset(0, 2),
                     ),
@@ -141,7 +144,9 @@ class _MenuCardState extends State<MenuCard> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            MenuManageEditPage(widget.menu)));
+                                            MenuManageEditPage(
+                                              widget.menu,
+                                            )));
                               },
                             ),
                           ),

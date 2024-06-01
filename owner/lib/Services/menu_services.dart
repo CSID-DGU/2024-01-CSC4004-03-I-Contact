@@ -106,6 +106,7 @@ class MenuService {
           for (var menu in menuList) {
             var instance = MenuModel.fromJson(menu);
             if (instance.visible) {
+              print('add');
               menuInstances.add(instance);
             }
           }
@@ -163,7 +164,7 @@ class MenuService {
         body: jsonEncode({
           "foodId": foodId,
           "capacity": capacity,
-          "visible": visible,
+          "isVisible": visible,
         }),
       );
       if (response.statusCode == 200) {
