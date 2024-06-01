@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:leftover_is_over_owner/Provider/store_state.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_edit.dart';
 import 'package:leftover_is_over_owner/Screen/Main/select_store_page.dart';
 import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
@@ -13,9 +14,15 @@ import 'package:leftover_is_over_owner/Screen/Sales_Manage/sales_manage_page.dar
 import 'package:leftover_is_over_owner/Screen/test.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_add.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => StoreState(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

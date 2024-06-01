@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-enum StoreState { selling, paused, closed }
-
 // 매장의 현재 상태를 AppBar아래에 보여주는 위젯
 // 추후 매장의 상태를 서버로 보내서
 //페이지 이동 및 앱 재시작시에도 상태가 유지되도록 수정 필요

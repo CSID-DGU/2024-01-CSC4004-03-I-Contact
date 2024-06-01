@@ -10,32 +10,31 @@ import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:provider/provider.dart';
 
 class SalesManagePage extends StatefulWidget {
-  final bool isOpen;
-  final VoidCallback changeStoreState;
-  const SalesManagePage(
-      {required this.isOpen, required this.changeStoreState, super.key});
+  const SalesManagePage({super.key});
   @override
   State<SalesManagePage> createState() => SalesManagePageState();
 }
 
 class SalesManagePageState extends State<SalesManagePage> {
-  late bool isOpen;
   Future<List<MenuModel>> visibleMenuList = MenuService.getVisibleMenuList();
 
   @override
   void initState() {
-    // TODO: implement initState
-    isOpen = widget.isOpen;
-    var storeState = context.read<StoreState>();
+    super.initState();
+    var storeState = Provider.of<StoreState>(context, listen: false);
+    storeState.setRefreshSalesCallback(refreshMenuList);
+  }
+
+  void refreshMenuList() {
+    setState(() {
+      visibleMenuList = MenuService.getVisibleMenuList();
+    });
   }
 
   void closeStoreState() async {
-    if (isOpen) {
-      // 열려있는 상태라면
-      widget.changeStoreState();
-      setState(() {
-        isOpen = !isOpen;
-      });
+    var storeState = context.read<StoreState>();
+    if (storeState.isOpen) {
+      storeState.toggleStore();
     }
   }
 
@@ -64,61 +63,65 @@ class SalesManagePageState extends State<SalesManagePage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              ShowSalesStatus(
-                // 매장 현재상태 보여주는 위젯
-                isOpen: isOpen,
-              ),
-              IgnorePointer(
-                ignoring: !isOpen, // 닫혀있으면 수정할 수 없어!!
-                child: FutureBuilder(
-                    future: visibleMenuList,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        if (snapshot.data!.isNotEmpty) {
-                          return ListView.separated(
-                            shrinkWrap: true, // 스크롤 뷰 내에서 사용될 때 크기를 조정함
-                            physics:
-                                const NeverScrollableScrollPhysics(), // ListView 자체 스크롤을 비활성화
-                            scrollDirection: Axis.vertical,
-                            itemCount: snapshot.data!.length, // 추가 버튼을 위해 +1
-                            itemBuilder: (context, index) {
-                              var menu = snapshot.data![index];
-                              return SalesCard(
-                                  menuName: menu.name,
-                                  remainderNum: menu.capacity);
-                            },
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(
-                                height: 5,
-                              );
-                            },
-                          );
+              Consumer<StoreState>(builder: (context, storeState, child) {
+                return ShowSalesStatus(
+                  // 매장 현재상태 보여주는 위젯
+                  isOpen: storeState.isOpen,
+                );
+              }),
+              Consumer<StoreState>(builder: (context, storeState, child) {
+                return IgnorePointer(
+                  ignoring: !storeState.isOpen, // 닫혀있으면 수정할 수 없어!!
+                  child: FutureBuilder(
+                      future: visibleMenuList,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data!.isNotEmpty) {
+                            return ListView.separated(
+                              shrinkWrap: true, // 스크롤 뷰 내에서 사용될 때 크기를 조정함
+                              physics:
+                                  const NeverScrollableScrollPhysics(), // ListView 자체 스크롤을 비활성화
+                              scrollDirection: Axis.vertical,
+                              itemCount: snapshot.data!.length, // 추가 버튼을 위해 +1
+                              itemBuilder: (context, index) {
+                                var menu = snapshot.data![index];
+                                return SalesCard(
+                                    menuName: menu.name,
+                                    remainderNum: menu.capacity);
+                              },
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(
+                                  height: 5,
+                                );
+                              },
+                            );
+                          } else {
+                            return const Padding(
+                              padding: EdgeInsets.only(top: 50.0),
+                              child: Text(
+                                '메뉴를 등록해주세요',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey),
+                              ),
+                            );
+                          }
                         } else {
                           return const Padding(
-                            padding: EdgeInsets.only(top: 50.0),
-                            child: Text(
-                              '메뉴를 등록해주세요',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey),
+                            padding: EdgeInsets.only(top: 20),
+                            child: Center(
+                              child: SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: CircularProgressIndicator(),
+                              ),
                             ),
                           );
                         }
-                      } else {
-                        return const Padding(
-                          padding: EdgeInsets.only(top: 20),
-                          child: Center(
-                            child: SizedBox(
-                              width: 40,
-                              height: 40,
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                        );
-                      }
-                    }),
-              )
+                      }),
+                );
+              })
             ],
           ),
         ),
@@ -143,7 +146,7 @@ class SalesManagePageState extends State<SalesManagePage> {
                         color: Colors.black.withOpacity(0.4),
                       )
                     ],
-                    color: !isOpen
+                    color: !context.watch<StoreState>().isOpen
                         ? const Color.fromARGB(255, 210, 210, 210)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(100),
@@ -152,7 +155,7 @@ class SalesManagePageState extends State<SalesManagePage> {
                     child: Text(
                       '판매 마감',
                       style: TextStyle(
-                        color: !isOpen
+                        color: !context.watch<StoreState>().isOpen
                             ? const Color.fromARGB(255, 120, 120, 120)
                             : Colors.red,
                         fontWeight: FontWeight.bold,

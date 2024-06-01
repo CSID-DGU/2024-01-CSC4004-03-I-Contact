@@ -9,8 +9,7 @@ import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 // 현재 틀만 만들어진 상태 기능 구현 필요
 
 class MenuMangeAddPage extends StatefulWidget {
-  final VoidCallback changeStoreState;
-  const MenuMangeAddPage(this.changeStoreState, {super.key});
+  const MenuMangeAddPage({super.key});
   @override
   State<MenuMangeAddPage> createState() => _MenuMangeAddPageState();
 }
@@ -55,11 +54,7 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
           Future.delayed(Duration.zero, () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => MenuManagePage(
-                        isOpen: isOpen,
-                        changeStoreState: () => widget.changeStoreState(),
-                      )),
+              MaterialPageRoute(builder: (context) => const MenuManagePage()),
             );
           });
         }
