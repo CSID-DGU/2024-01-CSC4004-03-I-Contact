@@ -163,17 +163,48 @@ class AuthService {
     required String username,
     required String name,
     required String email,
+    required String phone,
     required String password,
   }) async {
     var headers = {'Content-Type': 'application/json'};
     var request = http.Request(
-        'POST', Uri.parse('http://loio-server.azurewebsites.net/member'));
+        'PATCH', Uri.parse('http://loio-server.azurewebsites.net/member'));
     request.body = jsonEncode({
       "username": username,
       "name": name,
       "email": email,
+      "phone": phone,
       "password": password,
       "roles": roles,
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> storeModify({
+    // 일단 memberModify랑 같게 만들어둠 나중에 수정하기
+    required String name,
+    required String startTime,
+    required String endTime,
+    required String adress,
+    required String phone,
+    required int categoryID, //Long 타입 안된다고해서 일단 int
+  }) async {
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request('PATCH',
+        Uri.parse('http://loio-server.azurewebsites.net/store/{storeId}'));
+    request.body = jsonEncode({
+      "name": String,
+      "startTime": String,
+      "endTime": String,
+      "address": String,
+      "phone": String,
+      "categoryId": int
     });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();

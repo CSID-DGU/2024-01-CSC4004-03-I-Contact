@@ -32,7 +32,6 @@ class _MainPageState extends State<MainPage> {
   double _opacity = 0.0;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _loadStore();
   }
@@ -285,7 +284,7 @@ class _MainPageState extends State<MainPage> {
                       opacity: _opacity,
                       duration: const Duration(milliseconds: 300),
                       child: ClipRect(
-                        // ClipRect를 추가하여 BackdropFilter의 범위를 제한합니다.
+                        // ClipRect를 추가하여 BackdropFilter의 범위를 제한.
                         child: BackdropFilter(
                           filter: ImageFilter.blur(
                               sigmaX: 10.0, sigmaY: 10.0), // 블러 효과 적용
