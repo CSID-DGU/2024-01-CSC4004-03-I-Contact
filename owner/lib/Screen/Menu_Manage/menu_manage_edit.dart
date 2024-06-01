@@ -13,8 +13,7 @@ import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 
 class MenuManageEditPage extends StatefulWidget {
   final MenuModel menu;
-  final VoidCallback changeStoreState;
-  const MenuManageEditPage(this.menu, this.changeStoreState, {super.key});
+  const MenuManageEditPage(this.menu, {super.key});
 
   @override
   State<MenuManageEditPage> createState() => _MenuManageEditPageState();
@@ -52,11 +51,7 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
         Future.delayed(Duration.zero, () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => MenuManagePage(
-                      isOpen: isOpen,
-                      changeStoreState: () => widget.changeStoreState(),
-                    )),
+            MaterialPageRoute(builder: (context) => const MenuManagePage()),
           );
         });
       }
@@ -84,11 +79,7 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
         Future.delayed(Duration.zero, () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => MenuManagePage(
-                      isOpen: isOpen,
-                      changeStoreState: () => widget.changeStoreState(),
-                    )),
+            MaterialPageRoute(builder: (context) => const MenuManagePage()),
           );
         });
       }

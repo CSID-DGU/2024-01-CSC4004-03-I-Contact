@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:leftover_is_over_owner/Provider/store_state.dart';
 import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
 import 'package:leftover_is_over_owner/Screen/Register/register_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
-import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -40,12 +38,7 @@ class _LoginPageState extends State<LoginPage> {
     if (login) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider(
-            create: (_) => StoreState(),
-            child: const MainPage(),
-          ),
-        ),
+        MaterialPageRoute(builder: (context) => const MainPage()),
         (Route<dynamic> route) => false,
       );
     } else {

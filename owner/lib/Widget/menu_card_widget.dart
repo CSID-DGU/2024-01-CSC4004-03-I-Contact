@@ -12,13 +12,11 @@ class MenuCard extends StatefulWidget {
   final TextEditingController controller;
   final bool isSelected;
   final VoidCallback onSelected;
-  final VoidCallback changeStoreState;
   const MenuCard({
     required this.menu,
     required this.controller,
     required this.isSelected,
     required this.onSelected,
-    required this.changeStoreState,
     super.key,
   });
 
@@ -147,9 +145,8 @@ class _MenuCardState extends State<MenuCard> {
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             MenuManageEditPage(
-                                                widget.menu,
-                                                () =>
-                                                    widget.changeStoreState)));
+                                              widget.menu,
+                                            )));
                               },
                             ),
                           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Model/store_model.dart';
+import 'package:leftover_is_over_owner/Provider/store_state.dart';
 import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/Main/member_info_page.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
@@ -12,6 +13,8 @@ import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 import 'dart:ui';
+
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -27,7 +30,6 @@ class _MainPageState extends State<MainPage> {
   bool _isDropdownVisible = false;
   bool isLoading = true; // 로딩 중인지
   double _opacity = 0.0;
-  late bool isOpen;
   @override
   void initState() {
     // TODO: implement initState
@@ -37,19 +39,12 @@ class _MainPageState extends State<MainPage> {
 
   void _loadStore() async {
     store = await StoreService.getStoreInfo();
+    var storeState = context.read<StoreState>();
+    storeState.setOpen(store.isOpen); // 초기 상태 주입
     setState(() {
       isLoading = false;
-      isOpen = store.isOpen;
       storeName = store.name;
     });
-  }
-
-  void changeStoreState() async {
-    bool changeStoreState = await StoreService.changeStoreState();
-    if (changeStoreState) {
-      isOpen = !isOpen;
-      setState(() {});
-    }
   }
 
   void _toggleDropdown() {
@@ -106,26 +101,31 @@ class _MainPageState extends State<MainPage> {
                           color: Colors.black,
                         ),
                       ),
-                      Row(
-                        children: [
-                          const Text(
-                            '현재상태: ',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black54,
+                      Consumer<StoreState>(
+                          builder: (context, storeState, child) {
+                        return Row(
+                          children: [
+                            const Text(
+                              '현재상태: ',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black54,
+                              ),
                             ),
-                          ),
-                          Text(
-                            isOpen ? "판매 중" : "판매 마감",
-                            style: TextStyle(
-                              color: isOpen ? Colors.green : Colors.black,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
+                            Text(
+                              storeState.isOpen ? "판매 중" : "판매 마감",
+                              style: TextStyle(
+                                color: storeState.isOpen
+                                    ? Colors.green
+                                    : Colors.black,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        );
+                      }),
                     ],
                   ),
                   const Spacer(),
@@ -150,10 +150,8 @@ class _MainPageState extends State<MainPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SalesManagePage(
-                                      isOpen: isOpen,
-                                      changeStoreState: () =>
-                                          changeStoreState())));
+                                  builder: (context) =>
+                                      const SalesManagePage()));
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -195,10 +193,8 @@ class _MainPageState extends State<MainPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => MenuManagePage(
-                                      isOpen: isOpen,
-                                      changeStoreState: () =>
-                                          changeStoreState())));
+                                  builder: (context) =>
+                                      const MenuManagePage()));
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
