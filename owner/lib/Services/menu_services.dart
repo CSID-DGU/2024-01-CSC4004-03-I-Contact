@@ -149,6 +149,31 @@ class MenuService {
     }
   }
 
+  static Future<bool> updateMenuCapacity(
+      int foodId, int remainder, bool add) async {
+    try {
+      final url =
+          Uri.parse('http://loio-server.azurewebsites.net/food/$foodId');
+      final response = await http.patch(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({"capacity": add ? remainder + 1 : remainder - 1}),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        // 오류 처리
+        throw Exception('Failed to update menu.');
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
   static Future<bool> setMenu(
       {required int foodId,
       required String capacity,
@@ -163,7 +188,7 @@ class MenuService {
         },
         body: jsonEncode({
           "foodId": foodId,
-          "capacity": capacity,
+          "capacity": int.parse(capacity),
           "isVisible": visible,
         }),
       );
