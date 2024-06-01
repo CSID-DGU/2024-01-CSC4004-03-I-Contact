@@ -4,13 +4,16 @@ import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/Order_Manage/order_detail_page.dart';
 
 class SalesCard extends StatefulWidget {
+  final int foodId;
   final String menuName;
   final int remainderNum;
-
+  final Function(bool) updateMenuCapacity;
   const SalesCard({
-    super.key,
+    required this.foodId,
     required this.menuName,
     required this.remainderNum,
+    required this.updateMenuCapacity,
+    super.key,
   });
 
   @override
@@ -18,39 +21,21 @@ class SalesCard extends StatefulWidget {
 }
 
 class _SalesCardState extends State<SalesCard> {
-  final TextEditingController _controller = TextEditingController();
-
   @override
   void initState() {
     super.initState();
-    _controller.text = '0'; // 초기값 설정
   }
 
 // 증가 버튼으로 숫자 증가 함수
   void _increment() {
-    setState(() {
-      if (_controller.text.isEmpty) {
-        _controller.text = "0";
-      } else {
-        int currentValue = int.parse(_controller.text);
-
-        _controller.text = (currentValue + 1).toString();
-      }
-    });
+    widget.updateMenuCapacity(true);
   }
 
   // 감소 버튼으로 숫자 감소 함수
   void _decrement() {
-    setState(() {
-      if (_controller.text.isEmpty) {
-        _controller.text = "0";
-      } else {
-        int currentValue = int.parse(_controller.text);
-        if (currentValue > 0) {
-          _controller.text = (currentValue - 1).toString();
-        }
-      }
-    });
+    if (widget.remainderNum > 0) {
+      widget.updateMenuCapacity(false);
+    }
   }
 
   @override

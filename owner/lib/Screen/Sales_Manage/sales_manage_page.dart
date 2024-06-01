@@ -38,6 +38,11 @@ class SalesManagePageState extends State<SalesManagePage> {
     }
   }
 
+  void updateMenuCapacity(int foodId, int remainder, bool add) async {
+    await MenuService.updateMenuCapacity(foodId, remainder, add);
+    refreshMenuList();
+  }
+
   @override
   Widget build(BuildContext context) {
     // 하단 버튼 칸의 비율을 유지하기 위함
@@ -86,8 +91,13 @@ class SalesManagePageState extends State<SalesManagePage> {
                               itemBuilder: (context, index) {
                                 var menu = snapshot.data![index];
                                 return SalesCard(
-                                    menuName: menu.name,
-                                    remainderNum: menu.capacity);
+                                  foodId: menu.foodId,
+                                  menuName: menu.name,
+                                  remainderNum: menu.capacity,
+                                  updateMenuCapacity: (add) =>
+                                      updateMenuCapacity(
+                                          menu.foodId, menu.capacity, add),
+                                );
                               },
                               separatorBuilder: (context, index) {
                                 return const SizedBox(
