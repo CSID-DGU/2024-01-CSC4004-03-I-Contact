@@ -76,8 +76,8 @@ public class StoreService {
         return toResponseDto(storeList);
     }
 
-    public List<GetStoreResponseDto> getStoreByCategory(Long categoryId) {
-        List<Store> storeList = storeRepository.findByCategoryId(categoryId);
+    public List<GetStoreResponseDto> getStoreByCategory(Long categoryId, double latitude, double longitude) {
+        List<Store> storeList = storeRepository.findByCategoryIdSortedByDistance(categoryId, latitude, longitude);
         return toResponseDto(storeList);
     }
 

@@ -63,9 +63,9 @@ public class StoreController {
 
     @GetMapping("/store/category/{categoryId}")
     @Operation(summary = "카테고리별 가게 조회", description = "카테고리별 가게를 조회합니다.")
-    public ResponseEntity<?> getStoreByCategory(@PathVariable("categoryId") Long categoryId) {
+    public ResponseEntity<?> getStoreByCategory(@PathVariable("categoryId") Long categoryId, @RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude) {
         try {
-            return ResponseEntity.ok(storeService.getStoreByCategory(categoryId));
+            return ResponseEntity.ok(storeService.getStoreByCategory(categoryId, latitude, longitude));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
