@@ -164,7 +164,7 @@ class MenuService {
         body: jsonEncode({
           "foodId": foodId,
           "capacity": capacity,
-          "visible": visible,
+          "isVisible": visible,
         }),
       );
       if (response.statusCode == 200) {
