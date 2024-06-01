@@ -27,6 +27,10 @@ public class StoreDto {
 
     private String phone;
 
+    private Double latitude;
+
+    private Double longitude;
+
     private boolean isOpen;
 
     private boolean deleted;
@@ -47,6 +51,8 @@ public class StoreDto {
                 .endTime(endTime)
                 .address(address)
                 .phone(phone)
+                .latitude(latitude)
+                .longitude(longitude)
                 .isOpen(isOpen)
                 .deleted(deleted)
                 .orders(orders)

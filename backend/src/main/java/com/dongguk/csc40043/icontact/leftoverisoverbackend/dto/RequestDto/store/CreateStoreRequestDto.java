@@ -22,7 +22,7 @@ public class CreateStoreRequestDto {
 
     private Long categoryId;
 
-    public StoreDto toServiceDto() {
+    public StoreDto toServiceDto(double latitude, double longitude) {
         return StoreDto.builder()
                 .name(name)
                 .startTime(LocalTime.parse(startTime))
@@ -30,6 +30,8 @@ public class CreateStoreRequestDto {
                 .address(address)
                 .phone(phone)
                 .categoryId(categoryId)
+                .latitude(latitude)
+                .longitude(longitude)
                 .build();
     }
 

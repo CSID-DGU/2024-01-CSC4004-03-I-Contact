@@ -2,6 +2,7 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.geocoding.CoordinateDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store.CreateStoreRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store.UpdateStoreRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.CreateStoreResponseDto;
@@ -26,12 +27,17 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
+    private final GeocodingService geocodingService;
 
     @Transactional
     public CreateStoreResponseDto createStore(CreateStoreRequestDto createStoreRequestDto) {
         Member member = memberRepository.findByUsernameAndDeleted(createStoreRequestDto.getUsername(), false).orElseThrow(() ->
                 new UsernameNotFoundException("존재하지 않는 회원입니다."));
-        StoreDto storeDto = createStoreRequestDto.toServiceDto();
+        CoordinateDto coordinate = geocodingService.getCoordinates(createStoreRequestDto.getAddress()).block();
+        if (coordinate == null) {
+            throw new IllegalArgumentException("좌표를 찾을 수 없습니다.");
+        }
+        StoreDto storeDto = createStoreRequestDto.toServiceDto(coordinate.getLatitude(), coordinate.getLongitude());
         Store store = storeRepository.save(storeDto.toEntity(member));
         return new CreateStoreResponseDto(store.getId());
     }
