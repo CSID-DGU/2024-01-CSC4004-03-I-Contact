@@ -35,6 +35,10 @@ public class Store {
 
     private String phone;
 
+    private Double latitude;
+
+    private Double longitude;
+
     @Column(columnDefinition = "boolean default false")
     private boolean isOpen;
 
