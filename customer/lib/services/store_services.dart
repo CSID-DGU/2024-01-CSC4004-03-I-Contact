@@ -25,12 +25,12 @@ class StoreService {
 
 class CategorySearchService {
   static Future<List<StoreModel>> getStoreListByCategoryId(
-      int categoryId) async {
+      int categoryId, double latitude, double longitude) async {
     List<StoreModel> storeInstances = [];
     try {
       final response = await http.get(
         Uri.parse(
-            'http://loio-server.azurewebsites.net/store/category/$categoryId'),
+            'http://loio-server.azurewebsites.net/store/category/$categoryId?latitude=$latitude&longitude=$longitude'),
       );
 
       if (response.statusCode == 200) {

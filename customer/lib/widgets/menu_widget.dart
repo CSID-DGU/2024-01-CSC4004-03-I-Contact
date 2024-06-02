@@ -4,6 +4,7 @@ class MenuWidget extends StatelessWidget {
   const MenuWidget({
     super.key,
     required this.menuName,
+    required this.foodId,
     required this.unitCost,
     required this.remaining,
     this.numMenu = 0,
@@ -11,8 +12,8 @@ class MenuWidget extends StatelessWidget {
   });
 
   final String menuName, unitCost, remaining;
-  final int numMenu;
-  final void Function(String menuName) onMenuTap;
+  final int numMenu, foodId;
+  final void Function(int foodId) onMenuTap;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class MenuWidget extends StatelessWidget {
     double screenHeight = screenSize.height;
 
     return GestureDetector(
-      onTap: () => onMenuTap(menuName),
+      onTap: () => onMenuTap(foodId),
       child: Container(
         decoration: const BoxDecoration(
           color: Color.fromARGB(255, 255, 255, 255),

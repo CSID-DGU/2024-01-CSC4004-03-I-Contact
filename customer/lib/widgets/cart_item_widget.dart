@@ -6,13 +6,12 @@ import 'package:flutter/widgets.dart';
 class CartItemWidget extends StatefulWidget {
   const CartItemWidget({
     super.key,
-    required this.restaurantName,
     required this.menuName,
     required this.price,
     required this.itemCount,
     required this.onRemove,
   });
-  final String restaurantName, menuName, price, itemCount;
+  final String menuName, price, itemCount;
   final VoidCallback onRemove;
 
   @override
@@ -66,14 +65,6 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.restaurantName,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: screenHeight * 0.023,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
                   SizedBox(height: 0.01 * screenHeight),
                   Text(
                     widget.menuName,
@@ -94,7 +85,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                   ),
                   SizedBox(height: 0.01 * screenHeight),
                   Text(
-                    '신청갯수: ${widget.itemCount}',
+                    '신청개수: ${widget.itemCount}',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: screenHeight * 0.017,
@@ -110,7 +101,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 ElevatedButton(
                   onPressed: _removeItem,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFF0EFFF),
+                    backgroundColor: const Color.fromRGBO(251, 255, 229, 1),
                     foregroundColor: Colors.black,
                     textStyle: TextStyle(
                       fontSize: screenHeight * 0.02,

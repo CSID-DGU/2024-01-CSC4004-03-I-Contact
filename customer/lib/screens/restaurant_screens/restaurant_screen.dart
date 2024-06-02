@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:leftover_is_over_customer/models/order_model.dart';
 import 'package:leftover_is_over_customer/models/store_model.dart';
 import 'package:leftover_is_over_customer/models/food_model.dart';
+import 'package:leftover_is_over_customer/services/order_services.dart';
 import 'package:leftover_is_over_customer/services/store_services.dart';
 import 'package:leftover_is_over_customer/services/food_services.dart';
 import 'package:leftover_is_over_customer/widgets/menu_widget.dart';
@@ -20,6 +22,16 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
   bool isFavorite = false;
   int numServings = 1;
+
+  List<FoodOrder> foodOrders = [];
+  List<String> nameList = [];
+  List<int> priceList = [];
+
+  void addOrder(int foodId, int count, String foodName, int foodPrice) {
+    foodOrders.add(FoodOrder(foodId: foodId, count: count));
+    nameList.add(foodName);
+    priceList.add(foodPrice);
+  }
 
   @override
   void initState() {
@@ -164,11 +176,13 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   final food = foods[index];
                   return MenuWidget(
+                    foodId: food.foodId,
                     menuName: food.name,
                     unitCost: food.sellPrice.toString(),
                     remaining: food.capacity.toString(),
-                    onMenuTap: (String menuName) {
-                      _showHalfScreenModal(menuName);
+                    onMenuTap: (int foodId) {
+                      _showHalfScreenModal(
+                          food.name, food.sellPrice, foodId, food.capacity);
                     },
                   );
                 },
@@ -187,7 +201,11 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CartScreen()),
+                          builder: (context) => CartScreen(
+                              storeId: store.storeId,
+                              foodOrders: foodOrders,
+                              nameList: nameList,
+                              priceList: priceList)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -211,9 +229,13 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     );
   }
 
-  void _showHalfScreenModal(String menuName) {
+  void _showHalfScreenModal(
+      String menuName, int menuPrice, int foodId, int foodCapacity) {
     setState(() {
-      numServings = 1; // Reset numServings to 1 when the modal is shown
+      numServings = 1;
+      if (foodCapacity == 0) {
+        numServings = 0;
+      }
     });
 
     Size screenSize = MediaQuery.of(context).size;
@@ -280,7 +302,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                               ElevatedButton(
                                 onPressed: () {
                                   setModalState(() {
-                                    numServings += 1;
+                                    if (foodCapacity > numServings) {
+                                      numServings += 1;
+                                    }
                                   });
                                 },
                                 child: SizedBox(
@@ -304,10 +328,13 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                 EdgeInsets.only(bottom: screenHeight * 0.035),
                             child: ElevatedButton(
                               onPressed: () {
+                                addOrder(
+                                    foodId, numServings, menuName, menuPrice);
                                 Navigator.pop(context);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('$menuName이 장바구니에 추가되었습니다.'),
+                                    content:
+                                        Text('$menuName이(가) 장바구니에 추가되었습니다.'),
                                   ),
                                 );
                               },
