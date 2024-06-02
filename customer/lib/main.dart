@@ -32,15 +32,14 @@ Future<void> _initialize() async {
   } else {
     print('회원가입 실패');
   }
-
+ */
   var loginCheck =
-      await AuthService.login(username: 'bb', password: 'abcd1234');
+      await AuthService.login(username: 'customer1', password: 'passwd');
   if (loginCheck) {
     print('로그인 성공');
   } else {
     print('로그인 실패');
   }
-  */
 }
 
 class App2 extends StatelessWidget {
