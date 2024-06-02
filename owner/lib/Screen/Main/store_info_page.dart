@@ -825,7 +825,7 @@ class _StoreInfoPageState extends State<StoreInfoPage> {
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
                               childAspectRatio: 1.7,
-                              crossAxisSpacing: 10,
+                              crossAxisSpacing: 7,
                               mainAxisSpacing: 20,
                             ),
                             itemCount: categoryLabels.length,
@@ -848,7 +848,7 @@ class _StoreInfoPageState extends State<StoreInfoPage> {
                                   elevation: 5,
                                 ),
                                 child: Text(categoryLabels[index],
-                                    style: const TextStyle(fontSize: 16),
+                                    style: const TextStyle(fontSize: 15),
                                     textAlign: TextAlign.center),
                               );
                             },

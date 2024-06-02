@@ -414,13 +414,60 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                       ),
                     ),
                     const SizedBox(
-                      height: 40,
+                      height: 20,
                     ),
                     Visibility(
                       visible: !readMode,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Container(
+                            clipBehavior: Clip.hardEdge,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 23),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: const Color.fromARGB(255, 222, 234, 187),
+                            ),
+                            child: const Text(
+                              '비밀번호',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 1,
+                          ),
+                          Container(
+                            height: 36,
+                            width: 400,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 2,
+                                  color: Colors.black.withOpacity(0.3),
+                                  offset: const Offset(1, 3),
+                                )
+                              ],
+                              borderRadius: BorderRadius.circular(70),
+                            ),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(70.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              obscureText: true,
+                              autofocus: false,
+                              controller: controllerPwd,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
                           Container(
                             clipBehavior: Clip.hardEdge,
                             padding: const EdgeInsets.symmetric(
