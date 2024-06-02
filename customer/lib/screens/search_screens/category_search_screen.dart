@@ -20,8 +20,8 @@ class _CategorySearchScreenState extends State<CategorySearchScreen> {
   @override
   void initState() {
     super.initState();
-    _futureStore =
-        CategorySearchService.getStoreListByCategoryId(widget.categoryNumber);
+    _futureStore = CategorySearchService.getStoreListByCategoryId(
+        widget.categoryNumber, 37.55826385529836, 126.99853613087079);
   }
 
   @override

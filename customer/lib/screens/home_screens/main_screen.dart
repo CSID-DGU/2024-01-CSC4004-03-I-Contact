@@ -4,6 +4,7 @@ import 'package:leftover_is_over_customer/screens/home_screens/home_screen.dart'
 import 'package:leftover_is_over_customer/screens/home_screens/map_screen.dart';
 import 'package:leftover_is_over_customer/screens/home_screens/my_order_screen.dart';
 import 'package:leftover_is_over_customer/screens/home_screens/mypage_screen.dart';
+import 'package:leftover_is_over_customer/services/auth_services.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
