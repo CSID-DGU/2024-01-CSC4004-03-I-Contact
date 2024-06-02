@@ -32,11 +32,15 @@ public class OrderService {
             createOrderRequestDto.getOrderFoodDtos().forEach(orderFoodDto -> {
                 Food food = foodRepository.findById(orderFoodDto.getFoodId())
                         .orElseThrow(() -> new IllegalArgumentException("해당 음식이 존재하지 않습니다."));
+                if (food.getCapacity() < orderFoodDto.getCount()) {
+                    throw new IllegalArgumentException("재고가 부족합니다.");
+                }
                 OrderFood orderFood = OrderFood.builder()
                         .food(food)
                         .count(orderFoodDto.getCount())
                         .build();
                 order.addOrderFood(orderFood);
+                food.minusCapacity(orderFoodDto.getCount());
             });
             orderRepository.save(order);
             return CreateOrderResponseDto.builder()
