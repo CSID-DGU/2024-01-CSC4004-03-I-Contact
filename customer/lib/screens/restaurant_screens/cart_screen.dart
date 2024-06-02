@@ -128,6 +128,8 @@ class _CartScreenState extends State<CartScreen> {
     if (success) {
       if (mounted) {
         if (mounted) {
+          var message = '주문 등록에 성공했습니다';
+          print(message);
           Navigator.of(context).popUntil((route) => route.isFirst);
         }
       }
