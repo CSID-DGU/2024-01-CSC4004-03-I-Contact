@@ -66,4 +66,8 @@ public class Food {
         this.isVisible = isVisible;
     }
 
+    public void minusCapacity(int count) {
+        this.capacity -= count;
+    }
+
 }

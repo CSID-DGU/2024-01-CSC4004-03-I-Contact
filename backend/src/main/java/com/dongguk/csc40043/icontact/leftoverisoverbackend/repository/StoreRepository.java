@@ -16,6 +16,9 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     List<Store> findByNameContaining(String name);
 
+    @Query(value = "SELECT *, ST_Distance_Sphere(point(longitude, latitude), point(:targetLon, :targetLat)) as distance FROM store ORDER BY distance", nativeQuery = true)
+    List<Store> findAllSortedByDistance(double targetLat, double targetLon);
+
     @Query(value = "SELECT *, ST_Distance_Sphere(point(longitude, latitude), point(:targetLon, :targetLat)) as distance FROM store WHERE category_id = :categoryId ORDER BY distance", nativeQuery = true)
     List<Store> findByCategoryIdSortedByDistance(Long categoryId, double targetLat, double targetLon);
 
