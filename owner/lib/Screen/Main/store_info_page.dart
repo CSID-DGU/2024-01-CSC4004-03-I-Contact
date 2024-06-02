@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_owner/Model/store_model.dart';
-import 'package:leftover_is_over_owner/Services/user_services.dart';
+import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'dart:ui';
@@ -144,7 +144,7 @@ class _StoreInfoPageState extends State<StoreInfoPage> {
   }
 
   void _loadStore() async {
-    store = await UserService.getStoreInfo();
+    store = await StoreService.getStoreInfo();
     setState(() {
       isLoading = false;
       controllerName.text = store.name;
