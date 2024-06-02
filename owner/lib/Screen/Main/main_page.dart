@@ -117,7 +117,7 @@ class _MainPageState extends State<MainPage> {
                               style: TextStyle(
                                 color: storeState.isOpen
                                     ? Colors.green
-                                    : Colors.black,
+                                    : Colors.red,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -277,7 +277,7 @@ class _MainPageState extends State<MainPage> {
                   visible: _isDropdownVisible,
                   child: Positioned(
                     top: 0,
-                    left: 170,
+                    left: 190,
                     right: 0,
                     bottom: 0,
                     child: AnimatedOpacity(
@@ -302,7 +302,7 @@ class _MainPageState extends State<MainPage> {
                   visible: _isDropdownVisible,
                   child: Positioned(
                     top: 0,
-                    left: 170,
+                    left: 186,
                     right: 0,
                     bottom: 0,
                     child: Column(
@@ -381,7 +381,7 @@ class _MainPageState extends State<MainPage> {
                               width: 12,
                             ),
                             SizedBox(
-                              width: 200,
+                              width: 186,
                               height: 50,
                               child: ListTile(
                                 leading: const Icon(
@@ -407,8 +407,9 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 370),
+                        const SizedBox(height: 400),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const SizedBox(
                               width: 13,

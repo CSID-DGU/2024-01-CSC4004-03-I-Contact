@@ -89,7 +89,16 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min, // Column의 높이를 최소로 설정
                     children: [
-                      const SizedBox(height: 70),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Text(
+                          'Loio',
+                          style: TextStyle(
+                              fontSize: 40,
+                              color: Color.fromARGB(255, 82, 59, 42)),
+                        ),
+                      ),
+                      //const SizedBox(height: 60),
                       const CircleAvatar(
                         // Flexible 제거
                         backgroundColor: Colors.white,
@@ -99,47 +108,62 @@ class _LoginPageState extends State<LoginPage> {
                         padding: EdgeInsets.symmetric(vertical: 25),
                         child: Text(
                           '로그인',
-                          style: TextStyle(fontSize: 35),
+                          style: TextStyle(fontSize: 27),
                         ),
                       ),
                       Column(
                         children: [
-                          TextField(
-                            decoration: InputDecoration(
-                              labelText: 'ID',
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                                borderSide: BorderSide.none,
-                              ),
+                          Container(
+                            height: 55,
+                            width: 400,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(70),
                             ),
-                            autofocus: false,
-                            controller: controllerUsername, // 컨트롤러 예제에서는 주석 처리
+                            child: TextField(
+                              decoration: InputDecoration(
+                                labelText: 'ID',
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              autofocus: false,
+                              controller:
+                                  controllerUsername, // 컨트롤러 예제에서는 주석 처리
+                            ),
                           ),
                           const SizedBox(
                             height: 10,
                           ),
-                          TextField(
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                                borderSide: BorderSide.none,
-                              ),
+                          Container(
+                            height: 55,
+                            width: 400,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(70),
                             ),
-                            obscureText: true,
-                            autofocus: false,
-                            controller: controllerPwd, // 컨트롤러 예제에서는 주석 처리
+                            child: TextField(
+                              decoration: InputDecoration(
+                                labelText: 'Password',
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              obscureText: true,
+                              autofocus: false,
+                              controller: controllerPwd, // 컨트롤러 예제에서는 주석 처리
+                            ),
                           ),
                           const SizedBox(
                             height: 18,
                           ),
                           SizedBox(
                             width: 300.0,
-                            height: 42.0,
+                            height: 50.0,
                             child: ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
@@ -161,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           SizedBox(
                             width: 300.0,
-                            height: 42.0,
+                            height: 50.0,
                             child: ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
