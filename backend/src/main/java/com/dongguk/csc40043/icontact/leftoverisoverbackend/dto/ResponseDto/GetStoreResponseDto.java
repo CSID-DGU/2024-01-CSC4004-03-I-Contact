@@ -23,6 +23,10 @@ public class GetStoreResponseDto {
 
     String phone;
 
+    Double latitude;
+
+    Double longitude;
+
     boolean isOpen;
 
     boolean deleted;

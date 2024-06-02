@@ -76,6 +76,11 @@ public class StoreService {
         return toResponseDto(storeList);
     }
 
+    public List<GetStoreResponseDto> getStoreByLocation(double latitude, double longitude) {
+        List<Store> storeList = storeRepository.findAllSortedByDistance(latitude, longitude);
+        return toResponseDto(storeList);
+    }
+
     public List<GetStoreResponseDto> getStoreByCategory(Long categoryId, double latitude, double longitude) {
         List<Store> storeList = storeRepository.findByCategoryIdSortedByDistance(categoryId, latitude, longitude);
         return toResponseDto(storeList);
@@ -130,6 +135,8 @@ public class StoreService {
                 .endTime(store.getEndTime().toString())
                 .address(store.getAddress())
                 .phone(store.getPhone())
+                .latitude(store.getLatitude())
+                .longitude(store.getLongitude())
                 .isOpen(store.isOpen())
                 .deleted(store.isDeleted())
                 .build();
