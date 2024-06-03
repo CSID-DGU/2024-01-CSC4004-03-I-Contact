@@ -13,17 +13,17 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
     {
       'orderDate': '2023-05-23',
       'orderRestaurant': '식당314',
-      'orderCount': '4',
+      'orderCount': '40000',
     },
     {
       'orderDate': '2023-02-04',
       'orderRestaurant': '식당315',
-      'orderCount': '3',
+      'orderCount': '30000',
     },
     {
       'orderDate': '2023-09-14',
       'orderRestaurant': '식당316',
-      'orderCount': '2',
+      'orderCount': '20000',
     },
     // Add more orders here
   ];
@@ -39,7 +39,7 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
       appBar: AppBar(
         title: const Center(child: Text('내 주문')),
       ),
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: orders.isEmpty
           ? const Center(child: Text('주문이 없습니다.'))
           : ListView.builder(
@@ -49,7 +49,7 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                 return MyOrderWidget(
                   orderDate: order['orderDate'],
                   orderRestaurant: order['orderRestaurant'],
-                  orderCount: order['orderCount'],
+                  orderPrice: order['orderCount'],
                   onFinish: () => handleOrderFinish(index),
                 );
               },
