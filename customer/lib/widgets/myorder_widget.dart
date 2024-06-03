@@ -9,11 +9,13 @@ class MyOrderWidget extends StatefulWidget {
     super.key,
     required this.orderDate,
     required this.orderRestaurant,
-    required this.orderCount,
+    required this.orderPrice,
     required this.onFinish,
   });
-  final String orderDate, orderRestaurant, orderCount;
+
+  final String orderDate, orderRestaurant, orderPrice;
   final VoidCallback onFinish;
+
   @override
   State<MyOrderWidget> createState() => _MyOrderWidgetState();
 }
@@ -40,9 +42,10 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => const RestaurantScreen(
-                    storeId: 1,
-                  )),
+            builder: (context) => const RestaurantScreen(
+              storeId: 1,
+            ),
+          ),
         );
       },
       child: Container(
@@ -53,84 +56,96 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
           ),
         ),
         width: screenWidth,
-        height: 0.2 * screenHeight,
+        height: 0.18 * screenHeight, // 높이 증가
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: screenHeight * 0.015,
-            horizontal: screenWidth * 0.01,
+            vertical: screenHeight * 0.01,
+            horizontal: screenWidth * 0.03,
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '주문일자(${widget.orderDate})',
+                    '주문일자: ${widget.orderDate}',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: screenHeight * 0.017,
-                      fontWeight: FontWeight.normal,
+                      fontSize: screenHeight * 0.018, // 글자 크기 증가
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
-                  SizedBox(height: 0.03 * screenHeight),
+                  SizedBox(height: screenHeight * 0.01),
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(10),
                     child: Image.asset(
                       'assets/images/chicken.jpg',
-                      width: 0.33 * screenWidth,
-                      height: 0.107 * screenHeight,
+                      width: 0.35 * screenWidth, // 너비 증가
+                      height: 0.11 * screenHeight, // 높이 증가
                       fit: BoxFit.cover,
                     ),
                   ),
                 ],
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.orderRestaurant,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: screenHeight * 0.023,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    '신청인원 ${widget.orderCount}명',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: screenHeight * 0.017,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '신청중',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: screenHeight * 0.02,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _toggleOrderStatus,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF0EFFF),
-                      foregroundColor: Colors.black,
-                      textStyle: TextStyle(
-                        fontSize: screenHeight * 0.02,
+              SizedBox(width: screenWidth * 0.05),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: screenHeight * 0.025),
+                    Text(
+                      widget.orderRestaurant,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: screenHeight * 0.025, // 글자 크기 증가
+                        fontWeight: FontWeight.bold,
                       ),
-                      minimumSize: const Size(70, 40),
                     ),
-                    child: const Text('방문취소'),
-                  ),
-                ],
-              )
+                    SizedBox(height: screenHeight * 0.002),
+                    Text(
+                      '${widget.orderPrice}₩',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: screenHeight * 0.018,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.000),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '신청중',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: screenHeight * 0.018,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: _toggleOrderStatus,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFD700), // 진한 노랑색
+                            foregroundColor: Colors.black,
+                            textStyle: TextStyle(
+                              fontSize: screenHeight * 0.018,
+                            ),
+                            minimumSize: const Size(70, 35),
+                          ),
+                          child: const Text(
+                            '방문취소',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2c6774a7-50c7-4f50-816d-67c6790bb2cb" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/customer/lib/models/order_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/customer/lib/models/order_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/lib/screens/home_screens/main_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/customer/lib/screens/home_screens/main_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/lib/screens/restaurant_screens/cart_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/customer/lib/screens/restaurant_screens/cart_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/lib/screens/restaurant_screens/restaurant_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/customer/lib/screens/restaurant_screens/restaurant_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/lib/screens/search_screens/category_search_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/customer/lib/screens/search_screens/category_search_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/lib/services/order_services.dart" beforeDir="false" afterPath="$PROJECT_DIR$/customer/lib/services/order_services.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/lib/services/store_services.dart" beforeDir="false" afterPath="$PROJECT_DIR$/customer/lib/services/store_services.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/lib/widgets/cart_item_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/customer/lib/widgets/cart_item_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/lib/widgets/menu_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/customer/lib/widgets/menu_widget.dart" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ha-hyeon&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/CSID-DGU/2024-01-CSC4004-03-I-Contact.git&quot;,
+    &quot;accountId&quot;: &quot;595a6e43-a4a6-4119-ab9e-0750d25ae11e&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2hJmbu9DFjlxXmBdNceZKW4u6T0" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feature/customer/api",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/ahnhh/Desktop/2024-01-CSC4004-03-I-Contact"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2c6774a7-50c7-4f50-816d-67c6790bb2cb" name="Changes" comment="" />
+      <created>1717320629377</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1717320629377</updated>
+    </task>
+    <servers />
+  </component>
+</project>
