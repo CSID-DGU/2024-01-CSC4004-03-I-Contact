@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:leftover_is_over_customer/models/favorite_model.dart';
 import 'package:leftover_is_over_customer/models/order_model.dart';
 import 'package:leftover_is_over_customer/models/store_model.dart';
 import 'package:leftover_is_over_customer/models/food_model.dart';
+import 'package:leftover_is_over_customer/services/favorite_services.dart';
 import 'package:leftover_is_over_customer/services/order_services.dart';
 import 'package:leftover_is_over_customer/services/store_services.dart';
 import 'package:leftover_is_over_customer/services/food_services.dart';
@@ -19,7 +21,6 @@ class RestaurantScreen extends StatefulWidget {
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
   late Future<Map<String, dynamic>> _futureData;
-
   bool isFavorite = false;
   int numServings = 1;
 
@@ -37,6 +38,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   void initState() {
     super.initState();
     _futureData = _fetchData();
+    _checkIfFavorite();
   }
 
   Future<Map<String, dynamic>> _fetchData() async {
@@ -49,6 +51,42 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       'store': results[0],
       'foods': results[1],
     };
+  }
+
+  Future<void> _checkIfFavorite() async {
+    try {
+      List<FavoriteModel> favorites = await FavoriteService.getFavorites();
+      setState(() {
+        isFavorite =
+            favorites.any((favorite) => favorite.storeId == widget.storeId);
+      });
+    } catch (e) {
+      print('Failed to check if favorite: $e');
+    }
+  }
+
+  Future<void> _toggleFavorite() async {
+    try {
+      if (isFavorite) {
+        bool success =
+            await FavoriteService.deleteFavorite(storeId: widget.storeId);
+        if (success) {
+          setState(() {
+            isFavorite = false;
+          });
+        }
+      } else {
+        bool success =
+            await FavoriteService.makeFavorite(storeId: widget.storeId);
+        if (success) {
+          setState(() {
+            isFavorite = true;
+          });
+        }
+      }
+    } catch (e) {
+      print('Failed to toggle favorite: $e');
+    }
   }
 
   @override
@@ -92,18 +130,10 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                             right:
                                 screenWidth * 0.05), // Adjust the padding here
                         child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              // Toggle the favorite state
-                              isFavorite = !isFavorite;
-                            });
-                          },
+                          onPressed: _toggleFavorite,
                           icon: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,
-                            // Change icon based on favorite state
-                            color: isFavorite
-                                ? Colors.red
-                                : null, // Highlight if favorite
+                            color: isFavorite ? Colors.red : null,
                           ),
                         ),
                       ),
@@ -328,15 +358,25 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                 EdgeInsets.only(bottom: screenHeight * 0.035),
                             child: ElevatedButton(
                               onPressed: () {
-                                addOrder(
-                                    foodId, numServings, menuName, menuPrice);
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content:
-                                        Text('$menuName이(가) 장바구니에 추가되었습니다.'),
-                                  ),
-                                );
+                                if (!nameList.contains(menuName)) {
+                                  addOrder(
+                                      foodId, numServings, menuName, menuPrice);
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text('$menuName이(가) 장바구니에 추가되었습니다.'),
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text('$menuName이(가) 이미 장바구니에 있습니다.'),
+                                    ),
+                                  );
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
