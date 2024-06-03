@@ -1,4 +1,6 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:leftover_is_over_owner/Model/store_model.dart';
 import 'package:leftover_is_over_owner/Provider/store_state.dart';
 import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
@@ -30,10 +32,40 @@ class _MainPageState extends State<MainPage> {
   bool _isDropdownVisible = false;
   bool isLoading = true; // 로딩 중인지
   double _opacity = 0.0;
+  var messageString = "";
+
+  void getMyDeviceToken() async {
+    final token = await FirebaseMessaging.instance.getToken();
+    print("내 디바이스 토큰: $token");
+  }
+
   @override
   void initState() {
-    super.initState();
     _loadStore();
+    getMyDeviceToken();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      RemoteNotification? notification = message.notification;
+      if (notification != null) {
+        FlutterLocalNotificationsPlugin().show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'high_importance_channel',
+              'high_importance_notification',
+              importance: Importance.max,
+            ),
+          ),
+        );
+        setState(() {
+          messageString = message.notification!.body!;
+          print("Foreground 메시지 수신: $messageString");
+        });
+      }
+    });
+    super.initState();
   }
 
   void _loadStore() async {
