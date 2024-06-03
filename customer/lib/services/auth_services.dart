@@ -49,7 +49,7 @@ class AuthService {
       // 요청을 보내고 타임아웃을 설정
       http.StreamedResponse response = await client
           .send(request)
-          .timeout(const Duration(seconds: 20), onTimeout: () {
+          .timeout(const Duration(seconds: 120), onTimeout: () {
         // 타임아웃 발생 시
         client.close(); // 클라이언트 닫기
         throw Exception('Request timeout');

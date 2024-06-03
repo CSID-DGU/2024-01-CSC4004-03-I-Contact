@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
       : screens = [
           HomeScreen(onProfileTap: () {}, onMapTap: () {}),
           const MapScreen(),
-          const BookmarkScreen(),
+          const FavoriteScreen(),
           const MyOrderScreen(),
           const MyPageScreen(),
         ];
