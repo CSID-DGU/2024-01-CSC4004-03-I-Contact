@@ -8,6 +8,7 @@ import 'package:leftover_is_over_customer/screens/home_screens/main_screen.dart'
 import 'package:leftover_is_over_customer/screens/setting_screens/notification_setting_screen.dart';
 import 'package:leftover_is_over_customer/screens/setting_screens/profile_edit_screen.dart';
 import 'package:leftover_is_over_customer/services/auth_services.dart';
+import 'package:leftover_is_over_customer/screens/login_screens/login_screen.dart';
 
 void main() async {
   await _initialize();
@@ -33,13 +34,13 @@ Future<void> _initialize() async {
     print('회원가입 실패');
   }
  */
-  var loginCheck =
+  /*var loginCheck =
       await AuthService.login(username: 'customer1', password: 'passwd');
   if (loginCheck) {
     print('로그인 성공');
   } else {
     print('로그인 실패');
-  }
+  }*/
 }
 
 class App2 extends StatelessWidget {
@@ -61,7 +62,8 @@ class App2 extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(
             backgroundColor: const Color.fromARGB(255, 253, 255, 249)),
       ),
-      home: const MainScreen(),
+      home: const LoginScreen(),
+      // MainScreen(),
       routes: {
         '/edit-profile': (context) => const ProfileEditScreen(),
         '/notification-settings': (context) =>

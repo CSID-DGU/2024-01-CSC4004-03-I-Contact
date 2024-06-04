@@ -1,10 +1,26 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:leftover_is_over_customer/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   static List<String> roles = ['customer'];
+  static late UserModel user;
+
+  static Future<bool> duplicate(String id) async {
+    var duplicateCheck = false;
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request('POST',
+        Uri.parse('http://loio-server.azurewebsites.net/duplicate-username'));
+    request.body = jsonEncode({"username": id});
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      duplicateCheck = true;
+    }
+    return duplicateCheck;
+  }
 
   static Future<bool> register({
     required String username,
@@ -75,6 +91,13 @@ class AuthService {
     } finally {
       client.close(); // 클라이언트 닫기
     }
+  }
+
+  static Future<bool> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> emptyToken = List.empty();
+    await prefs.setStringList('token', emptyToken);
+    return true;
   }
 
   static Future<void> saveToken(Map<String, dynamic> token) async {
