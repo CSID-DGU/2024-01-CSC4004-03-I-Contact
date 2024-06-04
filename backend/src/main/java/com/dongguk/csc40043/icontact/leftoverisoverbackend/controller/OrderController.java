@@ -23,7 +23,7 @@ public class OrderController {
     public ResponseEntity<?> createOrder(@RequestBody CreateOrderRequestDto createOrderRequestDto) {
         try {
             CreateOrderResponseDto createOrderResponseDto = orderService.createOrder(createOrderRequestDto);
-            orderService.sendOrderNotification(createOrderResponseDto.getOrderId());
+            orderService.sendOrderNotification(createOrderRequestDto);
             return ResponseEntity.ok().body(createOrderResponseDto);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
