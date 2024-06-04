@@ -3,6 +3,7 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.controller;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store.CreateStoreRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store.UpdateStoreRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.service.FavoriteService;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class StoreController {
 
     private final StoreService storeService;
+    private final FavoriteService favoriteService;
 
     @PostMapping("/store")
     @Operation(summary = "가게 생성", description = "가게를 생성합니다.")
@@ -45,6 +47,7 @@ public class StoreController {
     public ResponseEntity<?> openStore() {
         try {
             storeService.changeOpenStatus(SecurityUtil.getCurrentUser());
+            favoriteService.sendFcmToFavoriteMembers(SecurityUtil.getCurrentUser());
             return ResponseEntity.ok("Successfully changed open status");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

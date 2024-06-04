@@ -1,10 +1,7 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.controller;
 
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.CheckDuplicateRequestDto;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.CreateMemberRequestDto;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.LoginRequestDto;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.UpdateMemberRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.*;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,6 +41,18 @@ public class MemberController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/save-fcm-token")
+    @Operation(summary = "FCM 토큰 저장", description = "FCM 토큰을 저장합니다.")
+    public ResponseEntity<?> updateFcmToken(@RequestBody FcmTokenDto fcmTokenDto) {
+        try {
+            memberService.updateFcmToken(fcmTokenDto);
+            return ResponseEntity.status(HttpStatus.OK).body("Successfully updated fcm token");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
     @PostMapping("/duplicate-username")
