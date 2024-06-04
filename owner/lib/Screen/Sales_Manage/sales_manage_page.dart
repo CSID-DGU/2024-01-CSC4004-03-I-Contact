@@ -29,6 +29,7 @@ class SalesManagePageState extends State<SalesManagePage> {
     setState(() {
       visibleMenuList = MenuService.getVisibleMenuList();
     });
+    print('refresh');
   }
 
   void closeStoreState() async {

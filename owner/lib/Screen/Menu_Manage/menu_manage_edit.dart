@@ -31,11 +31,6 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
     controllerName.text = widget.menu.name;
     controllerFP.text = widget.menu.firstPrice.toString();
     controllerSP.text = widget.menu.sellPrice.toString();
-    loadStoreState();
-  }
-
-  loadStoreState() async {
-    isOpen = await StoreService.getStoreState();
   }
 
   void _deleteMenu() async {
