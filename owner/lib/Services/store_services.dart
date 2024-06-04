@@ -94,10 +94,13 @@ class StoreService {
     var fireToken = await FirebaseMessaging.instance.getToken();
     try {
       var token = await AuthService.loadToken();
-      var headers = {'Authorization': '${token[0]} ${token[1]}'};
+      var headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': '${token[0]} ${token[1]}'
+      };
       var request = http.Request('POST',
           Uri.parse('http://loio-server.azurewebsites.net/save-fcm-token'));
-      request.body = jsonEncode({"username": fireToken});
+      request.body = jsonEncode({"fcmToken": fireToken});
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {

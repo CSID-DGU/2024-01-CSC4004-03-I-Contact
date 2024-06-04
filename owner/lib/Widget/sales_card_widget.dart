@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Model/order_model.dart';
+import 'package:leftover_is_over_owner/Provider/store_state.dart';
 import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/Order_Manage/order_detail_page.dart';
+import 'package:provider/provider.dart';
 
 class SalesCard extends StatefulWidget {
   final int foodId;
@@ -28,11 +30,15 @@ class _SalesCardState extends State<SalesCard> {
 
 // 증가 버튼으로 숫자 증가 함수
   void _increment() {
+    var storeState = context.read<StoreState>();
+    storeState.refreshSalesCallback();
     widget.updateMenuCapacity(true);
   }
 
   // 감소 버튼으로 숫자 감소 함수
   void _decrement() {
+    var storeState = context.read<StoreState>();
+    storeState.refreshSalesCallback();
     if (widget.remainderNum > 0) {
       widget.updateMenuCapacity(false);
     }

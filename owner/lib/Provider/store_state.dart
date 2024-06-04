@@ -1,3 +1,5 @@
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
+
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Model/menu_model.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';
@@ -24,6 +26,7 @@ class StoreState extends ChangeNotifier {
       await Future.wait(futures);
     }
     _callAllCallbacks();
+    await StoreService.changeStoreState();
   }
 
   void setOpen(bool value) {
@@ -32,6 +35,10 @@ class StoreState extends ChangeNotifier {
     if (!value) {
       _refreshMenuCallback?.call();
     }
+  }
+
+  void refreshSalesCallback() async {
+    _refreshSalesCallback?.call();
   }
 
   void setRefreshSalesCallback(VoidCallback callback) {
