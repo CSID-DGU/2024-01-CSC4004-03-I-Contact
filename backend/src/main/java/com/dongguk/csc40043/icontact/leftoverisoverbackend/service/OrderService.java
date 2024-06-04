@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Service
@@ -20,6 +21,7 @@ public class OrderService {
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
     private final FoodRepository foodRepository;
+    private final FcmService fcmService;
 
     @Transactional
     public CreateOrderResponseDto createOrder(CreateOrderRequestDto createOrderRequestDto) {
@@ -51,4 +53,17 @@ public class OrderService {
         }
     }
 
+    public void sendOrderNotification(Long orderId) {
+        orderRepository.findById(orderId)
+                .ifPresent(order -> {
+                    String title = "새로운 주문이 도착했습니다.";
+                    String body = "새로운 주문이 도착했습니다.";
+                    try {
+                        fcmService.sendMessageTo(order.getStore().getMember().getFcmToken(), title, body);
+                    } catch (IOException e) {
+                        throw new IllegalArgumentException("푸시 알림을 보내는데 실패했습니다.");
+                    }
+                });
+    }
+    
 }
