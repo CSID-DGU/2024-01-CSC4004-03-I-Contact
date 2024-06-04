@@ -56,6 +56,8 @@ public class StoreService {
                 .endTime(store.getEndTime().toString())
                 .address(store.getAddress())
                 .phone(store.getPhone())
+                .latitude(store.getLatitude())
+                .longitude(store.getLongitude())
                 .isOpen(store.isOpen())
                 .deleted(store.isDeleted())
                 .build();
@@ -97,6 +99,8 @@ public class StoreService {
                         .endTime(store.getEndTime().toString())
                         .address(store.getAddress())
                         .phone(store.getPhone())
+                        .latitude(store.getLatitude())
+                        .longitude(store.getLongitude())
                         .isOpen(store.isOpen())
                         .deleted(store.isDeleted())
                         .build()

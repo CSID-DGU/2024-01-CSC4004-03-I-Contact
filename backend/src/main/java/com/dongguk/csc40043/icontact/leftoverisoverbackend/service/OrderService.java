@@ -53,17 +53,10 @@ public class OrderService {
         }
     }
 
-    public void sendOrderNotification(Long orderId) {
-        orderRepository.findById(orderId)
-                .ifPresent(order -> {
-                    String title = "새로운 주문이 도착했습니다.";
-                    String body = "새로운 주문이 도착했습니다.";
-                    try {
-                        fcmService.sendMessageTo(order.getStore().getMember().getFcmToken(), title, body);
-                    } catch (IOException e) {
-                        throw new IllegalArgumentException("푸시 알림을 보내는데 실패했습니다.");
-                    }
-                });
+    public void sendOrderNotification(CreateOrderRequestDto createOrderRequestDto) throws IOException {
+        Store store = storeRepository.findByIdAndDeleted(createOrderRequestDto.getStoreId(), false)
+                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
+        fcmService.sendMessageTo(store.getMember().getFcmToken(), "새로운 주문이 도착했습니다.", "새로운 주문이 도착했습니다.");
     }
-    
+
 }
