@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "354614371003",
-    "project_id": "opensoftware-c8519",
-    "storage_bucket": "opensoftware-c8519.appspot.com"
+    "project_number": "39756391312",
+    "project_id": "loio-6310d",
+    "storage_bucket": "loio-6310d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:354614371003:android:ef0813189661a6832a3f9e",
+        "mobilesdk_app_id": "1:39756391312:android:a4ca54513287a167cec915",
         "android_client_info": {
           "package_name": "com.example.leftover_is_over_owner"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCGCTJNJ7zakwVYotZ7PDTWx535nk_3Pto"
+          "current_key": "AIzaSyCeiJUKd_3NMyCgRcuzIaUDH8LJfGIwJXo"
         }
       ],
       "services": {

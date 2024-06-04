@@ -41,48 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCDTdVsUKgg6wpmZnJXY2l6nKLtKCRWYYc',
-    appId: '1:354614371003:web:4c9326cf917c73f22a3f9e',
-    messagingSenderId: '354614371003',
-    projectId: 'opensoftware-c8519',
-    authDomain: 'opensoftware-c8519.firebaseapp.com',
-    storageBucket: 'opensoftware-c8519.appspot.com',
-    measurementId: 'G-7V4S407W0N',
+    apiKey: 'AIzaSyD2q4wcKj4UdAKwhLFgzqCph-jN1Uu1OrA',
+    appId: '1:39756391312:web:21858fc23fa6cfe6cec915',
+    messagingSenderId: '39756391312',
+    projectId: 'loio-6310d',
+    authDomain: 'loio-6310d.firebaseapp.com',
+    storageBucket: 'loio-6310d.appspot.com',
+    measurementId: 'G-13QPFVX670',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCGCTJNJ7zakwVYotZ7PDTWx535nk_3Pto',
-    appId: '1:354614371003:android:ef0813189661a6832a3f9e',
-    messagingSenderId: '354614371003',
-    projectId: 'opensoftware-c8519',
-    storageBucket: 'opensoftware-c8519.appspot.com',
+    apiKey: 'AIzaSyCeiJUKd_3NMyCgRcuzIaUDH8LJfGIwJXo',
+    appId: '1:39756391312:android:a4ca54513287a167cec915',
+    messagingSenderId: '39756391312',
+    projectId: 'loio-6310d',
+    storageBucket: 'loio-6310d.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA763GKZuG2fR-BSZG8pmgeW7tOxnK388A',
-    appId: '1:354614371003:ios:4cf90a26ff15e9f82a3f9e',
-    messagingSenderId: '354614371003',
-    projectId: 'opensoftware-c8519',
-    storageBucket: 'opensoftware-c8519.appspot.com',
+    apiKey: 'AIzaSyD64ZVY9qxVyECKb90E3eNywz8FWafadFI',
+    appId: '1:39756391312:ios:4ec53b9baf055b15cec915',
+    messagingSenderId: '39756391312',
+    projectId: 'loio-6310d',
+    storageBucket: 'loio-6310d.appspot.com',
     iosBundleId: 'com.example.leftoverIsOverOwner',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyA763GKZuG2fR-BSZG8pmgeW7tOxnK388A',
-    appId: '1:354614371003:ios:4cf90a26ff15e9f82a3f9e',
-    messagingSenderId: '354614371003',
-    projectId: 'opensoftware-c8519',
-    storageBucket: 'opensoftware-c8519.appspot.com',
+    apiKey: 'AIzaSyD64ZVY9qxVyECKb90E3eNywz8FWafadFI',
+    appId: '1:39756391312:ios:4ec53b9baf055b15cec915',
+    messagingSenderId: '39756391312',
+    projectId: 'loio-6310d',
+    storageBucket: 'loio-6310d.appspot.com',
     iosBundleId: 'com.example.leftoverIsOverOwner',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCDTdVsUKgg6wpmZnJXY2l6nKLtKCRWYYc',
-    appId: '1:354614371003:web:45dcd8223f3914b82a3f9e',
-    messagingSenderId: '354614371003',
-    projectId: 'opensoftware-c8519',
-    authDomain: 'opensoftware-c8519.firebaseapp.com',
-    storageBucket: 'opensoftware-c8519.appspot.com',
-    measurementId: 'G-KEN5CTGFK0',
+    apiKey: 'AIzaSyD2q4wcKj4UdAKwhLFgzqCph-jN1Uu1OrA',
+    appId: '1:39756391312:web:1459fc2c18a35095cec915',
+    messagingSenderId: '39756391312',
+    projectId: 'loio-6310d',
+    authDomain: 'loio-6310d.firebaseapp.com',
+    storageBucket: 'loio-6310d.appspot.com',
+    measurementId: 'G-4VJTBMVJSM',
   );
+
 }
