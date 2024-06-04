@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:leftover_is_over_customer/widgets/favorites_widget.dart';
+import 'package:leftover_is_over_customer/services/favorite_services.dart';
+import 'package:leftover_is_over_customer/models/favorite_model.dart';
 
-class BookmarkScreen extends StatefulWidget {
-  const BookmarkScreen({super.key});
+class FavoriteScreen extends StatefulWidget {
+  const FavoriteScreen({super.key});
 
   @override
-  State<BookmarkScreen> createState() => _BookmarkScreenState();
+  State<FavoriteScreen> createState() => _FavoriteScreenState();
 }
 
-class _BookmarkScreenState extends State<BookmarkScreen> {
+class _FavoriteScreenState extends State<FavoriteScreen> {
+  late Future<List<FavoriteModel>> favoriteFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    favoriteFuture = FavoriteService.getFavorites();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,21 +27,30 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
       ),
       body: Container(
         margin: const EdgeInsets.all(20),
-        child: const Column(
-          children: [
-            FavoritesWidget(
-              salesStatus: '판매중',
-              favoriteRestaurant: '식당314',
-              favoritesLocation: '충무로역100번출구',
-              initialIsSubscribed: true,
-            ),
-            FavoritesWidget(
-              salesStatus: '판매중지',
-              favoriteRestaurant: '식당315',
-              favoritesLocation: '충무로역99번출구',
-              initialIsSubscribed: false,
-            ),
-          ],
+        child: FutureBuilder<List<FavoriteModel>>(
+          future: favoriteFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(
+                  child: Text('Failed to load favorites: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No favorites found.'));
+            } else {
+              List<FavoriteModel> favorites = snapshot.data!;
+              return ListView.builder(
+                itemCount: favorites.length,
+                itemBuilder: (context, index) {
+                  return FavoritesWidget(
+                    storeId: favorites[index].storeId,
+                    initialIsSubscribed:
+                        true, // Assuming all fetched favorites are initially subscribed
+                  );
+                },
+              );
+            }
+          },
         ),
       ),
     );

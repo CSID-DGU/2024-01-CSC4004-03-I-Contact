@@ -26,20 +26,8 @@ class OrderService {
       request.body = jsonEncode(order.toJson());
       request.headers.addAll(headers);
 
-      // 로그 추가
-      print('Request URL: ${request.url}');
-      print('Request Headers: ${request.headers}');
-      print('Request Body: ${request.body}');
-
       http.StreamedResponse response = await request.send();
-
-      // 로그 추가
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Headers: ${response.headers}');
-
-      // 응답 본문 출력
       String responseBody = await response.stream.bytesToString();
-      print('Response Body: $responseBody');
 
       if (response.statusCode == 200) {
         if (responseBody.isEmpty) {
