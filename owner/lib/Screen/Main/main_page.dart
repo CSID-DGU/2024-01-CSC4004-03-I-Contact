@@ -34,16 +34,14 @@ class _MainPageState extends State<MainPage> {
   double _opacity = 0.0;
   var messageString = "";
 
-  void getMyDeviceToken() async {
-    final token = await FirebaseMessaging.instance.getToken();
-    print("내 디바이스 토큰: $token");
+  void sendFirebaseToken() async {
+    await StoreService.sendFirebaseToken();
   }
 
   @override
   void initState() {
     _loadStore();
-    getMyDeviceToken();
-
+    sendFirebaseToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
       if (notification != null) {
