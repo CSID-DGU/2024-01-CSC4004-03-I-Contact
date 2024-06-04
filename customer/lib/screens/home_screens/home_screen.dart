@@ -10,6 +10,19 @@ import 'package:leftover_is_over_customer/screens/search_screens/search_screen.d
 
 import '../../widgets/food_category_widget.dart';
 
+class UserModel {
+  final String username;
+  final String name;
+  final String email;
+  final String phone;
+
+  UserModel.fromJson(Map<String, dynamic> json)
+      : username = json['username'],
+        name = json['name'],
+        email = json['email'],
+        phone = json['phone'];
+}
+
 class HomeScreen extends StatefulWidget {
   final VoidCallback onProfileTap;
   final VoidCallback onMapTap;
@@ -22,6 +35,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Future<UserModel> fetchUser() async {
+    // 이곳에 실제 데이터를 불러오는 API 호출을 구현하세요.
+    // 예시로 임시 데이터를 반환하는 Future.delayed를 사용하겠습니다.
+    await Future.delayed(const Duration(seconds: 2));
+    return UserModel.fromJson({
+      'username': 'john_doe',
+      'name': 'John Doe',
+      'email': 'john.doe@example.com',
+      'phone': '123-456-7890',
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -37,69 +62,90 @@ class _HomeScreenState extends State<HomeScreen> {
             right: screenHeight * 0.025),
         child: Column(
           children: [
-            SizedBox(
-              width: screenWidth * 0.9,
-              height: screenHeight * 0.1,
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: widget.onProfileTap,
-                    child: Container(
-                      width: screenWidth * 0.15,
-                      height: screenWidth * 0.15,
-                      margin: EdgeInsets.all(screenWidth * 0.02),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Theme.of(context).primaryColorDark,
-                            width: 2),
-                        borderRadius: BorderRadius.circular(45),
-                        color: Colors.white,
-                      ),
-                      child: Icon(
-                        Icons.person_2_rounded,
-                        size: screenWidth * 0.1,
-                        color: Theme.of(context).primaryColorDark,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: screenWidth * 0.4,
+            FutureBuilder<UserModel>(
+              future: fetchUser(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                } else if (snapshot.hasData) {
+                  UserModel user = snapshot.data!;
+                  return SizedBox(
+                    width: screenWidth * 0.9,
                     height: screenHeight * 0.1,
-                    margin: EdgeInsets.all(screenWidth * 0.02),
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(45)),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '아이디123',
-                        style: TextStyle(
-                            fontSize: screenWidth * 0.05,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotificationsScreen(),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: widget.onProfileTap,
+                          child: Container(
+                            width: screenWidth * 0.15,
+                            height: screenWidth * 0.15,
+                            margin: EdgeInsets.all(screenWidth * 0.02),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Theme.of(context).primaryColorDark,
+                                  width: 2),
+                              borderRadius: BorderRadius.circular(45),
+                              color: Colors.white,
+                            ),
+                            child: Icon(
+                              Icons.person_2_rounded,
+                              size: screenWidth * 0.1,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                    child: Container(
-                      width: screenWidth * 0.1,
-                      height: screenHeight * 0.1,
-                      margin: EdgeInsets.only(left: screenWidth * 0.1),
-                      child: Icon(
-                        Icons.notifications,
-                        size: 32,
-                        color: Theme.of(context).primaryColorDark,
-                      ),
+                        Container(
+                          width: screenWidth * 0.4,
+                          height: screenHeight * 0.1,
+                          margin: EdgeInsets.all(screenWidth * 0.02),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(45)),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              user.name,
+                              style: TextStyle(
+                                  fontSize: screenWidth * 0.05,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const NotificationsScreen(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: screenWidth * 0.1,
+                            height: screenHeight * 0.1,
+                            margin: EdgeInsets.only(left: screenWidth * 0.1),
+                            child: Icon(
+                              Icons.notifications,
+                              size: 32,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
+                  );
+                } else {
+                  return const Center(
+                    child: Text('No data found'),
+                  );
+                }
+              },
             ),
             GestureDetector(
               onTap: () {
