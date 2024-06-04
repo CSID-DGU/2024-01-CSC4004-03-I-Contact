@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:leftover_is_over_customer/screens/login_screens/login_screen.dart';
 import 'package:leftover_is_over_customer/screens/setting_screens/change_password_screen.dart';
 import 'package:leftover_is_over_customer/screens/setting_screens/profile_edit_screen.dart';
 import 'package:leftover_is_over_customer/screens/setting_screens/notification_setting_screen.dart';
+import 'package:leftover_is_over_customer/Services/auth_services.dart';
+import 'package:leftover_is_over_customer/widgets/show_custom_dialog_widget.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
@@ -82,8 +85,34 @@ class ProfileSection extends StatelessWidget {
   }
 }
 
-class SettingsSection extends StatelessWidget {
+class SettingsSection extends StatefulWidget {
   const SettingsSection({super.key});
+
+  @override
+  State<SettingsSection> createState() => _SettingsSectionState();
+}
+
+class _SettingsSectionState extends State<SettingsSection> {
+  void _logout() async {
+    //_isDropdownVisible = false;
+    var logout = await AuthService
+        .logout(); // async 가 되어있어야하는지 유의 future<bool>이 넘어오기 때문에
+    if (logout) {
+      if (!mounted) {
+        return;
+      }
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        (Route<dynamic> route) => false,
+      );
+    } else {
+      if (!mounted) {
+        return;
+      }
+      showErrorDialog(context, '로그아웃에 실패했습니다.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,9 +151,7 @@ class SettingsSection extends StatelessWidget {
           ),
           SizedBox(height: screenHeight * 0.01),
           ElevatedButton(
-            onPressed: () {
-              // Add logout functionality
-            },
+            onPressed: _logout,
             child: const Text('로그아웃'),
           ),
         ],
