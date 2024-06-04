@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:leftover_is_over_owner/Model/menu_model.dart';
 import 'package:leftover_is_over_owner/Model/user_model.dart';
 import 'package:leftover_is_over_owner/Model/order_model.dart';
@@ -77,6 +78,26 @@ class StoreService {
       var headers = {'Authorization': '${token[0]} ${token[1]}'};
       var request = http.Request(
           'POST', Uri.parse('http://loio-server.azurewebsites.net/store/open'));
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Failed to load ownerInfo: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<bool> sendFirebaseToken() async {
+    var fireToken = await FirebaseMessaging.instance.getToken();
+    try {
+      var token = await AuthService.loadToken();
+      var headers = {'Authorization': '${token[0]} ${token[1]}'};
+      var request = http.Request('POST',
+          Uri.parse('http://loio-server.azurewebsites.net/save-fcm-token'));
+      request.body = jsonEncode({"username": fireToken});
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
