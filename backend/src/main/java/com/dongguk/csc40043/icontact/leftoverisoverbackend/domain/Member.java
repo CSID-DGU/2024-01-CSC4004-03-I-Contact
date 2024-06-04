@@ -35,6 +35,8 @@ public class Member implements UserDetails {
 
     private String phone;
 
+    private String fcmToken;
+
     @Column(columnDefinition = "boolean default false")
     private boolean deleted;
 
@@ -99,6 +101,10 @@ public class Member implements UserDetails {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
 }

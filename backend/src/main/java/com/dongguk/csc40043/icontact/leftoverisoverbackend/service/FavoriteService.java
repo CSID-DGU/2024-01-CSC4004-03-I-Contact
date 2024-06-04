@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,7 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
     private final StoreRepository storeRepository;
+    private final FcmService fcmService;
 
     @Transactional
     public void addFavorite(FavoriteRequestDto favoriteRequestDto) {
@@ -62,6 +64,21 @@ public class FavoriteService {
         Store store = storeRepository.findByIdAndDeleted(favoriteRequestDto.getStoreId(), false).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 식당입니다."));
         favoriteRepository.deleteByMemberAndStore(member, store);
+    }
+
+    public void sendFcmToFavoriteMembers(String username) {
+        Member owner = memberRepository.findByUsernameAndDeleted(username, false).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 회원입니다."));
+        Store store = storeRepository.findByMemberAndDeleted(owner, false).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 식당입니다."));
+        List<Member> favoriteMembers = favoriteRepository.findMemberByStore(store);
+        favoriteMembers.forEach(member -> {
+            try {
+                fcmService.sendMessageTo(member.getFcmToken(), "즐겨찾기 식당이 오픈했습니다.", store.getName() + " 식당이 오픈했습니다.");
+            } catch (IOException e) {
+                throw new IllegalArgumentException("FCM 전송에 실패했습니다.");
+            }
+        });
     }
 
 }

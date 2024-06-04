@@ -5,6 +5,7 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.MemberDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.CheckDuplicateRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.FcmTokenDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.LoginRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.UpdateMemberRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.GetMemberResponseDto;
@@ -54,6 +55,13 @@ public class MemberService {
             throw new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다.");
         }
         return jwtTokenProvider.generateToken(authentication);
+    }
+
+    @Transactional
+    public void updateFcmToken(FcmTokenDto fcmTokenDto) {
+        Member member = memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false).orElseThrow(() ->
+                new UsernameNotFoundException("존재하지 않는 회원입니다."));
+        member.updateFcmToken(fcmTokenDto.getFcmToken());
     }
 
     public void checkDuplicate(CheckDuplicateRequestDto checkDuplicateRequestDto) {
