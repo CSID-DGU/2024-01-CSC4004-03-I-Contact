@@ -52,6 +52,35 @@ class CategorySearchService {
   }
 }
 
+class LocationSearchService {
+  static Future<List<StoreModel>> getStoreListByLocation(
+      double latitude, double longitude) async {
+    List<StoreModel> storeInstances = [];
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'http://loio-server.azurewebsites.net/store/location?latitude=$latitude&longitude=$longitude'),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = utf8.decode(response.bodyBytes); // UTF-8 디코딩
+        final List<dynamic> datas = jsonDecode(responseBody);
+        for (var data in datas) {
+          storeInstances.add(StoreModel.fromJson(data));
+          print(data);
+        }
+        print(storeInstances);
+        return storeInstances;
+      } else {
+        throw Exception('Failed to load stores: ${response.statusCode}');
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+}
+
 class GetStoreByKeywordService {
   static Future<List<StoreModel>> getStoreListByKeyword(String keyword) async {
     List<StoreModel> storeInstances = [];
