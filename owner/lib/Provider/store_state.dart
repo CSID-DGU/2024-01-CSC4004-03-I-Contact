@@ -1,5 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
-
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Model/menu_model.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';

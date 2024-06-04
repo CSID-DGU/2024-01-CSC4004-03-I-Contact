@@ -16,7 +16,6 @@ import 'package:leftover_is_over_owner/Screen/Register/store_register_page.dart'
 import 'package:leftover_is_over_owner/Screen/Sales_Manage/sales_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/test.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_add.dart';
-import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:provider/provider.dart';
 
 @pragma('vm:entry-point')
