@@ -5,6 +5,7 @@ import 'package:leftover_is_over_customer/models/store_model.dart';
 import 'package:leftover_is_over_customer/services/store_services.dart';
 import 'package:leftover_is_over_customer/widgets/resturant_widget.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:geocoding/geocoding.dart'; // Import geocoding package
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -16,7 +17,9 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   double scrollviewHeight = 200.0; // 스크롤 뷰의 초기 높이
   Future<List<StoreModel>>? _futureStore;
-  late Position _currentPosition;
+  Position? _currentPosition;
+  List<NLatLng> _storePositions = [];
+  List<String> _storeNames = [];
 
   @override
   void initState() {
@@ -27,11 +30,14 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _getCurrentLocationAndFetchStores() async {
     try {
       _currentPosition = await _getCurrentLocation();
+      List<StoreModel> stores =
+          await LocationSearchService.getStoreListByLocation(
+        _currentPosition!.latitude,
+        _currentPosition!.longitude,
+      );
+      await _convertAddressesToCoordinates(stores);
       setState(() {
-        _futureStore = LocationSearchService.getStoreListByLocation(
-          _currentPosition.latitude,
-          _currentPosition.longitude,
-        );
+        _futureStore = Future.value(stores);
       });
     } catch (e) {
       // Handle the error appropriately
@@ -65,6 +71,27 @@ class _MapScreenState extends State<MapScreen> {
     return await Geolocator.getCurrentPosition();
   }
 
+  Future<void> _convertAddressesToCoordinates(List<StoreModel> stores) async {
+    List<NLatLng> positions = [];
+    List<String> storeNames = [];
+    for (var store in stores) {
+      try {
+        List<Location> locations = await locationFromAddress(store.address);
+        if (locations.isNotEmpty) {
+          Location location = locations.first;
+          positions.add(NLatLng(location.latitude, location.longitude));
+          storeNames.add(store.name);
+        }
+      } catch (e) {
+        print('Error converting address to coordinates: $e');
+      }
+    }
+    setState(() {
+      _storePositions = positions;
+      _storeNames = storeNames;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -88,7 +115,9 @@ class _MapScreenState extends State<MapScreen> {
                   return Stack(
                     children: [
                       NaverMapApp(
-                        initialPosition: _currentPosition,
+                        initialPosition: _currentPosition!,
+                        storePositions: _storePositions,
+                        storeNames: _storeNames,
                       ),
                       // Draggable scroll view
                       Positioned(
@@ -150,8 +179,14 @@ class _MapScreenState extends State<MapScreen> {
 
 class NaverMapApp extends StatefulWidget {
   final Position initialPosition;
+  final List<NLatLng> storePositions;
+  final List<String> storeNames;
 
-  const NaverMapApp({super.key, required this.initialPosition});
+  const NaverMapApp(
+      {super.key,
+      required this.initialPosition,
+      required this.storePositions,
+      required this.storeNames});
 
   @override
   _NaverMapAppState createState() => _NaverMapAppState();
@@ -166,6 +201,7 @@ class _NaverMapAppState extends State<NaverMapApp> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _addCurrentLocationMarker(widget.initialPosition);
+      _addStoreMarkers(widget.storePositions, widget.storeNames);
     });
   }
 
@@ -200,6 +236,25 @@ class _NaverMapAppState extends State<NaverMapApp> {
     }
   }
 
+  void _addStoreMarkers(List<NLatLng> positions, List<String> names) {
+    if (_mapControllerCompleter.isCompleted) {
+      for (int i = 0; i < positions.length; i++) {
+        final storeMarker = NMarker(
+          id: names[i],
+          position: positions[i],
+          iconTintColor: const Color.fromARGB(255, 222, 107, 65),
+        );
+        _mapController.addOverlay(storeMarker);
+
+        final onMarkerInfoWindow = NInfoWindow.onMarker(
+          id: storeMarker.info.id,
+          text: names[i],
+        );
+        storeMarker.openInfoWindow(onMarkerInfoWindow);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return NaverMap(
@@ -207,35 +262,10 @@ class _NaverMapAppState extends State<NaverMapApp> {
         _mapControllerCompleter.complete(controller);
         _mapController = controller;
 
-        final marker = NMarker(
-          id: 'test',
-          position: const NLatLng(
-            37.506932467450326,
-            127.05578661133796,
-          ),
-        );
-        final marker1 = NMarker(
-          id: 'test1',
-          position: const NLatLng(
-            37.606932467450326,
-            127.05578661133796,
-          ),
-        );
-        controller.addOverlayAll(
-          {
-            marker,
-            marker1,
-          },
-        );
-
-        final onMarkerInfoWindow = NInfoWindow.onMarker(
-          id: marker.info.id,
-          text: "멋쟁이 사자처럼",
-        );
-        marker.openInfoWindow(onMarkerInfoWindow);
-
         // 현재 위치 마커 추가
         _addCurrentLocationMarker(widget.initialPosition);
+        // 스토어 마커 추가
+        _addStoreMarkers(widget.storePositions, widget.storeNames);
       },
     );
   }
