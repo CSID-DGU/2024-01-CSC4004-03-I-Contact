@@ -242,6 +242,7 @@ class _NaverMapAppState extends State<NaverMapApp> {
         final storeMarker = NMarker(
           id: names[i],
           position: positions[i],
+          iconTintColor: const Color.fromARGB(255, 222, 107, 65),
         );
         _mapController.addOverlay(storeMarker);
 
@@ -260,33 +261,6 @@ class _NaverMapAppState extends State<NaverMapApp> {
       onMapReady: (controller) {
         _mapControllerCompleter.complete(controller);
         _mapController = controller;
-
-        final marker = NMarker(
-          id: 'test',
-          position: const NLatLng(
-            37.506932467450326,
-            127.05578661133796,
-          ),
-        );
-        final marker1 = NMarker(
-          id: 'test1',
-          position: const NLatLng(
-            37.606932467450326,
-            127.05578661133796,
-          ),
-        );
-        controller.addOverlayAll(
-          {
-            marker,
-            marker1,
-          },
-        );
-
-        final onMarkerInfoWindow = NInfoWindow.onMarker(
-          id: marker.info.id,
-          text: "멋쟁이 사자처럼",
-        );
-        marker.openInfoWindow(onMarkerInfoWindow);
 
         // 현재 위치 마커 추가
         _addCurrentLocationMarker(widget.initialPosition);
