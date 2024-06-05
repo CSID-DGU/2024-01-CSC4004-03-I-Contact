@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:leftover_is_over_customer/models/store_model.dart';
 import 'package:leftover_is_over_customer/services/store_services.dart';
@@ -111,6 +111,72 @@ class NaverMapApp extends StatefulWidget {
 
 class _NaverMapAppState extends State<NaverMapApp> {
   final Completer<NaverMapController> _mapControllerCompleter = Completer();
+  late NaverMapController _mapController;
+  late Position _currentPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // 위치 서비스가 활성화되어 있는지 확인
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    _currentPosition = await Geolocator.getCurrentPosition();
+    _addCurrentLocationMarker();
+  }
+
+  void _addCurrentLocationMarker() {
+    if (_mapControllerCompleter.isCompleted) {
+      final currentLocationMarker = NMarker(
+        id: 'current_location',
+        position: NLatLng(
+          _currentPosition.latitude,
+          _currentPosition.longitude,
+        ),
+      );
+      _mapController.addOverlay(currentLocationMarker);
+
+      final onMarkerInfoWindow = NInfoWindow.onMarker(
+        id: currentLocationMarker.info.id,
+        text: "현재 위치",
+      );
+      currentLocationMarker.openInfoWindow(onMarkerInfoWindow);
+      // 현재 위치로 카메라 이동
+      _mapController.updateCamera(
+        NCameraUpdate.fromCameraPosition(
+          NCameraPosition(
+            target: NLatLng(
+              _currentPosition.latitude,
+              _currentPosition.longitude,
+            ),
+            zoom: 15.0,
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,19 +185,38 @@ class _NaverMapAppState extends State<NaverMapApp> {
       home: Scaffold(
         body: NaverMap(
           onMapReady: (controller) {
-            final marker = NMarker(
-                id: 'test',
-                position:
-                    const NLatLng(37.506932467450326, 127.05578661133796));
-            final marker1 = NMarker(
-                id: 'test1',
-                position:
-                    const NLatLng(37.606932467450326, 127.05578661133796));
-            controller.addOverlayAll({marker, marker1});
+            _mapControllerCompleter.complete(controller);
+            _mapController = controller;
 
-            final onMarkerInfoWindow =
-                NInfoWindow.onMarker(id: marker.info.id, text: "멋쟁이 사자처럼");
+            final marker = NMarker(
+              id: 'test',
+              position: const NLatLng(
+                37.506932467450326,
+                127.05578661133796,
+              ),
+            );
+            final marker1 = NMarker(
+              id: 'test1',
+              position: const NLatLng(
+                37.606932467450326,
+                127.05578661133796,
+              ),
+            );
+            controller.addOverlayAll(
+              {
+                marker,
+                marker1,
+              },
+            );
+
+            final onMarkerInfoWindow = NInfoWindow.onMarker(
+              id: marker.info.id,
+              text: "멋쟁이 사자처럼",
+            );
             marker.openInfoWindow(onMarkerInfoWindow);
+
+            // 현재 위치 마커 추가
+            _addCurrentLocationMarker();
           },
         ),
       ),
