@@ -21,17 +21,21 @@ class _OrderCardState extends State<OrderCard> {
   late String orderDate;
   late String orderStatus; // 주문 상태 visit complete order cancel
   late int orderNum; // 주문번호
-  late List<OrderInfoModel> orderInfo;
+  late List<OrderedFoodInfo> orderedFoodList;
   late String payType;
   late String firstFood;
+  late int firstFoodCnt;
+  late int menuCnt;
   @override
   void initState() {
     orderDate = widget.order.orderDate;
     orderStatus = widget.order.status;
     orderNum = widget.order.orderNum;
-    orderInfo = widget.order.orderInfo;
+    orderedFoodList = widget.order.orderedFoodInfo;
     widget.order.appPay ? payType = "앱" : payType = "현장";
-    firstFood = orderInfo[0].name; // 주문한 음식 배열 중 첫번째 음식의 이름
+    firstFood = orderedFoodList[0].name; // 주문한 음식 배열 중 첫번째 음식의 이름
+    firstFoodCnt = orderedFoodList[0].count;
+    menuCnt = orderedFoodList.length;
   }
 
   @override
@@ -108,7 +112,9 @@ class _OrderCardState extends State<OrderCard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '메뉴: $firstFood',
+                                menuCnt == 1
+                                    ? '메뉴: $firstFood $firstFoodCnt개'
+                                    : '메뉴: $firstFood $firstFoodCnt개 ...', // 메뉴가 다수일 경우
                                 style: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.w600,

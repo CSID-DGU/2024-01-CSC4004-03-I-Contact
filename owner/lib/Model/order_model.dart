@@ -1,10 +1,10 @@
 class OrderModel {
-  CustomerModel customer;
-  String orderDate;
-  String status;
-  int orderNum;
-  bool appPay;
-  List<OrderInfoModel> orderInfo;
+  final Customer customer;
+  final String orderDate;
+  final String status;
+  final int orderNum;
+  final bool appPay;
+  final List<OrderedFoodInfo> orderedFoodInfo;
 
   OrderModel({
     required this.customer,
@@ -12,50 +12,49 @@ class OrderModel {
     required this.status,
     required this.orderNum,
     required this.appPay,
-    required this.orderInfo,
+    required this.orderedFoodInfo,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
-    var orderInfoFromJson = json['orderInfo'] as List;
-    List<OrderInfoModel> orderInfoList = orderInfoFromJson
-        .map((orderInfoJson) => OrderInfoModel.fromJson(orderInfoJson))
-        .toList();
-
     return OrderModel(
-      customer: CustomerModel.fromJson(json['customer']),
+      customer: Customer.fromJson(json['customer']),
       orderDate: json['orderDate'],
       status: json['status'],
       orderNum: json['orderNum'],
       appPay: json['appPay'],
-      orderInfo: orderInfoList,
+      orderedFoodInfo: List<OrderedFoodInfo>.from(
+        json['orderedFoodInfo'].map((item) => OrderedFoodInfo.fromJson(item)),
+      ),
     );
   }
 
   Map<String, dynamic> toJson() {
-    List<Map<String, dynamic>> orderInfoList =
-        orderInfo.map((orderInfo) => orderInfo.toJson()).toList();
-
     return {
       'customer': customer.toJson(),
       'orderDate': orderDate,
       'status': status,
-      'orderInfo': orderInfoList,
+      'orderNum': orderNum,
+      'appPay': appPay,
+      'orderedFoodInfo': orderedFoodInfo.map((item) => item.toJson()).toList(),
     };
   }
 }
 
-class CustomerModel {
-  String username;
-  String phoneNum;
-  String email;
+class Customer {
+  final String username;
+  final String phone;
+  final String email;
 
-  CustomerModel(
-      {required this.username, required this.phoneNum, required this.email});
+  Customer({
+    required this.username,
+    required this.phone,
+    required this.email,
+  });
 
-  factory CustomerModel.fromJson(Map<String, dynamic> json) {
-    return CustomerModel(
+  factory Customer.fromJson(Map<String, dynamic> json) {
+    return Customer(
       username: json['username'],
-      phoneNum: json['phoneNum'],
+      phone: json['phone'],
       email: json['email'],
     );
   }
@@ -63,20 +62,23 @@ class CustomerModel {
   Map<String, dynamic> toJson() {
     return {
       'username': username,
-      'phoneNum': phoneNum,
+      'phone': phone,
       'email': email,
     };
   }
 }
 
-class OrderInfoModel {
-  String name;
-  int count;
+class OrderedFoodInfo {
+  final String name;
+  final int count;
 
-  OrderInfoModel({required this.name, required this.count});
+  OrderedFoodInfo({
+    required this.name,
+    required this.count,
+  });
 
-  factory OrderInfoModel.fromJson(Map<String, dynamic> json) {
-    return OrderInfoModel(
+  factory OrderedFoodInfo.fromJson(Map<String, dynamic> json) {
+    return OrderedFoodInfo(
       name: json['name'],
       count: json['count'],
     );

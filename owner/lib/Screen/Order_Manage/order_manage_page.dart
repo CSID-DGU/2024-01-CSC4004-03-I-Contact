@@ -13,14 +13,23 @@ class OrderManagePage extends StatefulWidget {
 }
 
 class _OrderManagePageState extends State<OrderManagePage> {
+  bool isLoading = true;
   late bool isOpen;
   late Future<List<OrderModel>> orderList;
 
   @override
   void initState() {
-    // TODO: implement initState
-    var getAll = false;
-    orderList = OrderService.getOrderList(getAll);
+    super.initState();
+    // Fetch initial data
+    orderList = OrderService.getOrderList(false); // visit인 오더리스트만 보이게
+    _getStoreState();
+  }
+
+  Future<void> _getStoreState() async {
+    isOpen = await StoreService.getStoreState();
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -44,35 +53,36 @@ class _OrderManagePageState extends State<OrderManagePage> {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Expanded(
-          child: FutureBuilder(
-            future: orderList,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.separated(
-                  scrollDirection: Axis.vertical,
-                  itemCount: snapshot.data!
-                      .length, // 이게 처음 주문 리스트가 비어있는 경우도 있는데 그러면 널일 수도 있으니까 나중에 !를 ?로 바꿔서 널인경우 따로 처리해야할 수 도 있음!!!!
-                  itemBuilder: (context, index) {
-                    var order = snapshot.data![index];
-                    return OrderCard(order);
-                  },
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: 10,
-                  ),
-                );
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
-        ),
-      ),
+      resizeToAvoidBottomInset: false,
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: FutureBuilder<List<OrderModel>>(
+                future: orderList,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasData) {
+                    return ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        var order = snapshot.data![index];
+                        return OrderCard(order);
+                      },
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 10,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    return const Center(child: Text('No orders available'));
+                  }
+                },
+              ),
+            ),
     );
   }
 }
-
-
-// 추후 메뉴 글자 길이가 길어지면 자동으로 줄바꿈되고 
-// 이에 따라 주문 카드의 크기도 유동적으로 변하도록 수정필요(중요도 낮음)
