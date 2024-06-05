@@ -283,11 +283,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: GestureDetector(
-                    onTap: widget.onMapTap, child: const NaverMapApp()),
-              ),
             ),
           ],
         ),
