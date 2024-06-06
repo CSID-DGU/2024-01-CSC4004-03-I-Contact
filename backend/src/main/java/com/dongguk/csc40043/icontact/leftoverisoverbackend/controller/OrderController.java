@@ -8,9 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +24,26 @@ public class OrderController {
             CreateOrderResponseDto createOrderResponseDto = orderService.createOrder(createOrderRequestDto);
             orderService.sendOrderNotification(createOrderRequestDto);
             return ResponseEntity.ok().body(createOrderResponseDto);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/customer/order")
+    @Operation(summary = "고객: 주문 조회", description = "고객의 주문을 조회합니다.")
+    public ResponseEntity<?> getCustomerOrder() {
+        try {
+            return ResponseEntity.ok(orderService.getCustomerOrder());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/owner/order/{status}")
+    @Operation(summary = "점주: 주문 조회", description = "점주의 주문을 조회합니다.")
+    public ResponseEntity<?> getOwnerOrder(@PathVariable("status") String status) {
+        try {
+            return ResponseEntity.ok(orderService.getOwnerOrder(status));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
