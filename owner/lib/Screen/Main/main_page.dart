@@ -40,6 +40,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
+    _isDropdownVisible = false;
     _loadStore();
     sendFirebaseToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -169,6 +170,12 @@ class _MainPageState extends State<MainPage> {
             ),
             body: Stack(
               children: [
+                GestureDetector(
+                  onTap: _isDropdownVisible ? _toggleDropdown : null,
+                  child: Container(
+                    color: Colors.transparent, // 투명한 배경을 사용하여 터치 이벤트를 감지
+                  ),
+                ),
                 Align(
                   alignment: Alignment.center,
                   child: Column(
@@ -305,6 +312,17 @@ class _MainPageState extends State<MainPage> {
                 ),
                 Visibility(
                   visible: _isDropdownVisible,
+                  child: GestureDetector(
+                    onTap: _toggleDropdown,
+                    child: Container(
+                      color: Colors.black.withOpacity(0.2), // 드롭다운 뒤에 투명한 레이어
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: _isDropdownVisible,
                   child: Positioned(
                     top: 0,
                     left: 190,
@@ -362,10 +380,17 @@ class _MainPageState extends State<MainPage> {
                                 onTap: () {
                                   _isDropdownVisible = false;
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const MemberInfoPage()));
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const MemberInfoPage(),
+                                    ),
+                                  ).then((_) {
+                                    setState(() {
+                                      _isDropdownVisible =
+                                          false; // 페이지 이동 후 돌아왔을 때 드롭다운 메뉴 숨기기
+                                    });
+                                  });
                                 },
                               ),
                             ),
@@ -395,10 +420,16 @@ class _MainPageState extends State<MainPage> {
                                 onTap: () {
                                   _isDropdownVisible = false;
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const StoreInfoPage()));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const StoreInfoPage()),
+                                  ).then((_) {
+                                    setState(() {
+                                      _isDropdownVisible =
+                                          false; // 페이지 이동 후 돌아왔을 때 드롭다운 메뉴 숨기기
+                                    });
+                                  });
                                 },
                               ),
                             ),
@@ -428,10 +459,16 @@ class _MainPageState extends State<MainPage> {
                                 onTap: () {
                                   _isDropdownVisible = false;
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const StoreInfoPage()));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const StoreInfoPage()),
+                                  ).then((_) {
+                                    setState(() {
+                                      _isDropdownVisible =
+                                          false; // 페이지 이동 후 돌아왔을 때 드롭다운 메뉴 숨기기
+                                    });
+                                  });
                                 },
                               ),
                             ),
