@@ -242,7 +242,7 @@ class _NaverMapAppState extends State<NaverMapApp> {
         final storeMarker = NMarker(
           id: names[i],
           position: positions[i],
-          iconTintColor: const Color.fromARGB(255, 222, 107, 65),
+          iconTintColor: Colors.blue,
         );
         _mapController.addOverlay(storeMarker);
 
