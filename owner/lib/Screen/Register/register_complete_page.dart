@@ -29,7 +29,10 @@ class RegisterCompletePage extends StatelessWidget {
           ),
           const Text(
             '회원가입이 완료되었습니다!',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+            style: TextStyle(
+              fontSize: 28,
+              fontFamily: "Logo",
+            ),
           ),
           const SizedBox(
             height: 250,
@@ -39,7 +42,7 @@ class RegisterCompletePage extends StatelessWidget {
             height: 60.0,
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(
                     const Color.fromARGB(255, 173, 190, 122)),
               ),
               onPressed: () {
@@ -53,7 +56,7 @@ class RegisterCompletePage extends StatelessWidget {
                 '로그인 화면으로 이동',
                 style: TextStyle(
                   color: Colors.black87,
-                  fontWeight: FontWeight.w900,
+                  fontFamily: "MainButton",
                   fontSize: 17,
                 ),
               ),

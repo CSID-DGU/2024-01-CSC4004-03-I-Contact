@@ -132,7 +132,9 @@ class _MenuCardState extends State<MenuCard> {
                             child: Text(
                               menuName,
                               style: const TextStyle(
-                                  fontSize: 23, fontWeight: FontWeight.w600),
+                                  fontSize: 23,
+                                  fontFamily: "Free2",
+                                  fontWeight: FontWeight.w800),
                             ),
                           ),
                           Transform.translate(
@@ -162,7 +164,8 @@ class _MenuCardState extends State<MenuCard> {
                                 '등록가격: $salesCost',
                                 style: const TextStyle(
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w600,
+                                  fontFamily: "Free2",
+                                  //fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ],

@@ -236,7 +236,10 @@ class _StoreInfoPageState extends State<StoreInfoPage> {
             children: [
               Text(
                 '매장정보  ',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: "MainButton",
+                ),
               ),
             ],
           ),
@@ -773,7 +776,7 @@ class _StoreInfoPageState extends State<StoreInfoPage> {
                                     style: TextStyle(
                                       color: Colors.black87,
                                       fontSize: 20,
-                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Free2",
                                     ),
                                   ),
                                 ),

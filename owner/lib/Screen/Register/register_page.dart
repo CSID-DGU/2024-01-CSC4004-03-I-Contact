@@ -116,7 +116,10 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               Text(
                 '회원가입  ',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: "MainButton",
+                ),
               ),
             ],
           ),
@@ -483,7 +486,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         style: TextStyle(
                           color: Colors.black87,
                           fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          fontFamily: "Free2",
                         ),
                       ),
                     ),

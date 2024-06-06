@@ -47,8 +47,11 @@ class _OrderManagePageState extends State<OrderManagePage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(
-              '주문 관리',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              '이용 확인  ',
+              style: TextStyle(
+                fontSize: 24,
+                fontFamily: "MainButton",
+              ),
             ),
           ],
         ),

@@ -224,7 +224,10 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
             children: [
               Text(
                 '매장 정보 등록  ',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: "MainButton",
+                ),
               ),
             ],
           ),
@@ -720,7 +723,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                             style: TextStyle(
                               color: Colors.black87,
                               fontSize: 20,
-                              fontWeight: FontWeight.w600,
+                              fontFamily: "Free2",
                             ),
                           ),
                         ),

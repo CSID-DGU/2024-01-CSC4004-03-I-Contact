@@ -60,7 +60,10 @@ class SalesManagePageState extends State<SalesManagePage> {
             children: [
               Text(
                 '판매 관리  ',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: "MainButton",
+                ),
               ),
             ],
           ),
@@ -169,8 +172,8 @@ class SalesManagePageState extends State<SalesManagePage> {
                         color: !context.watch<StoreState>().isOpen
                             ? const Color.fromARGB(255, 120, 120, 120)
                             : Colors.red,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontFamily: "Free2",
+                        fontSize: 23,
                       ),
                     ),
                   ),

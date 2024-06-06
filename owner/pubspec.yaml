@@ -84,7 +84,28 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
+  fonts:
+  # 로고 및 로그인에 사용
+    - family: Logo 
+      fonts: 
+        - asset: asset/fonts/Cafe24Moyamoya-Regular-v1.0.ttf
+  # 앱 바 제목에 사용
+    - family: MainButton
+      fonts: 
+        - asset: asset/fonts/런드리고딕 Bold.ttf
+  # 드롭다운메뉴에 사용
+    - family: SubMenu
+      fonts: 
+        - asset: asset/fonts/런드리고딕 Regular.ttf
+  # 메인 메뉴 버튼에 사용
+    - family: Test
+      fonts: 
+        - asset: asset/fonts/한국기계연구원_Bold.ttf    
+  # 수정, 등록, 삭제 버튼 및 메뉴,주문 카드 내용에 사용  
+    - family: Free2
+      fonts: 
+        - asset: asset/fonts/Freesentation-7Bold.ttf   
+        
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
