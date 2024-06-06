@@ -93,7 +93,10 @@ class MenuManagePageState extends State<MenuManagePage> {
           children: [
             Text(
               '메뉴 관리  ',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: 24,
+                fontFamily: "MainButton",
+              ),
             ),
           ],
         ),
@@ -177,7 +180,7 @@ class MenuManagePageState extends State<MenuManagePage> {
                               '메뉴를 등록해주세요',
                               style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                                  fontFamily: "SubMenu",
                                   color: Colors.grey),
                             ),
                             Padding(
@@ -254,8 +257,8 @@ class MenuManagePageState extends State<MenuManagePage> {
                       color: context.watch<StoreState>().isOpen
                           ? const Color.fromARGB(255, 120, 120, 120)
                           : const Color.fromARGB(255, 57, 124, 57),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      fontFamily: "Free2",
+                      fontSize: 23,
                     ),
                   ),
                 ),

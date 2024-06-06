@@ -86,7 +86,9 @@ class _SalesCardState extends State<SalesCard> {
                           child: Text(
                             widget.menuName,
                             style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w600),
+                              fontSize: 25,
+                              fontFamily: "Free2",
+                            ),
                           ),
                         ),
                       ],
@@ -101,7 +103,7 @@ class _SalesCardState extends State<SalesCard> {
                               '남은 수량: ${widget.remainderNum}',
                               style: const TextStyle(
                                 fontSize: 20,
-                                fontWeight: FontWeight.w600,
+                                fontFamily: "Free2",
                               ),
                             ),
                           ],

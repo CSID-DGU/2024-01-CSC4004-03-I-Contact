@@ -20,14 +20,14 @@ class ShowSalesStatus extends StatelessWidget {
           const Text(
             '현재상태: ',
             style: TextStyle(
-              fontWeight: FontWeight.w500,
+              fontFamily: "SubMenu",
               color: Color.fromARGB(255, 120, 120, 120),
             ),
           ),
           Text(
             isOpen ? "판매 중" : "판매 마감",
             style: TextStyle(
-              fontWeight: FontWeight.w500,
+              fontFamily: "SubMenu",
               color: isOpen ? const Color.fromARGB(255, 0, 162, 0) : Colors.red,
             ),
           ),

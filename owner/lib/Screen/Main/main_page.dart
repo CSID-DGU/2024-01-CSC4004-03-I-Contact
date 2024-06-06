@@ -127,7 +127,7 @@ class _MainPageState extends State<MainPage> {
                         storeName,
                         style: const TextStyle(
                           fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          fontFamily: "MainButton",
                           color: Colors.black,
                         ),
                       ),
@@ -139,7 +139,7 @@ class _MainPageState extends State<MainPage> {
                               '현재상태: ',
                               style: TextStyle(
                                 fontSize: 12,
-                                fontWeight: FontWeight.w500,
+                                fontFamily: "SubMenu",
                                 color: Colors.black54,
                               ),
                             ),
@@ -150,7 +150,7 @@ class _MainPageState extends State<MainPage> {
                                     ? Colors.green
                                     : Colors.red,
                                 fontSize: 13,
-                                fontWeight: FontWeight.w600,
+                                fontFamily: "SubMenu",
                               ),
                             ),
                           ],
@@ -210,7 +210,7 @@ class _MainPageState extends State<MainPage> {
                             style: TextStyle(
                               color: Colors.brown[600],
                               fontSize: 30,
-                              fontWeight: FontWeight.w600,
+                              fontFamily: "Test",
                               shadows: const [
                                 Shadow(
                                   color: Colors.black26,
@@ -253,7 +253,7 @@ class _MainPageState extends State<MainPage> {
                             style: TextStyle(
                               color: Colors.brown[600],
                               fontSize: 30,
-                              fontWeight: FontWeight.w600,
+                              fontFamily: "Test",
                               shadows: const [
                                 Shadow(
                                   color: Colors.black26,
@@ -296,7 +296,7 @@ class _MainPageState extends State<MainPage> {
                             style: TextStyle(
                               color: Colors.brown[600],
                               fontSize: 30,
-                              fontWeight: FontWeight.w600,
+                              fontFamily: "Test",
                               shadows: const [
                                 Shadow(
                                   color: Colors.black26,
@@ -373,8 +373,8 @@ class _MainPageState extends State<MainPage> {
                                 title: const Text(
                                   "회원 정보",
                                   style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      fontFamily: "SubMenu",
                                       color: Colors.white),
                                 ),
                                 onTap: () {
@@ -413,8 +413,8 @@ class _MainPageState extends State<MainPage> {
                                 title: const Text(
                                   "가게 정보",
                                   style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      fontFamily: "SubMenu",
                                       color: Colors.white),
                                 ),
                                 onTap: () {
@@ -452,8 +452,8 @@ class _MainPageState extends State<MainPage> {
                                 title: const Text(
                                   "전체 주문 내역",
                                   style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      fontFamily: "SubMenu",
                                       color: Colors.white),
                                 ),
                                 onTap: () {
@@ -494,7 +494,7 @@ class _MainPageState extends State<MainPage> {
                                   "로그아웃",
                                   style: TextStyle(
                                       fontSize: 18,
-                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "SubMenu",
                                       color: Colors.white),
                                 ),
                                 onTap: _logout,

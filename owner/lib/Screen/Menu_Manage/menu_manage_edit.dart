@@ -103,7 +103,10 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
             children: [
               Text(
                 '메뉴 설정  ',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: "MainButton",
+                ),
               ),
             ],
           ),
@@ -118,7 +121,10 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text(
                     '수정할 메뉴의 정보를 입력해주세요',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontFamily: "SubMenu",
+                    ),
                   ),
                 ),
                 Container(
@@ -284,7 +290,9 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
                       child: const Text(
                         '사진 수정하기',
                         style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.w500),
+                          fontSize: 17,
+                          fontFamily: "Free2",
+                        ),
                       ),
                     ),
                     Container(
@@ -323,7 +331,7 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
-                            fontWeight: FontWeight.w600,
+                            fontFamily: "Free2",
                           ),
                         ),
                       ),
@@ -350,7 +358,7 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
-                            fontWeight: FontWeight.w600,
+                            fontFamily: "Free2",
                           ),
                         ),
                       ),

@@ -137,7 +137,10 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
           children: [
             Text(
               '회원정보  ',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: 24,
+                fontFamily: "MainButton",
+              ),
             ),
           ],
         ),
@@ -173,7 +176,9 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                       child: const Text(
                         '이름',
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -227,7 +232,9 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                           child: const Text(
                             '아이디',
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                         checkduplicate
@@ -479,7 +486,9 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                             child: const Text(
                               '비밀번호 확인',
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w500),
+                                fontSize: 16,
+                                fontFamily: "SubMenu",
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -550,7 +559,7 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                             style: TextStyle(
                               color: Colors.black87,
                               fontSize: 20,
-                              fontWeight: FontWeight.w600,
+                              fontFamily: "Free2",
                             ),
                           ),
                         ),

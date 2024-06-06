@@ -90,12 +90,14 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisSize: MainAxisSize.min, // Column의 높이를 최소로 설정
                     children: [
                       const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
+                        padding: EdgeInsets.symmetric(vertical: 15),
                         child: Text(
                           'Loio',
                           style: TextStyle(
-                              fontSize: 40,
-                              color: Color.fromARGB(255, 82, 59, 42)),
+                            fontSize: 50,
+                            color: Color.fromARGB(255, 82, 59, 42),
+                            fontFamily: "Logo",
+                          ),
                         ),
                       ),
                       //const SizedBox(height: 60),
@@ -105,10 +107,13 @@ class _LoginPageState extends State<LoginPage> {
                         radius: 100.0,
                       ),
                       const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 25),
+                        padding: EdgeInsets.symmetric(vertical: 20),
                         child: Text(
                           '로그인',
-                          style: TextStyle(fontSize: 27),
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontFamily: "Logo",
+                          ),
                         ),
                       ),
                       Column(
@@ -166,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                             height: 50.0,
                             child: ElevatedButton(
                               style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
+                                backgroundColor: WidgetStateProperty.all(
                                     const Color.fromARGB(255, 222, 234, 187)),
                               ),
                               onPressed: _login,
@@ -174,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                                 '로그인',
                                 style: TextStyle(
                                   color: Colors.black87,
-                                  fontWeight: FontWeight.w900,
+                                  fontFamily: "MainButton",
                                   fontSize: 17,
                                 ),
                               ),
@@ -188,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                             height: 50.0,
                             child: ElevatedButton(
                               style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
+                                backgroundColor: WidgetStateProperty.all(
                                     const Color.fromARGB(255, 173, 190, 122)),
                               ),
                               onPressed: () {},
@@ -203,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
                                     '구글 계정으로 로그인',
                                     style: TextStyle(
                                       color: Colors.black87,
-                                      fontWeight: FontWeight.w900,
+                                      fontFamily: "MainButton",
                                       fontSize: 17,
                                     ),
                                   ),

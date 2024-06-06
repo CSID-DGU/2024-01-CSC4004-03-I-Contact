@@ -84,7 +84,10 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
             children: [
               Text(
                 '메뉴 등록  ',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: "MainButton",
+                ),
               ),
             ],
           ),
@@ -99,7 +102,10 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text(
                     '등록할 메뉴의 정보를 입력해주세요',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontFamily: "SubMenu",
+                    ),
                   ),
                 ),
                 Container(
@@ -263,7 +269,9 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
                       child: const Text(
                         '사진 등록하기',
                         style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.w500),
+                          fontSize: 17,
+                          fontFamily: "Free2",
+                        ),
                       ),
                     ),
                     Container(
@@ -302,7 +310,7 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
-                            fontWeight: FontWeight.w600,
+                            fontFamily: "Free2",
                           ),
                         ),
                       ),
