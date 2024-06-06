@@ -40,7 +40,7 @@ class SalesManagePageState extends State<SalesManagePage> {
   }
 
   void updateMenuCapacity(int foodId, int remainder, bool add) async {
-    await MenuService.updateMenuCapacity(foodId, remainder, add);
+    await MenuService.updateMenuCapacity(foodId, add);
     refreshMenuList();
   }
 
