@@ -46,6 +46,10 @@ public class Food {
     @OneToMany(mappedBy = "food", cascade = CascadeType.PERSIST)
     private List<OrderFood> orderFoods = new ArrayList<>();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id")
+    private Image image;
+
     public void updateName(String name) {
         this.name = name;
     }
@@ -68,6 +72,10 @@ public class Food {
 
     public void minusCapacity(int count) {
         this.capacity -= count;
+    }
+
+    public void updateImage(Image image) {
+        this.image = image;
     }
 
 }

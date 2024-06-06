@@ -38,3 +38,6 @@ out/
 
 ### Datasource ###
 application.properties
+
+### Uploaded Files ###
+/uploads
