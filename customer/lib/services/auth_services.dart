@@ -123,4 +123,35 @@ class AuthService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getStringList('token')!;
   }
+
+  static Future<UserModel> getUserModel() async {
+    try {
+      var token = await AuthService.loadToken();
+      if (token.isEmpty) {
+        throw Exception('Token is null or empty');
+      }
+
+      var headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': '${token[0]} ${token[1]}'
+      };
+
+      var response = await http.get(
+        Uri.parse('http://loio-server.azurewebsites.net/member'),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = utf8.decode(response.bodyBytes);
+        Map<String, dynamic> data = jsonDecode(responseBody);
+        return UserModel.fromJson(data);
+      } else {
+        throw Exception(
+            'Failed to Get Member: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      print('Error: $e'); // 로그 추가
+      rethrow; // 예외 재던지기
+    }
+  }
 }

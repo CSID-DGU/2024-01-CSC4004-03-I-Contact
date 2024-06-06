@@ -7,21 +7,15 @@ import 'package:leftover_is_over_customer/screens/home_screens/main_screen.dart'
 import 'package:leftover_is_over_customer/screens/home_screens/map_screen.dart';
 import 'package:leftover_is_over_customer/screens/search_screens/notifications_screen.dart';
 import 'package:leftover_is_over_customer/screens/search_screens/search_screen.dart';
+import 'package:leftover_is_over_customer/services/auth_services.dart';
+import 'package:leftover_is_over_customer/models/user_model.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:leftover_is_over_customer/models/store_model.dart';
+import 'package:leftover_is_over_customer/services/store_services.dart';
 
 import '../../widgets/food_category_widget.dart';
-
-class UserModel {
-  final String username;
-  final String name;
-  final String email;
-  final String phone;
-
-  UserModel.fromJson(Map<String, dynamic> json)
-      : username = json['username'],
-        name = json['name'],
-        email = json['email'],
-        phone = json['phone'];
-}
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback onProfileTap;
@@ -35,15 +29,79 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<UserModel> fetchUser() async {
-    // 이곳에 실제 데이터를 불러오는 API 호출을 구현하세요.
-    // 예시로 임시 데이터를 반환하는 Future.delayed를 사용하겠습니다.
-    await Future.delayed(const Duration(seconds: 2));
-    return UserModel.fromJson({
-      'username': 'john_doe',
-      'name': 'John Doe',
-      'email': 'john.doe@example.com',
-      'phone': '123-456-7890',
+  late final Future<UserModel> _futureData = AuthService.getUserModel();
+  Future<List<StoreModel>>? _futureStore;
+  Position? _currentPosition;
+  List<NLatLng> _storePositions = [];
+  List<String> _storeNames = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocationAndFetchStores();
+  }
+
+  Future<void> _getCurrentLocationAndFetchStores() async {
+    try {
+      _currentPosition = await _getCurrentLocation();
+      List<StoreModel> stores =
+          await LocationSearchService.getStoreListByLocation(
+        _currentPosition!.latitude,
+        _currentPosition!.longitude,
+      );
+      await _convertAddressesToCoordinates(stores);
+      setState(() {
+        _futureStore = Future.value(stores);
+      });
+    } catch (e) {
+      // Handle the error appropriately
+      print('Error getting location: $e');
+    }
+  }
+
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // 위치 서비스가 활성화되어 있는지 확인
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  Future<void> _convertAddressesToCoordinates(List<StoreModel> stores) async {
+    List<NLatLng> positions = [];
+    List<String> storeNames = [];
+    for (var store in stores) {
+      try {
+        List<Location> locations = await locationFromAddress(store.address);
+        if (locations.isNotEmpty) {
+          Location location = locations.first;
+          positions.add(NLatLng(location.latitude, location.longitude));
+          storeNames.add(store.name);
+        }
+      } catch (e) {
+        print('Error converting address to coordinates: $e');
+      }
+    }
+    setState(() {
+      _storePositions = positions;
+      _storeNames = storeNames;
     });
   }
 
@@ -63,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             FutureBuilder<UserModel>(
-              future: fetchUser(),
+              future: _futureData,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
@@ -282,6 +340,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     offset: const Offset(0, 3), // changes position of shadow
                   ),
                 ],
+              ),
+              child: NaverMapApp(
+                initialPosition: _currentPosition!,
+                storePositions: _storePositions,
+                storeNames: _storeNames,
               ),
             ),
           ],
