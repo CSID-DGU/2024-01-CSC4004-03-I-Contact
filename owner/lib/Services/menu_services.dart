@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Model/menu_model.dart';
 import 'package:leftover_is_over_owner/Model/user_model.dart';
 import 'package:leftover_is_over_owner/Model/order_model.dart';
@@ -149,19 +150,22 @@ class MenuService {
     }
   }
 
-  static Future<bool> updateMenuCapacity(
-      int foodId, int remainder, bool add) async {
+  static Future<bool> updateMenuCapacity(int foodId, bool add) async {
     try {
-      final url =
-          Uri.parse('http://loio-server.azurewebsites.net/food/$foodId');
+      late dynamic url;
+      if (add) {
+        url =
+            Uri.parse('http://loio-server.azurewebsites.net/food/$foodId/add');
+      } else {
+        url = Uri.parse(
+            'http://loio-server.azurewebsites.net/food/$foodId/minus');
+      }
       final response = await http.patch(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({"capacity": add ? remainder + 1 : remainder - 1}),
       );
-
       if (response.statusCode == 200) {
         return true;
       } else {

@@ -6,7 +6,6 @@ import 'package:leftover_is_over_owner/Provider/store_state.dart';
 import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/Main/member_info_page.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
-import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_edit.dart';
 import 'package:leftover_is_over_owner/Screen/Sales_Manage/sales_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/Order_Manage/order_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/Main/store_info_page.dart';
@@ -44,18 +43,28 @@ class _MainPageState extends State<MainPage> {
     sendFirebaseToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
-      if (notification != null) {
-        FlutterLocalNotificationsPlugin().show(
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null) {
+        FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+            FlutterLocalNotificationsPlugin();
+        const AndroidNotificationChannel channel = AndroidNotificationChannel(
+          'high_importance_channel', // id
+          'High Importance Notifications', // title
+          importance: Importance.max,
+        );
+        flutterLocalNotificationsPlugin.show(
           notification.hashCode,
           notification.title,
           notification.body,
-          const NotificationDetails(
+          NotificationDetails(
             android: AndroidNotificationDetails(
-              'high_importance_channel',
-              'high_importance_notification',
+              channel.id,
+              channel.name,
               importance: Importance.max,
+              icon: '@mipmap/ic_launcher',
             ),
           ),
+          payload: message.data['parameter'],
         );
         setState(() {
           messageString = message.notification!.body!;
