@@ -43,4 +43,13 @@ public class Order {
         this.orderFoods.add(orderFood);
         orderFood.addOrder(this);
     }
+
+    public void cancel() {
+        this.status = OrderStatus.CANCEL;
+    }
+
+    public void complete() {
+        this.status = OrderStatus.COMPLETE;
+    }
+    
 }

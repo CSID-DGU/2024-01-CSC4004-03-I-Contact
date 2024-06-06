@@ -2,6 +2,7 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.*;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.order.ChangeOrderRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.order.CreateOrderRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.CreateOrderResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.*;
@@ -51,6 +52,20 @@ public class OrderService {
         } else {
             throw new IllegalArgumentException("앱 결제는 아직 지원하지 않습니다.");
         }
+    }
+
+    @Transactional
+    public void cancelOrder(ChangeOrderRequestDto changeOrderRequestDto) {
+        Order order = orderRepository.findById(changeOrderRequestDto.getOrderId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
+        order.cancel();
+    }
+
+    @Transactional
+    public void completeOrder(ChangeOrderRequestDto changeOrderRequestDto) {
+        Order order = orderRepository.findById(changeOrderRequestDto.getOrderId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
+        order.complete();
     }
 
     public void sendOrderNotification(CreateOrderRequestDto createOrderRequestDto) throws IOException {
