@@ -1,32 +1,59 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:leftover_is_over_owner/Model/menu_model.dart';
-import 'package:leftover_is_over_owner/Model/user_model.dart';
-import 'package:leftover_is_over_owner/Model/order_model.dart';
-import 'package:leftover_is_over_owner/Model/store_model.dart';
+import 'package:flutter/services.dart'; // rootBundle 사용을 위해 추가
 import 'package:http/http.dart' as http;
+import 'package:leftover_is_over_owner/Model/menu_model.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
 
 class MenuService {
-  static Future<bool> addMenu({
-    required String name,
-    required int firstPrice,
-    required int sellPrice,
-  }) async {
+  static Future<bool> addMenu(
+      {required String name,
+      required int firstPrice,
+      required int sellPrice,
+      File? file}) async {
+    print("addMenu 호출됨");
     try {
       var token = await AuthService.loadToken();
       var headers = {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': '${token[0]} ${token[1]}'
+        'Authorization': '${token[0]} ${token[1]}',
       };
-      var request = http.Request(
-          'POST', Uri.parse('http://loio-server.azurewebsites.net/food'));
-      request.body = jsonEncode({
-        "name": name,
-        "firstPrice": firstPrice,
-        "sellPrice": sellPrice,
-      });
+
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('http://loio-server.azurewebsites.net/food'),
+      );
+
       request.headers.addAll(headers);
+      request.fields['name'] = name;
+      request.fields['firstPrice'] = firstPrice.toString();
+      request.fields['sellPrice'] = sellPrice.toString();
+
+      if (file != null) {
+        print("사용자 지정 파일 추가됨: ${file.path}");
+        request.files.add(http.MultipartFile(
+          'file',
+          file.readAsBytes().asStream(),
+          file.lengthSync(),
+          filename: file.path.split('/').last,
+        ));
+      } else {
+        // Flutter 애셋 파일 경로 지정
+        String defaultImagePath = 'images/default_image.png';
+
+        // Flutter 애셋을 ByteData로 로드
+        ByteData byteData = await rootBundle.load(defaultImagePath);
+        List<int> imageData = byteData.buffer.asUint8List();
+
+        // MultipartFile로 변환
+        request.files.add(http.MultipartFile.fromBytes(
+          'file',
+          imageData,
+          filename: 'default_image.png',
+        ));
+        print("기본 이미지 파일 추가됨");
+      }
+
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
@@ -37,10 +64,11 @@ class MenuService {
           return true; // 성공
         }
       } else {
+        print('Failed to add Menu: ${response.statusCode}');
         throw Exception('Failed to add Menu: ${response.statusCode}');
       }
     } catch (e) {
-      print(e);
+      print('오류 발생: $e');
       rethrow;
     }
   }

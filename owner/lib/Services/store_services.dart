@@ -73,6 +73,7 @@ class StoreService {
   }
 
   static Future<bool> changeStoreState() async {
+    print("실행중인지");
     try {
       var token = await AuthService.loadToken();
       var headers = {'Authorization': '${token[0]} ${token[1]}'};

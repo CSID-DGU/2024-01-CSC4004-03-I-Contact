@@ -1,12 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';
 import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
-import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
-
-// 현재 틀만 만들어진 상태 기능 구현 필요
+import 'package:http/http.dart' as http;
 
 class MenuMangeAddPage extends StatefulWidget {
   const MenuMangeAddPage({super.key});
@@ -18,10 +19,15 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
   late TextEditingController controllerName,
       controllerFirstPrice,
       controllerSellPrice;
+  File? _selectedFile;
+  final picker = ImagePicker();
+  String defaultImagePath = 'images/default_image.png';
+
   late bool isOpen;
+
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     controllerName = TextEditingController();
     controllerFirstPrice = TextEditingController();
     controllerSellPrice = TextEditingController();
@@ -32,32 +38,41 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
     isOpen = await StoreService.getStoreState();
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _selectedFile = File(pickedFile!.path);
+    });
+  }
+
   void _addMenu() async {
     var name = controllerName.text;
     var firstPrice = int.parse(controllerFirstPrice.text);
     var sellPrice = int.parse(controllerSellPrice.text);
 
+    File file = _selectedFile ?? File(defaultImagePath);
+
     var addMenu = await MenuService.addMenu(
       name: name,
       firstPrice: firstPrice,
       sellPrice: sellPrice,
+      file: _selectedFile,
     );
+
     if (addMenu) {
       if (mounted) {
-        if (mounted) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const MainPage()),
-            (route) => false,
-          );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MainPage()),
+          (route) => false,
+        );
 
-          Future.delayed(Duration.zero, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const MenuManagePage()),
-            );
-          });
-        }
+        Future.delayed(Duration.zero, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MenuManagePage()),
+          );
+        });
       }
     } else {
       var message = '메뉴 등록에 실패했습니다';
@@ -252,11 +267,13 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      width: 130,
-                      height: 70,
-                      decoration: BoxDecoration(
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 130,
+                        height: 70,
+                        decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
                               blurRadius: 2,
@@ -265,21 +282,32 @@ class _MenuMangeAddPageState extends State<MenuMangeAddPage> {
                             )
                           ],
                           color: const Color.fromARGB(255, 210, 210, 210),
-                          borderRadius: BorderRadius.circular(15)),
-                      child: const Text(
-                        '사진 등록하기',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontFamily: "Free2",
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Text(
+                          '사진 등록하기',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontFamily: "Free2",
+                          ),
                         ),
                       ),
                     ),
-                    Container(
-                        width: 150,
-                        height: 150,
-                        decoration: const BoxDecoration(
-                          color: Color.fromARGB(255, 240, 240, 240),
-                        ))
+                    _selectedFile != null
+                        ? Image.file(
+                            _selectedFile!,
+                            width: 150,
+                            height: 150,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            width: 150,
+                            height: 150,
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 240, 240, 240),
+                            ),
+                            child: Image.asset(defaultImagePath),
+                          ),
                   ],
                 ),
                 Padding(
