@@ -7,8 +7,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,11 +19,19 @@ public class FoodController {
 
     private final FoodService foodService;
 
-    @PostMapping("/food")
+    @PostMapping(value = "/food", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "음식 추가", description = "음식을 추가합니다.")
-    public ResponseEntity<?> addFood(@RequestBody AddFoodRequestDto addFoodRequestDto) {
+    public ResponseEntity<?> addFood(@RequestParam("name") String name,
+                                     @RequestParam("firstPrice") int firstPrice,
+                                     @RequestParam("sellPrice") int sellPrice,
+                                     @RequestPart("file") MultipartFile file) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(foodService.addFood(addFoodRequestDto));
+            AddFoodRequestDto addFoodRequestDto = AddFoodRequestDto.builder()
+                    .name(name)
+                    .firstPrice(firstPrice)
+                    .sellPrice(sellPrice)
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(foodService.addFood(addFoodRequestDto, file));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -37,11 +47,24 @@ public class FoodController {
         }
     }
 
-    @PatchMapping("/food/{foodId}")
+    @PatchMapping(value = "/food/{foodId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "음식 수정", description = "특정 음식을 수정합니다.")
-    public ResponseEntity<?> updateFood(@PathVariable("foodId") Long id, @RequestBody UpdateFoodRequestDto updateFoodRequestDto) {
+    public ResponseEntity<?> updateFood(@PathVariable("foodId") Long id,
+                                        @RequestParam(value = "name", required = false) String name,
+                                        @RequestParam(value = "firstPrice", required = false) Integer firstPrice,
+                                        @RequestParam(value = "sellPrice", required = false) Integer sellPrice,
+                                        @RequestParam(value = "capacity", required = false) Integer capacity,
+                                        @RequestParam(value = "isVisible", required = false) Boolean isVisible,
+                                        @RequestPart(required = false) MultipartFile file) {
         try {
-            foodService.updateFood(id, updateFoodRequestDto);
+            UpdateFoodRequestDto updateFoodRequestDto = UpdateFoodRequestDto.builder()
+                    .name(name)
+                    .firstPrice(firstPrice)
+                    .sellPrice(sellPrice)
+                    .capacity(capacity)
+                    .isVisible(isVisible)
+                    .build();
+            foodService.updateFood(id, updateFoodRequestDto, file);
             return ResponseEntity.ok("Successfully updated food");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

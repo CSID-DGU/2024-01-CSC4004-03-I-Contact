@@ -25,4 +25,6 @@ public class GetFoodListResponseDto {
 
     boolean deleted;
 
+    String imageUrl;
+
 }
