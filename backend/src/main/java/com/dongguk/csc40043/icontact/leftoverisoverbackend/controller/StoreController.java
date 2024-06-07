@@ -25,6 +25,8 @@ public class StoreController {
     public ResponseEntity<?> createStore(@RequestBody CreateStoreRequestDto createStoreRequestDto) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(storeService.createStore(createStoreRequestDto));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
