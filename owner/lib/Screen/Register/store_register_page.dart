@@ -175,7 +175,21 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
           password: widget.password!,
         );
       } else {
-        // 구글 id Token으로 회원가입
+        print('구글매장생성');
+        var a = "google";
+        try {
+          registerCheck = await AuthService.register(
+            username: username,
+            name: widget.googleName!,
+            email: widget.googleId!,
+            phone: a,
+            password: a,
+          );
+        } catch (e) {
+          print(e);
+        }
+
+        print("구글 회원가입 완료했나? $registerCheck");
         // registerCheck = await AuthService.googleRegister
       }
       var registerStoreCheck = false;
@@ -192,7 +206,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
         var storePhone = controllerStorePhone.text;
         // var category = categoryLabels.elementAt(index)
         registerStoreCheck = await AuthService.storeRegister(
-          userName: username,
+          username: username,
           storeName: storeName,
           startTime: startTime,
           endTime: endTime,
@@ -200,8 +214,10 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
           storePhone: storePhone,
           categoryId: categoryId,
         );
+        print("구글 매장 생성 완료했나? $registerCheck");
       }
       if (registerCheck && registerStoreCheck) {
+        print("넘어가자1!");
         // 회원가입 성공 시
         Navigator.push(
           context,
