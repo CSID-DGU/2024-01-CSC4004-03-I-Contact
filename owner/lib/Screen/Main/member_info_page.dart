@@ -237,23 +237,6 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                             ),
                           ),
                         ),
-                        checkduplicate
-                            ? Visibility(
-                                visible: !readMode,
-                                child: Text(
-                                  '사용 가능   ',
-                                  style: TextStyle(
-                                      color: Colors.green[700], fontSize: 13),
-                                ),
-                              )
-                            : Visibility(
-                                visible: !readMode,
-                                child: Text(
-                                  '사용 불가   ',
-                                  style: TextStyle(
-                                      color: Colors.red[700], fontSize: 13),
-                                ),
-                              ),
                       ],
                     ),
                     const SizedBox(
@@ -284,39 +267,6 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                         autofocus: false,
                         readOnly: readMode,
                         controller: controllerUsername,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 6,
-                    ),
-                    Visibility(
-                      visible: !readMode,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          OutlinedButton(
-                            onPressed: () {
-                              _checkDuplicate(controllerUsername.text);
-                            },
-                            style: OutlinedButton.styleFrom(
-                              minimumSize: const Size(100, 40),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              side: BorderSide(color: Colors.grey[700]!),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
-                            ),
-                            child: const Text(
-                              '중복 확인',
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                     const SizedBox(
