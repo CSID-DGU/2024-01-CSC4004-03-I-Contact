@@ -43,6 +43,7 @@ class AuthService {
     });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
+    print('회원가입API:${response.statusCode}');
     if (response.statusCode == 201) {
       return true;
     } else {
@@ -52,7 +53,7 @@ class AuthService {
 
   static Future<bool> storeRegister({
     // 나중에 확인
-    required String userName,
+    required String username,
     required String storeName,
     required String startTime,
     required String endTime,
@@ -60,27 +61,33 @@ class AuthService {
     required String storePhone,
     required int categoryId,
   }) async {
-    var duplicateCheck = false;
-    var headers = {'Content-Type': 'application/json'};
-    var request = http.Request(
-        'POST', Uri.parse('http://loio-server.azurewebsites.net/store'));
-    request.body = jsonEncode({
-      "username": userName,
-      "name": storeName,
-      "startTime": startTime,
-      "endTime": endTime,
-      "address": address,
-      "phone": storePhone,
-      "categoryId": categoryId,
-    });
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 201) {
-      duplicateCheck = true;
-      print(response.statusCode);
+    try {
+      var registerCheck = false;
+      var headers = {'Content-Type': 'application/json'};
+      var request = http.Request(
+          'POST', Uri.parse('http://loio-server.azurewebsites.net/store'));
+      request.body = jsonEncode({
+        "username": username,
+        "name": storeName,
+        "startTime": startTime,
+        "endTime": endTime,
+        "address": address,
+        "phone": storePhone,
+        "categoryId": categoryId,
+      });
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      print('매장생성API:${response.statusCode}');
+      if (response.statusCode == 201) {
+        registerCheck = true;
+        return registerCheck;
+      } else {
+        throw Exception('Failed to register store.');
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
     }
-    print(response.statusCode);
-    return duplicateCheck;
   }
 
   static Future<bool> login(
@@ -104,6 +111,9 @@ class AuthService {
         client.close(); // 클라이언트 닫기
         throw Exception('Request timeout');
       });
+      print("내가왔다");
+      print(username);
+      print(password);
 
       if (response.statusCode == 200) {
         // 로그인 성공
@@ -112,7 +122,7 @@ class AuthService {
         await saveToken(token);
         return true;
       } else if (response.statusCode == 400) {
-        // 없는 로그인 정보가 입력되었을 경우
+        print("실패 ㅠㅠ");
         return false;
       } else {
         print(response.statusCode); // 기타 로그인 Service error

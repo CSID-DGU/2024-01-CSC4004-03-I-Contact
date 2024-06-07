@@ -81,6 +81,7 @@ class StoreService {
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
+        print("바꿈!");
         return true;
       } else {
         throw Exception('Failed to load ownerInfo: ${response.statusCode}');

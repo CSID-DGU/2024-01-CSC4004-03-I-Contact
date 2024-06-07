@@ -90,27 +90,44 @@ class _LoginPageState extends State<LoginPage> {
       if (user != null) {
         print('Firebase 인증 성공: ${user.email}');
         // Check if user is signing in for the first time
+        String googleId = "";
+        String googleName = "";
         if (userCredential.additionalUserInfo!.isNewUser) {
-          print('신규 사용자');
-          final String googleId = googleUser.id; // 사용자의 고유 Google ID
-          final String googleName =
+          print('신규 회원');
+          googleId = user.email!; // 사용자의 고유 Google ID
+          googleName =
               googleUser.displayName ?? '사장님'; // 사용자의 이름이 없을 경우 '사장님'으로 설정
 
           Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  StoreRegisterPage(googleId: googleId, googleName: googleName),
-            ),
-            (Route<dynamic> route) => false,
-          );
+              context,
+              MaterialPageRoute(
+                builder: (context) => StoreRegisterPage(
+                    googleId: googleId, googleName: googleName),
+              ),
+              (Route<dynamic> route) => false);
         } else {
-          print('이미 로그인한 회원');
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const MainPage()),
-            (Route<dynamic> route) => false,
-          );
+          print('계정이 있는 회원');
+          setState(() {
+            isLoading = true;
+          });
+          var temp = "google";
+          var login =
+              await AuthService.login(username: user.email!, password: temp);
+          setState(() {
+            isLoading = true;
+          });
+          print("로그인 여부$login");
+          if (login) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+              (Route<dynamic> route) => false,
+            );
+          } else {
+            if (!mounted) {
+              return showErrorDialog(context, '아이디/Password를 확인해주세요.');
+            }
+          }
         }
       } else {
         print('Firebase 사용자 없음');
