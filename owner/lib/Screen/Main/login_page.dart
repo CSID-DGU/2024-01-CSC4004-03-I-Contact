@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
 import 'package:leftover_is_over_owner/Screen/Register/register_page.dart';
+import 'package:leftover_is_over_owner/Screen/Register/store_register_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,9 +17,12 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late TextEditingController controllerUsername, controllerPwd;
   bool isLoading = false;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     controllerUsername = TextEditingController();
     controllerPwd = TextEditingController();
   }
@@ -49,6 +53,78 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> _loginWithGoogle() async {
+    print('로그인 시작');
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      // Trigger the authentication flow
+      print('Google Sign-In 시작');
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        print('Google Sign-In 취소됨');
+        setState(() {
+          isLoading = false;
+        });
+        return; // 사용자가 로그인 취소
+      }
+
+      // Obtain the auth details from the request
+      print('Google Sign-In 성공: ${googleUser.email}');
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a new credential
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      print('Firebase 인증 시작');
+      UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+      User? user = userCredential.user;
+
+      if (user != null) {
+        print('Firebase 인증 성공: ${user.email}');
+        // Check if user is signing in for the first time
+        if (userCredential.additionalUserInfo!.isNewUser) {
+          print('신규 사용자');
+          final String googleId = googleUser.id; // 사용자의 고유 Google ID
+          final String googleName =
+              googleUser.displayName ?? '사장님'; // 사용자의 이름이 없을 경우 '사장님'으로 설정
+
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  StoreRegisterPage(googleId: googleId, googleName: googleName),
+            ),
+            (Route<dynamic> route) => false,
+          );
+        } else {
+          print('이미 로그인한 회원');
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MainPage()),
+            (Route<dynamic> route) => false,
+          );
+        }
+      } else {
+        print('Firebase 사용자 없음');
+      }
+    } catch (e) {
+      print('예외 발생: $e');
+      showErrorDialog(context, 'Google 로그인에 실패했습니다.');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -57,17 +133,6 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 255, 198, 88),
-        /*appBar: AppBar(
-          title: const Center(
-            child: Text(
-              '로그인 페이지',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),*/
         body: isLoading
             ? const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -100,9 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      //const SizedBox(height: 60),
                       const CircleAvatar(
-                        // Flexible 제거
                         backgroundColor: Colors.white,
                         radius: 100.0,
                       ),
@@ -135,8 +198,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               autofocus: false,
-                              controller:
-                                  controllerUsername, // 컨트롤러 예제에서는 주석 처리
+                              controller: controllerUsername,
                             ),
                           ),
                           const SizedBox(
@@ -160,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               obscureText: true,
                               autofocus: false,
-                              controller: controllerPwd, // 컨트롤러 예제에서는 주석 처리
+                              controller: controllerPwd,
                             ),
                           ),
                           const SizedBox(
@@ -196,7 +258,7 @@ class _LoginPageState extends State<LoginPage> {
                                 backgroundColor: WidgetStateProperty.all(
                                     const Color.fromARGB(255, 173, 190, 122)),
                               ),
-                              onPressed: () {},
+                              onPressed: _loginWithGoogle,
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

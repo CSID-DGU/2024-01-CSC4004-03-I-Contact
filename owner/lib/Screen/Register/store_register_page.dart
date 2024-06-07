@@ -11,10 +11,16 @@ import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 class StoreRegisterPage extends StatefulWidget {
-  final String username, name, email, phone, password;
+  final String? username, name, email, phone, password, googleName, googleId;
   const StoreRegisterPage(
-      this.username, this.name, this.email, this.phone, this.password,
-      {super.key});
+      {this.username,
+      this.name,
+      this.email,
+      this.phone,
+      this.password,
+      this.googleName,
+      this.googleId,
+      super.key});
   @override
   State<StoreRegisterPage> createState() => _StoreRegisterPageState();
 }
@@ -154,13 +160,24 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
       showErrorDialog(context, message);
       return;
     } else if (checkValidTime()) {
-      var registerCheck = await AuthService.register(
-        username: widget.username,
-        name: widget.name,
-        email: widget.email,
-        phone: widget.phone,
-        password: widget.password,
-      );
+      var registerCheck = false;
+      String username = widget.username ?? widget.googleId!;
+      if (widget.username != null &&
+          widget.name != null &&
+          widget.email != null &&
+          widget.phone != null &&
+          widget.password != null) {
+        registerCheck = await AuthService.register(
+          username: username,
+          name: widget.name!,
+          email: widget.email!,
+          phone: widget.phone!,
+          password: widget.password!,
+        );
+      } else {
+        // 구글 id Token으로 회원가입
+        // registerCheck = await AuthService.googleRegister
+      }
       var registerStoreCheck = false;
       if (registerCheck) {
         // 회원가입 완료 되었을 시
@@ -175,7 +192,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
         var storePhone = controllerStorePhone.text;
         // var category = categoryLabels.elementAt(index)
         registerStoreCheck = await AuthService.storeRegister(
-          userName: widget.username,
+          userName: username,
           storeName: storeName,
           startTime: startTime,
           endTime: endTime,
@@ -197,6 +214,11 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
 
   @override
   void initState() {
+    print('넘어옴!!');
+    if (widget.googleId != null && widget.googleName != null) {
+      print(widget.googleId);
+      print(widget.googleName);
+    }
     controllerName = TextEditingController();
     controllerStartTimeHour = TextEditingController();
     controllerStartTimeMin = TextEditingController();
@@ -232,6 +254,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
             ],
           ),
         ),
+        resizeToAvoidBottomInset: true,
         body: Stack(
           children: [
             Padding(

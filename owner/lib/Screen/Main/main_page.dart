@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:leftover_is_over_owner/Model/store_model.dart';
 import 'package:leftover_is_over_owner/Provider/store_state.dart';
 import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
@@ -93,10 +95,16 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  void _logout() async {
+  Future<void> _logout() async {
     _isDropdownVisible = false;
     var logout = await AuthService
         .logout(); // async 가 되어있어야하는지 유의 future<bool>이 넘어오기 때문에
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await GoogleSignIn().signOut();
+      await FirebaseAuth.instance.signOut();
+    }
+
     if (logout) {
       if (!mounted) {
         return;

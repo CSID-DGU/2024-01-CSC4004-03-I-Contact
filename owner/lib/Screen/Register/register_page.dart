@@ -86,8 +86,12 @@ class _RegisterPageState extends State<RegisterPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  StoreRegisterPage(id, name, email, phone, pwd)),
+              builder: (context) => StoreRegisterPage(
+                  username: id,
+                  name: name,
+                  email: email,
+                  phone: phone,
+                  password: pwd)),
         );
         return;
       }
