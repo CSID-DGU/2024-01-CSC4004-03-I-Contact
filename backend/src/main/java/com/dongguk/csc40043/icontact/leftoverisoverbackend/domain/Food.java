@@ -78,4 +78,12 @@ public class Food {
         this.image = image;
     }
 
+    public void addCapacity() {
+        this.capacity++;
+    }
+
+    public void minusCapacity() {
+        this.capacity--;
+    }
+
 }

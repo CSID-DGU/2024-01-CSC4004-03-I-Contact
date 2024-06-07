@@ -91,4 +91,26 @@ public class FoodController {
         }
     }
 
+    @PostMapping("/food/{foodId}/add")
+    @Operation(summary = "음식 수량 추가", description = "음식의 수량을 추가합니다.")
+    public ResponseEntity<?> addFoodCapacity(@PathVariable("foodId") Long foodId) {
+        try {
+            foodService.addFoodCapacity(foodId);
+            return ResponseEntity.ok("Successfully added food count");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/food/{foodId}/minus")
+    @Operation(summary = "음식 수량 감소", description = "음식의 수량을 감소합니다.")
+    public ResponseEntity<?> minusFoodCapacity(@PathVariable("foodId") Long foodId) {
+        try {
+            foodService.minusFoodCapacity(foodId);
+            return ResponseEntity.ok("Successfully minus food count");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

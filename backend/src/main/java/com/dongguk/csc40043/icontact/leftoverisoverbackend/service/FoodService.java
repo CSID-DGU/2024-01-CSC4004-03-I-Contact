@@ -112,4 +112,18 @@ public class FoodService {
         foodRepository.delete(food);
     }
 
+    @Transactional
+    public void addFoodCapacity(Long foodId) {
+        Food food = foodRepository.findById(foodId).orElseThrow(() ->
+                new IllegalArgumentException("Invalid foodId"));
+        food.addCapacity();
+    }
+
+    @Transactional
+    public void minusFoodCapacity(Long foodId) {
+        Food food = foodRepository.findById(foodId).orElseThrow(() ->
+                new IllegalArgumentException("Invalid foodId"));
+        food.minusCapacity();
+    }
+
 }
