@@ -224,7 +224,7 @@ class MenuService {
       );
 
       request.fields['capacity'] = capacity;
-      request.fields['visible'] = visible.toString();
+      request.fields['isVisible'] = visible.toString();
 
       http.StreamedResponse response = await request.send();
 
