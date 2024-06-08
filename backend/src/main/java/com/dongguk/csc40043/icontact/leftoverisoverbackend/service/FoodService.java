@@ -60,7 +60,7 @@ public class FoodService {
                         .capacity(food.getCapacity())
                         .visits(food.getVisits())
                         .isVisible(food.isVisible())
-                        .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : null)
+                        .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : "")
                         .build()
                 )
                 .collect(Collectors.toList());
@@ -99,7 +99,7 @@ public class FoodService {
                         .capacity(food.getCapacity())
                         .visits(food.getVisits())
                         .isVisible(food.isVisible())
-                        .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : null)
+                        .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : "")
                         .build()
                 )
                 .collect(Collectors.toList());
@@ -110,6 +110,20 @@ public class FoodService {
         Food food = foodRepository.findById(foodId).orElseThrow(() ->
                 new IllegalArgumentException("Invalid foodId"));
         foodRepository.delete(food);
+    }
+
+    @Transactional
+    public void addFoodCapacity(Long foodId) {
+        Food food = foodRepository.findById(foodId).orElseThrow(() ->
+                new IllegalArgumentException("Invalid foodId"));
+        food.addCapacity();
+    }
+
+    @Transactional
+    public void minusFoodCapacity(Long foodId) {
+        Food food = foodRepository.findById(foodId).orElseThrow(() ->
+                new IllegalArgumentException("Invalid foodId"));
+        food.minusCapacity();
     }
 
 }

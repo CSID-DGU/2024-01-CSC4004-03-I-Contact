@@ -70,7 +70,14 @@ public class OrderService {
         Store store = storeRepository.findByMemberAndDeleted(memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false)
                         .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")), false)
                 .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
+        if (!status.equals("VISIT") && !status.equals("ALL")) {
+            throw new IllegalArgumentException("Invalid status");
+        }
         List<Order> orderList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf(status));
+        if (status.equals("ALL")) {
+            List<Order> orderAllList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf("ORDER"));
+            orderList.addAll(orderAllList);
+        }
         return orderList.stream()
                 .map(order -> mapToOrderListDto(order, order.getMember()))
                 .collect(Collectors.toList());
@@ -93,7 +100,17 @@ public class OrderService {
     public void sendOrderNotification(CreateOrderRequestDto createOrderRequestDto) throws IOException {
         Store store = storeRepository.findByIdAndDeleted(createOrderRequestDto.getStoreId(), false)
                 .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
-        fcmService.sendMessageTo(store.getMember().getFcmToken(), "새로운 주문이 도착했습니다.", "새로운 주문이 도착했습니다.");
+        Food food = foodRepository.findById(createOrderRequestDto.getOrderFoodDtos().get(0).getFoodId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 음식이 존재하지 않습니다."));
+        String messageTitle = "새로운 주문이 들어왔습니다.";
+        String messageBody;
+        int orderFoodCount = createOrderRequestDto.getOrderFoodDtos().size();
+        if (orderFoodCount > 1) {
+            messageBody = food.getName();
+        } else {
+            messageBody = food.getName() + " 외 " + (orderFoodCount - 1) + "개의 음식";
+        }
+        fcmService.sendMessageTo("owner", store.getMember().getFcmToken(), messageTitle, messageBody);
     }
 
     private OrderListDto mapToOrderListDto(Order order, Member member) {
