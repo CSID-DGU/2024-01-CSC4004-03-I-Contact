@@ -79,5 +79,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'loio-customer.appspot.com',
     measurementId: 'G-T81TDDM15G',
   );
-
 }
