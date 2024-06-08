@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_owner/Model/menu_model.dart';
 import 'package:leftover_is_over_owner/Provider/store_state.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';
+import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/sales_card_widget.dart';
 import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:provider/provider.dart';
@@ -32,10 +33,24 @@ class SalesManagePageState extends State<SalesManagePage> {
     print('refresh');
   }
 
-  void closeStoreState() async {
+  void closeStoreButton() async {
     var storeState = context.read<StoreState>();
     if (storeState.isOpen) {
       storeState.toggleStore();
+    }
+    try {
+      await StoreService.changeStoreState();
+      List<Future> futures = [];
+      List<MenuModel> menus = await MenuService.getMenuList();
+      String capacity = '0';
+      bool visible = false;
+      for (var menu in menus) {
+        futures.add(MenuService.setMenu(
+            foodId: menu.foodId, capacity: capacity, visible: visible));
+      }
+      await Future.wait(futures);
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -148,7 +163,7 @@ class SalesManagePageState extends State<SalesManagePage> {
             children: [
               GestureDetector(
                 // 오른쪽 하단 버튼
-                onTap: closeStoreState,
+                onTap: closeStoreButton,
                 child: Container(
                   height: 70,
                   width: 150,

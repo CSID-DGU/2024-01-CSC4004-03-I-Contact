@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // rootBundle 사용을 위해 추가
 import 'package:http/http.dart' as http;
 import 'package:leftover_is_over_owner/Model/menu_model.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
 
 class MenuService {
-  static Future<bool> addMenu(
-      {required String name,
-      required int firstPrice,
-      required int sellPrice,
-      File? file}) async {
+  static Future<bool> addMenu({
+    required String name,
+    required int firstPrice,
+    required int sellPrice,
+    File? file,
+  }) async {
     print("addMenu 호출됨");
     try {
       var token = await AuthService.loadToken();
@@ -86,7 +86,7 @@ class MenuService {
         throw Exception('Failed to delete Menu: ${response.statusCode}');
       }
     } catch (e) {
-      print(e);
+      print('오류 발생: $e');
       rethrow;
     }
   }
@@ -96,10 +96,16 @@ class MenuService {
     try {
       var token = await AuthService.loadToken();
       var headers = {'Authorization': '${token[0]} ${token[1]}'};
-      var request = http.Request(
-          'GET', Uri.parse('http://loio-server.azurewebsites.net/food'));
+
+      var request = http.MultipartRequest(
+        'GET',
+        Uri.parse('http://loio-server.azurewebsites.net/food'),
+      );
+
       request.headers.addAll(headers);
+
       http.StreamedResponse response = await request.send();
+
       if (response.statusCode == 200) {
         String responseBody = await response.stream.bytesToString();
         List<dynamic> menuList = jsonDecode(responseBody);
@@ -114,7 +120,7 @@ class MenuService {
         throw Exception('Failed to load menuList: ${response.statusCode}');
       }
     } catch (e) {
-      print(e);
+      print('오류 발생: $e');
       rethrow;
     }
   }
@@ -124,10 +130,16 @@ class MenuService {
     try {
       var token = await AuthService.loadToken();
       var headers = {'Authorization': '${token[0]} ${token[1]}'};
-      var request = http.Request(
-          'GET', Uri.parse('http://loio-server.azurewebsites.net/food'));
+
+      var request = http.MultipartRequest(
+        'GET',
+        Uri.parse('http://loio-server.azurewebsites.net/food'),
+      );
+
       request.headers.addAll(headers);
+
       http.StreamedResponse response = await request.send();
+
       if (response.statusCode == 200) {
         String responseBody = await response.stream.bytesToString();
         List<dynamic> menuList = jsonDecode(responseBody);
@@ -135,7 +147,6 @@ class MenuService {
           for (var menu in menuList) {
             var instance = MenuModel.fromJson(menu);
             if (instance.visible) {
-              print('add');
               menuInstances.add(instance);
             }
           }
@@ -145,42 +156,38 @@ class MenuService {
         throw Exception('Failed to load menuList: ${response.statusCode}');
       }
     } catch (e) {
-      print(e);
+      print('오류 발생: $e');
       rethrow;
     }
   }
 
   static Future<bool> updateMenuInfo(MenuModel menu) async {
     try {
-      final url =
-          Uri.parse('http://loio-server.azurewebsites.net/food/${menu.foodId}');
-      final response = await http.patch(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          "name": menu.name,
-          "firstPrice": menu.firstPrice,
-          "sellPrice": menu.sellPrice,
-        }),
+      var request = http.MultipartRequest(
+        'PATCH',
+        Uri.parse('http://loio-server.azurewebsites.net/food/${menu.foodId}'),
       );
+
+      request.fields['name'] = menu.name;
+      request.fields['firstPrice'] = menu.firstPrice.toString();
+      request.fields['sellPrice'] = menu.sellPrice.toString();
+
+      http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
         return true;
       } else {
-        // 오류 처리
-        throw Exception('Failed to update menu.');
+        throw Exception('Failed to update menu: ${response.statusCode}');
       }
     } catch (e) {
-      print(e);
+      print('오류 발생: $e');
       rethrow;
     }
   }
 
   static Future<bool> updateMenuCapacity(int foodId, bool add) async {
     try {
-      late dynamic url;
+      late Uri url;
       if (add) {
         url =
             Uri.parse('http://loio-server.azurewebsites.net/food/$foodId/add');
@@ -188,49 +195,50 @@ class MenuService {
         url = Uri.parse(
             'http://loio-server.azurewebsites.net/food/$foodId/minus');
       }
-      final response = await http.patch(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
+
+      var request = http.MultipartRequest('PATCH', url);
+
+      http.StreamedResponse response = await request.send();
+
       if (response.statusCode == 200) {
         return true;
       } else {
-        // 오류 처리
-        throw Exception('Failed to update menu.');
+        throw Exception(
+            'Failed to update menu capacity: ${response.statusCode}');
       }
     } catch (e) {
-      print(e);
+      print('오류 발생: $e');
       rethrow;
     }
   }
 
-  static Future<bool> setMenu(
-      {required int foodId,
-      required String capacity,
-      required bool visible}) async {
+  static Future<bool> setMenu({
+    required int foodId,
+    required String capacity,
+    required bool visible,
+  }) async {
     try {
-      final url =
-          Uri.parse('http://loio-server.azurewebsites.net/food/$foodId');
-      final response = await http.patch(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          "foodId": foodId,
-          "capacity": int.parse(capacity),
-          "isVisible": visible,
-        }),
+      var request = http.MultipartRequest(
+        'PATCH',
+        Uri.parse('http://loio-server.azurewebsites.net/food/$foodId'),
       );
+
+      request.fields['capacity'] = capacity;
+      request.fields['visible'] = visible.toString();
+
+      http.StreamedResponse response = await request.send();
+
       if (response.statusCode == 200) {
+        print('성공 !!$foodId $capacity $visible');
         return true;
       } else {
-        throw Exception('Failed to update initial capacity.');
+        print('Failed to update initial capacity: ${response.statusCode}');
+        print('Response body: ${response.reasonPhrase}');
+        throw Exception(
+            'Failed to update initial capacity: ${response.statusCode}');
       }
     } catch (e) {
-      print(e);
+      print('오류 발생: $e');
       rethrow;
     }
   }
