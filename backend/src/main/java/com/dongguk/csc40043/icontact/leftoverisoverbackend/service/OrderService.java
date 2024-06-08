@@ -116,6 +116,7 @@ public class OrderService {
     private OrderListDto mapToOrderListDto(Order order, Member member) {
         return OrderListDto.builder()
                 .customer(mapToCustomerDto(member))
+                .store(mapToOrderStoreDto(order.getStore()))
                 .orderDate(order.getOrderDate().toString())
                 .status(order.getStatus().name())
                 .orderNum(order.getId())
@@ -132,11 +133,19 @@ public class OrderService {
                 .build();
     }
 
+    private OrderListDto.OrderStore mapToOrderStoreDto(Store store) {
+        return OrderListDto.OrderStore.builder()
+                .storeId(store.getId())
+                .name(store.getName())
+                .build();
+    }
+
     private List<OrderListDto.Food> mapToOrderFoodDtos(List<OrderFood> orderFoods) {
         return orderFoods.stream()
                 .map(orderFood -> OrderListDto.Food.builder()
                         .name(orderFood.getFood().getName())
                         .count(orderFood.getCount())
+                        .imageUrl(orderFood.getFood().getImage() != null ? orderFood.getFood().getImage().getFileUrl() : "")
                         .build()
                 )
                 .collect(Collectors.toList());

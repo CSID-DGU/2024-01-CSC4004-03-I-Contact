@@ -11,6 +11,8 @@ public class OrderListDto {
 
     private Customer customer;
 
+    private OrderStore store;
+
     private String orderDate;
 
     private String status;
@@ -35,11 +37,22 @@ public class OrderListDto {
 
     @Data
     @Builder
+    public static class OrderStore {
+
+        private Long storeId;
+
+        private String name;
+    }
+
+    @Data
+    @Builder
     public static class Food {
 
         private String name;
 
         private Integer count;
+
+        private String imageUrl;
 
     }
 
