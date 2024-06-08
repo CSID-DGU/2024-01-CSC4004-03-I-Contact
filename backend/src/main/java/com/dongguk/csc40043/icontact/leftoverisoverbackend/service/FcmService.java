@@ -20,11 +20,17 @@ import java.util.List;
 @Slf4j
 public class FcmService {
 
-    @Value("${FIREBASE_CONFIG_BASE64}")
-    private String firebaseConfigBase64;
+    @Value("${OWNER_FIREBASE_CONFIG_BASE64}")
+    private String ownerFirebaseConfigBase64;
 
-    @Value("${FIREBASE_ALARM_SEND_API_URI}")
-    private String FIREBASE_ALARM_SEND_API_URI;
+    @Value("${CUSTOMER_FIREBASE_CONFIG_BASE64}")
+    private String customerFirebaseConfigBase64;
+
+    @Value("${OWNER_FIREBASE_ALARM_SEND_API_URI}")
+    private String OWNER_FIREBASE_ALARM_SEND_API_URI;
+
+    @Value("${CUSTOMER_FIREBASE_ALARM_SEND_API_URI}")
+    private String CUSTOMER_FIREBASE_ALARM_SEND_API_URI;
 
     private final ObjectMapper objectMapper;
 
@@ -33,8 +39,13 @@ public class FcmService {
         this.objectMapper = objectMapper;
     }
 
-    private String getAccessToken() throws IOException {
-        byte[] decodedBytes = Base64.getDecoder().decode(firebaseConfigBase64);
+    private String getAccessToken(String appType) throws IOException {
+        byte[] decodedBytes;
+        if (appType.equals("owner")) {
+            decodedBytes = Base64.getDecoder().decode(ownerFirebaseConfigBase64);
+        } else {
+            decodedBytes = Base64.getDecoder().decode(customerFirebaseConfigBase64);
+        }
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ByteArrayInputStream(decodedBytes))
                 .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
@@ -73,14 +84,20 @@ public class FcmService {
      *
      * @param targetToken : 푸쉬 알림을 받을 클라이언트 앱의 식별 토큰
      */
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
+    public void sendMessageTo(String appType, String targetToken, String title, String body) throws IOException {
         String message = makeMessage(targetToken, title, body);
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+        String FIREBASE_ALARM_SEND_API_URI;
+        if (appType.equals("owner")) {
+            FIREBASE_ALARM_SEND_API_URI = OWNER_FIREBASE_ALARM_SEND_API_URI;
+        } else {
+            FIREBASE_ALARM_SEND_API_URI = CUSTOMER_FIREBASE_ALARM_SEND_API_URI;
+        }
         Request request = new Request.Builder()
                 .url(FIREBASE_ALARM_SEND_API_URI)
                 .post(requestBody)
-                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken(appType))
                 .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
                 .build();
         Response response = client.newCall(request).execute();

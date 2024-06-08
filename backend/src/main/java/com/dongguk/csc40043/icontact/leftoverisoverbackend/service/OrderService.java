@@ -110,7 +110,7 @@ public class OrderService {
         } else {
             messageBody = food.getName() + " 외 " + (orderFoodCount - 1) + "개의 음식";
         }
-        fcmService.sendMessageTo(store.getMember().getFcmToken(), messageTitle, messageBody);
+        fcmService.sendMessageTo("owner", store.getMember().getFcmToken(), messageTitle, messageBody);
     }
 
     private OrderListDto mapToOrderListDto(Order order, Member member) {
