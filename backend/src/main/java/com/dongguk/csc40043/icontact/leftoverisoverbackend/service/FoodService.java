@@ -60,7 +60,7 @@ public class FoodService {
                         .capacity(food.getCapacity())
                         .visits(food.getVisits())
                         .isVisible(food.isVisible())
-                        .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : null)
+                        .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : "")
                         .build()
                 )
                 .collect(Collectors.toList());
@@ -99,7 +99,7 @@ public class FoodService {
                         .capacity(food.getCapacity())
                         .visits(food.getVisits())
                         .isVisible(food.isVisible())
-                        .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : null)
+                        .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : "")
                         .build()
                 )
                 .collect(Collectors.toList());
