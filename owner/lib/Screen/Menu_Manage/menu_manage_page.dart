@@ -31,24 +31,7 @@ class MenuManagePageState extends State<MenuManagePage> {
     // TODO: implement initState
     menuList = MenuService.getMenuList();
     var storeState = Provider.of<StoreState>(context, listen: false);
-    storeState.setRefreshMenuCallback(refreshMenuPage);
-  }
-
-  void refreshMenuPage() async {
-    print("refreshMenuPage");
-    var storeState = context.read<StoreState>();
-    if (!storeState.isOpen) {
-      // 만약에 닫힌걸로 바뀌었어
-      List<Future> futures = []; // 싹 다 초기화!!
-      controllers.forEach((foodId, controller) {
-        bool visible = false;
-        controller.text = '0';
-        futures.add(MenuService.setMenu(
-            foodId: foodId, capacity: controller.text = '0', visible: visible));
-      });
-      await Future.wait(futures);
-      refreshMenuList();
-    }
+    storeState.setRefreshMenuCallback(refreshMenuList);
   }
 
   void refreshMenuList() {
@@ -57,8 +40,9 @@ class MenuManagePageState extends State<MenuManagePage> {
     });
   }
 
-  void changeButtonState() async {
+  void openStoreButton() async {
     var storeState = context.read<StoreState>();
+    print(selectedMenuItems);
     if (!storeState.isOpen) {
       // 현재 상태 마감인데 판매 게시로 바꿀때
       storeState.toggleStore();
@@ -69,7 +53,9 @@ class MenuManagePageState extends State<MenuManagePage> {
             foodId: foodId, capacity: controller.text, visible: visible));
       });
       await Future.wait(futures);
+
       refreshMenuList();
+      await StoreService.changeStoreState();
     }
   }
 
@@ -233,7 +219,7 @@ class MenuManagePageState extends State<MenuManagePage> {
           children: [
             GestureDetector(
               // 판매 개시 버튼
-              onTap: changeButtonState,
+              onTap: openStoreButton,
               child: Container(
                 height: 70,
                 width: 150,

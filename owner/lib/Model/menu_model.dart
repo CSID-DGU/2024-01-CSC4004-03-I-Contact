@@ -8,6 +8,7 @@ class MenuModel {
   final int visits;
   final bool visible; // 무시
   final bool deleted; // 무시
+  String imageUrl; // 이미지 URL 필드 추가
 
   // 일반 생성자
   MenuModel({
@@ -20,6 +21,7 @@ class MenuModel {
     required this.visits,
     required this.visible,
     required this.deleted,
+    required this.imageUrl,
   });
 
   // fromJson 생성자
@@ -32,5 +34,6 @@ class MenuModel {
         capacity = json['capacity'],
         visits = json['visits'],
         deleted = json['deleted'],
-        visible = json['visible'];
+        visible = json['visible'],
+        imageUrl = json['imageUrl'];
 }
