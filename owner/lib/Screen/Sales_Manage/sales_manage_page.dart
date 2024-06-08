@@ -49,6 +49,7 @@ class SalesManagePageState extends State<SalesManagePage> {
             foodId: menu.foodId, capacity: capacity, visible: visible));
       }
       await Future.wait(futures);
+      refreshMenuList();
     } catch (e) {
       print(e);
     }
