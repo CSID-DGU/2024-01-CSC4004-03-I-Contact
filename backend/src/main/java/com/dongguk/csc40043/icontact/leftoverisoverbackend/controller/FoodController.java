@@ -24,7 +24,7 @@ public class FoodController {
     public ResponseEntity<?> addFood(@RequestParam("name") String name,
                                      @RequestParam("firstPrice") int firstPrice,
                                      @RequestParam("sellPrice") int sellPrice,
-                                     @RequestPart("file") MultipartFile file) {
+                                     @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
             AddFoodRequestDto addFoodRequestDto = AddFoodRequestDto.builder()
                     .name(name)
