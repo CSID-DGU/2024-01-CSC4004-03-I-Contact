@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class MenuWidget extends StatelessWidget {
-  const MenuWidget({
-    super.key,
-    required this.menuName,
-    required this.foodId,
-    required this.unitCost,
-    required this.remaining,
-    this.numMenu = 0,
-    required this.onMenuTap,
-  });
+  const MenuWidget(
+      {super.key,
+      required this.menuName,
+      required this.foodId,
+      required this.unitCost,
+      required this.remaining,
+      this.numMenu = 0,
+      required this.onMenuTap,
+      required this.imgUrl});
 
-  final String menuName, unitCost, remaining;
+  final String menuName, unitCost, remaining, imgUrl;
   final int numMenu, foodId;
   final void Function(int foodId) onMenuTap;
 
@@ -110,10 +110,28 @@ class MenuWidget extends StatelessWidget {
                 child: SizedBox(
                   width: 0.13 * screenHeight,
                   height: 0.13 * screenHeight,
-                  child: Image.asset(
-                    'assets/images/chicken.jpg',
-                    fit: BoxFit.cover,
-                  ),
+                  child: imgUrl.isNotEmpty
+                      ? Image.network(
+                          'http://loio-server.azurewebsites.net$imgUrl',
+                          width: 0.25 * screenWidth,
+                          height: 0.09 * screenHeight,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            print('Image load error: $error');
+                            return Image.asset(
+                              'assets/images/chicken.jpg',
+                              width: 0.25 * screenWidth,
+                              height: 0.09 * screenHeight,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          'assets/images/chicken.jpg',
+                          width: 0.25 * screenWidth,
+                          height: 0.09 * screenHeight,
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
             ],
