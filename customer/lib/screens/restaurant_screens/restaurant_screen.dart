@@ -119,10 +119,28 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                     stretch: true,
                     flexibleSpace: FlexibleSpaceBar(
                       collapseMode: CollapseMode.parallax,
-                      background: Image.asset(
-                        'assets/images/chicken.jpg',
-                        fit: BoxFit.cover,
-                      ),
+                      background:
+                          foods.isNotEmpty && foods[0].imageUrl.isNotEmpty
+                              ? Image.network(
+                                  'http://loio-server.azurewebsites.net${foods[0].imageUrl}',
+                                  width: 0.25 * screenWidth,
+                                  height: 0.09 * screenHeight,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/chicken.jpg',
+                                      width: 0.25 * screenWidth,
+                                      height: 0.09 * screenHeight,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                )
+                              : Image.asset(
+                                  'assets/images/chicken.jpg',
+                                  width: 0.25 * screenWidth,
+                                  height: 0.09 * screenHeight,
+                                  fit: BoxFit.cover,
+                                ),
                     ),
                     actions: [
                       Padding(
@@ -210,6 +228,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                     menuName: food.name,
                     unitCost: food.sellPrice.toString(),
                     remaining: food.capacity.toString(),
+                    imgUrl: food.imageUrl.toString(),
                     onMenuTap: (int foodId) {
                       _showHalfScreenModal(
                           food.name, food.sellPrice, foodId, food.capacity);

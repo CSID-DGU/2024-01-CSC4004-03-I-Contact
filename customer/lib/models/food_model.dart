@@ -6,8 +6,9 @@ class FoodModel {
   final int sellPrice;
   final int capacity;
   final int visits;
-  final bool isVisible;
+  final bool visible;
   final bool deleted;
+  final String imageUrl;
 
   FoodModel({
     required this.foodId,
@@ -17,8 +18,9 @@ class FoodModel {
     required this.sellPrice,
     required this.capacity,
     required this.visits,
-    required this.isVisible,
+    required this.visible,
     required this.deleted,
+    required this.imageUrl,
   });
 
   factory FoodModel.fromJson(Map<String, dynamic> json) {
@@ -30,8 +32,9 @@ class FoodModel {
       sellPrice: json['sellPrice'],
       capacity: json['capacity'],
       visits: json['visits'],
-      isVisible: json['isVisible'] ?? false, // Use null-aware operator
+      visible: json['visible'] ?? false, // Use null-aware operator
       deleted: json['deleted'] ?? false, // Use null-aware operator
+      imageUrl: json['imageUrl'], // Set imageUrl from json data
     );
   }
 }
