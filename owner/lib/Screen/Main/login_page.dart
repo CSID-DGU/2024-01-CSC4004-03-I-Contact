@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
+import 'package:leftover_is_over_owner/Screen/Search/search_select_page.dart';
 import 'package:leftover_is_over_owner/Screen/Register/register_page.dart';
 import 'package:leftover_is_over_owner/Screen/Register/store_register_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
@@ -322,7 +323,13 @@ class _LoginPageState extends State<LoginPage> {
                                 width: 10,
                               ),
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SearchSelectPage()));
+                                },
                                 style: TextButton.styleFrom(
                                   foregroundColor: Colors.black,
                                 ),
