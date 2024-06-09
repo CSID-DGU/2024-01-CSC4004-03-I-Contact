@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:leftover_is_over_customer/models/store_model.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:leftover_is_over_customer/Services/auth_services.dart';
 
 class StoreService {
   static Future<StoreModel> getStoreById(int storeId) async {
@@ -104,6 +106,32 @@ class GetStoreByKeywordService {
       }
     } catch (e) {
       print(e);
+      rethrow;
+    }
+  }
+}
+
+class SendFirebaseToken {
+  static Future<bool> sendFirebaseToken() async {
+    var fireToken = await FirebaseMessaging.instance.getToken();
+    print("내 디바이스 파이어베이스토큰: $fireToken");
+    try {
+      var token = await AuthService.loadToken();
+      var headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': '${token[0]} ${token[1]}'
+      };
+      var request = http.Request('POST',
+          Uri.parse('http://loio-server.azurewebsites.net/save-fcm-token'));
+      request.body = jsonEncode({"fcmToken": fireToken});
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Failed to load ownerInfo: ${response.statusCode}');
+      }
+    } catch (e) {
       rethrow;
     }
   }

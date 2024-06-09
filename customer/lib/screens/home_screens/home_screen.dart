@@ -14,6 +14,8 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:leftover_is_over_customer/models/store_model.dart';
 import 'package:leftover_is_over_customer/services/store_services.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../widgets/food_category_widget.dart';
 
@@ -30,15 +32,53 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final Future<UserModel> _futureData = AuthService.getUserModel();
+
+  void sendFirebaseToken() async {
+    await SendFirebaseToken.sendFirebaseToken();
+  }
+
   Future<List<StoreModel>>? _futureStore;
   Position? _currentPosition;
   List<NLatLng> _storePositions = [];
   List<String> _storeNames = [];
+  var messageString = "";
 
   @override
   void initState() {
-    super.initState();
     _getCurrentLocationAndFetchStores();
+    sendFirebaseToken();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null) {
+        FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+            FlutterLocalNotificationsPlugin();
+        const AndroidNotificationChannel channel = AndroidNotificationChannel(
+          'high_importance_channel', // id
+          'High Importance Notifications', // title
+          importance: Importance.max,
+        );
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              importance: Importance.max,
+              icon: '@mipmap/ic_launcher',
+            ),
+          ),
+          payload: message.data['parameter'],
+        );
+        setState(() {
+          messageString = message.notification!.body!;
+          print("Foreground 메시지 수신: $messageString");
+        });
+      }
+    });
+    super.initState();
   }
 
   Future<void> _getCurrentLocationAndFetchStores() async {
