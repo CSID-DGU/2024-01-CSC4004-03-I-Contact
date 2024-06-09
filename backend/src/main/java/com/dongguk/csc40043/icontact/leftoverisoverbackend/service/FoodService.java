@@ -31,6 +31,7 @@ public class FoodService {
     private final MemberRepository memberRepository;
     private final StoreRepository storeRepository;
     private final ImageService imageService;
+    private final WebSocketService webSocketService;
 
     @Transactional
     public AddFoodResponseDto addFood(AddFoodRequestDto addFoodRequestDto, MultipartFile file) throws IOException {
@@ -84,6 +85,8 @@ public class FoodService {
             Image image = imageService.store(file);
             food.updateImage(image);
         }
+        List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
+        webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
     }
 
     public List<GetFoodListResponseDto> getFoodListByStoreId(Long storeId) {
@@ -110,6 +113,8 @@ public class FoodService {
         Food food = foodRepository.findById(foodId).orElseThrow(() ->
                 new IllegalArgumentException("Invalid foodId"));
         foodRepository.delete(food);
+        List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
+        webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
     }
 
     @Transactional
@@ -117,6 +122,8 @@ public class FoodService {
         Food food = foodRepository.findById(foodId).orElseThrow(() ->
                 new IllegalArgumentException("Invalid foodId"));
         food.addCapacity();
+        List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
+        webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
     }
 
     @Transactional
@@ -124,6 +131,8 @@ public class FoodService {
         Food food = foodRepository.findById(foodId).orElseThrow(() ->
                 new IllegalArgumentException("Invalid foodId"));
         food.minusCapacity();
+        List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
+        webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
     }
 
 }
