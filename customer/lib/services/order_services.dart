@@ -65,8 +65,12 @@ class OrderService {
       http.StreamedResponse response = await request.send();
       String responseBody = await response.stream.bytesToString();
 
+      print('Response status: ${response.statusCode}');
+      print('Response body: $responseBody');
+
       if (response.statusCode == 200) {
         List<dynamic> jsonData = json.decode(responseBody);
+        print('Decoded JSON: $jsonData');
         List<GetOrderModel> orders = jsonData
             .map((data) => GetOrderModel.fromJson(data))
             .toList(); // JSON 데이터를 GetOrderModel 객체로 변환
@@ -74,6 +78,40 @@ class OrderService {
       } else {
         throw Exception(
             'Failed to get orders: ${response.statusCode} - $responseBody');
+      }
+    } catch (e) {
+      print('Error: $e'); // 로그 추가
+      rethrow; // 예외 재던지기
+    }
+  }
+
+  static Future<bool> deleteOrder({
+    required int orderId,
+  }) async {
+    try {
+      var token = await AuthService.loadToken();
+      if (token.isEmpty) {
+        throw Exception('Token is null or empty');
+      }
+
+      var headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': '${token[0]} ${token[1]}'
+      };
+
+      var body = jsonEncode({'orderNum': orderId});
+
+      var response = await http.post(
+        Uri.parse('http://loio-server.azurewebsites.net/order/cancel'),
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        return true; // 성공
+      } else {
+        throw Exception(
+            'Failed to delete order: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
       print('Error: $e'); // 로그 추가

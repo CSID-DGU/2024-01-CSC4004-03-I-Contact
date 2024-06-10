@@ -25,18 +25,26 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   }
 
   Future<List<GetOrderModel>> _getOrders() async {
-    final orderFuture = OrderService.getOrders();
-
-    final results = await Future.wait([orderFuture]);
-
-    return orderFuture;
+    try {
+      final orders = await OrderService.getOrders();
+      return orders ?? []; // null인 경우 빈 리스트 반환
+    } catch (e) {
+      print("Error fetching orders: $e");
+      return [];
+    }
   }
 
-  void _toggleOrderStatus() {
-    setState(() {
-      // Implement your logic to toggle order status here
-    });
-    widget.onFinish;
+  Future<void> _deleteOrder(int orderNum) async {
+    try {
+      bool success = await OrderService.deleteOrder(orderId: orderNum);
+      if (success) {
+        setState(() {
+          _futureOrders = _getOrders();
+        });
+      }
+    } catch (e) {
+      print('Error deleting order: $e');
+    }
   }
 
   @override
@@ -54,10 +62,13 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
           final orders = snapshot.data!;
+          if (orders.isEmpty) {
+            return const Center(child: Text('주문이 없습니다'));
+          }
           return ListView.builder(
             itemCount: orders.length,
             itemBuilder: (context, index) {
-              final order = orders[index];
+              final order = orders[orders.length - 1 - index]; // 역순으로 접근
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -90,10 +101,10 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '주문일자: ${order.orderDate}',
+                              '주문: ${order.orderDate}',
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: screenHeight * 0.018,
+                                fontSize: screenHeight * 0.014,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -164,7 +175,9 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                     ),
                                   ),
                                   ElevatedButton(
-                                    onPressed: _toggleOrderStatus,
+                                    onPressed: () {
+                                      _deleteOrder(order.orderNum);
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFFFFD700),
                                       foregroundColor: Colors.black,
