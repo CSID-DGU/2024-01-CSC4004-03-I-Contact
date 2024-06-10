@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,10 +115,11 @@ public class OrderService {
     }
 
     private OrderListDto mapToOrderListDto(Order order, Member member) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return OrderListDto.builder()
                 .customer(mapToCustomerDto(member))
                 .store(mapToOrderStoreDto(order.getStore()))
-                .orderDate(order.getOrderDate().toString())
+                .orderDate(order.getOrderDate().format(formatter))
                 .status(order.getStatus().name())
                 .orderNum(order.getId())
                 .appPay(order.getAppPay())

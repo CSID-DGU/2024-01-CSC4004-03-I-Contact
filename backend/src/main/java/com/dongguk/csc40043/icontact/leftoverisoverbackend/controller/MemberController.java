@@ -102,4 +102,27 @@ public class MemberController {
 
     }
 
+
+    @PostMapping("/find-username")
+    @Operation(summary = "아이디 찾기", description = "아이디를 찾습니다.")
+    public ResponseEntity<?> findUsername(@RequestBody FindUsernameRequestDto findUsernameRequestDto) {
+        try {
+            return ResponseEntity.ok(memberService.findUsername(findUsernameRequestDto));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "비밀번호 재설정", description = "비밀번호를 재설정합니다.")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequestDto resetPasswordRequestDto) {
+        try {
+            memberService.resetPassword(resetPasswordRequestDto);
+            return ResponseEntity.ok("Successfully reset password");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
 }
