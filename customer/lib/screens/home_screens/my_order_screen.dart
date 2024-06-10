@@ -13,11 +13,13 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text('내 주문')),
+          title: const Center(
+              child: Text(
+            '내 주문',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          )),
         ),
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body: const MyOrderWidget(
-          onFinish: true,
-        ));
+        body: const MyOrderWidget());
   }
 }

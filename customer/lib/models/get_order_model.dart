@@ -19,7 +19,8 @@ class GetOrderModel {
 
   factory GetOrderModel.fromJson(Map<String, dynamic> json) {
     List<OrderedFood> foodList = [];
-    for (var food in json['orderedFood']) {
+    for (var food in json['orderFood']) {
+      // 'orderedFood' 대신 'orderFood' 사용
       foodList.add(OrderedFood.fromJson(food));
     }
     return GetOrderModel(
@@ -29,7 +30,7 @@ class GetOrderModel {
       status: json['status'],
       orderNum: json['orderNum'],
       appPay: json['appPay'],
-      orderedFood: foodList,
+      orderedFood: foodList, // 여전히 'orderedFood'를 사용
     );
   }
 }
@@ -69,7 +70,7 @@ class OrderedFood {
     return OrderedFood(
       name: json['name'],
       count: json['count'],
-      imgUrl: json['imgUrl'],
+      imgUrl: json['imageUrl'], // 'imgUrl'가 아닌 'imageUrl'로 수정
     );
   }
 }

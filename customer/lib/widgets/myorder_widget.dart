@@ -4,12 +4,7 @@ import 'package:leftover_is_over_customer/screens/restaurant_screens/restaurant_
 import 'package:leftover_is_over_customer/services/order_services.dart';
 
 class MyOrderWidget extends StatefulWidget {
-  const MyOrderWidget({
-    super.key,
-    required this.onFinish,
-  });
-
-  final bool onFinish;
+  const MyOrderWidget({super.key});
 
   @override
   _MyOrderWidgetState createState() => _MyOrderWidgetState();
@@ -25,18 +20,27 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   }
 
   Future<List<GetOrderModel>> _getOrders() async {
-    final orderFuture = OrderService.getOrders();
-
-    final results = await Future.wait([orderFuture]);
-
-    return orderFuture;
+    try {
+      final orders = await OrderService.getOrders();
+      return orders ?? []; // null인 경우 빈 리스트 반환
+    } catch (e) {
+      print("Error fetching orders: $e");
+      return [];
+    }
   }
 
-  void _toggleOrderStatus() {
-    setState(() {
-      // Implement your logic to toggle order status here
-    });
-    widget.onFinish;
+  Future<void> _cancelOrder(int orderNum) async {
+    try {
+      bool success = await OrderService.updateOrderStatus(
+          orderId: orderNum, status: 'CANCEL');
+      if (success) {
+        setState(() {
+          _futureOrders = _getOrders();
+        });
+      }
+    } catch (e) {
+      print('Error canceling order: $e');
+    }
   }
 
   @override
@@ -54,21 +58,33 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
           final orders = snapshot.data!;
+          if (orders.isEmpty) {
+            return const Center(child: Text('주문이 없습니다'));
+          }
           return ListView.builder(
             itemCount: orders.length,
             itemBuilder: (context, index) {
-              final order = orders[index];
+              final order = orders[orders.length - 1 - index];
+              final bool isCanceled = order.status.toLowerCase() == 'cancel';
+              final TextStyle textStyle = TextStyle(
+                color: isCanceled ? Colors.grey : Colors.black,
+                fontSize: screenHeight * 0.018,
+                fontWeight: isCanceled ? FontWeight.normal : FontWeight.w400,
+              );
+
               return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RestaurantScreen(
-                        storeId: order.store.storeId,
-                      ),
-                    ),
-                  );
-                },
+                onTap: isCanceled
+                    ? null
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RestaurantScreen(
+                              storeId: order.store.storeId,
+                            ),
+                          ),
+                        );
+                      },
                 child: Container(
                   decoration: const BoxDecoration(
                     color: Color.fromARGB(255, 255, 255, 255),
@@ -90,10 +106,10 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '주문일자: ${order.orderDate}',
+                              order.orderDate,
                               style: TextStyle(
-                                color: Colors.black,
-                                fontSize: screenHeight * 0.018,
+                                color: isCanceled ? Colors.grey : Colors.black,
+                                fontSize: screenHeight * 0.016,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -107,6 +123,14 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                       width: 0.35 * screenWidth,
                                       height: 0.11 * screenHeight,
                                       fit: BoxFit.cover,
+                                      color: isCanceled
+                                          ? const Color.fromARGB(
+                                                  255, 220, 220, 220)
+                                              .withOpacity(0.7)
+                                          : null,
+                                      colorBlendMode: isCanceled
+                                          ? BlendMode.modulate
+                                          : null,
                                       errorBuilder:
                                           (context, error, stackTrace) {
                                         return Image.asset(
@@ -114,6 +138,14 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                           width: 0.35 * screenWidth,
                                           height: 0.11 * screenHeight,
                                           fit: BoxFit.cover,
+                                          color: isCanceled
+                                              ? const Color.fromARGB(
+                                                      255, 220, 220, 220)
+                                                  .withOpacity(0.7)
+                                              : null,
+                                          colorBlendMode: isCanceled
+                                              ? BlendMode.modulate
+                                              : null,
                                         );
                                       },
                                     )
@@ -122,6 +154,14 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                       width: 0.35 * screenWidth,
                                       height: 0.11 * screenHeight,
                                       fit: BoxFit.cover,
+                                      color: isCanceled
+                                          ? const Color.fromARGB(
+                                                  255, 220, 220, 220)
+                                              .withOpacity(0.7)
+                                          : null,
+                                      colorBlendMode: isCanceled
+                                          ? BlendMode.modulate
+                                          : null,
                                     ),
                             ),
                           ],
@@ -136,7 +176,8 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                               Text(
                                 order.store.name,
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color:
+                                      isCanceled ? Colors.grey : Colors.black,
                                   fontSize: screenHeight * 0.025,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -145,7 +186,8 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                               Text(
                                 '${order.orderedFood[0].name} 외 ${order.orderedFood.map((food) => food.count).reduce((value, element) => value + element) - order.orderedFood[0].count}개',
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color:
+                                      isCanceled ? Colors.grey : Colors.black,
                                   fontSize: screenHeight * 0.018,
                                   fontWeight: FontWeight.normal,
                                 ),
@@ -158,25 +200,36 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                   Text(
                                     order.status,
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color: isCanceled
+                                          ? Colors.grey
+                                          : Colors.black,
                                       fontSize: screenHeight * 0.018,
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
                                   ElevatedButton(
-                                    onPressed: _toggleOrderStatus,
+                                    onPressed: isCanceled
+                                        ? null
+                                        : () {
+                                            _cancelOrder(order.orderNum);
+                                          },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFFFFD700),
-                                      foregroundColor: Colors.black,
+                                      foregroundColor: isCanceled
+                                          ? Colors.grey
+                                          : Colors.black,
                                       textStyle: TextStyle(
                                         fontSize: screenHeight * 0.018,
                                       ),
                                       minimumSize: const Size(70, 35),
                                     ),
-                                    child: const Text(
+                                    child: Text(
                                       '방문취소',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
+                                        color: isCanceled
+                                            ? Colors.grey
+                                            : Colors.black,
                                       ),
                                     ),
                                   ),
