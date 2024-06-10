@@ -31,8 +31,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
 
   Future<void> _cancelOrder(int orderNum) async {
     try {
-      bool success = await OrderService.updateOrderStatus(
-          orderId: orderNum, status: 'CANCEL');
+      bool success = await OrderService.deleteOrder(orderId: orderNum);
       if (success) {
         setState(() {
           _futureOrders = _getOrders();
