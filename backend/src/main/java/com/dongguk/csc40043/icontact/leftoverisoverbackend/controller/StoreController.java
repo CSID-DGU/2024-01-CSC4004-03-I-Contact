@@ -48,8 +48,10 @@ public class StoreController {
     @Operation(summary = "가게 오픈", description = "가게를 오픈합니다.")
     public ResponseEntity<?> openStore() {
         try {
-            storeService.changeOpenStatus(SecurityUtil.getCurrentUser());
-            favoriteService.sendFcmToFavoriteMembers(SecurityUtil.getCurrentUser());
+            boolean isOpen = storeService.changeOpenStatus(SecurityUtil.getCurrentUser());
+            if (isOpen) {
+                favoriteService.sendFcmToFavoriteMembers(SecurityUtil.getCurrentUser());
+            }
             return ResponseEntity.ok("Successfully changed open status");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

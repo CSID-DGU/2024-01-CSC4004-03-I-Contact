@@ -74,7 +74,7 @@ public class FavoriteService {
         List<Member> favoriteMembers = favoriteRepository.findMemberByStore(store);
         favoriteMembers.forEach(member -> {
             try {
-                fcmService.sendMessageTo("customer", member.getFcmToken(), "즐겨찾기 식당이 오픈했습니다.", store.getName() + " 식당이 오픈했습니다.");
+                fcmService.sendMessageTo("customer", member.getFcmToken(), "즐겨찾기 식당이 오픈했습니다.", store.getName() + "이 오픈했습니다.");
             } catch (IOException e) {
                 throw new IllegalArgumentException("FCM 전송에 실패했습니다.");
             }

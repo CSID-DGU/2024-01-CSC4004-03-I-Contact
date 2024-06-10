@@ -107,9 +107,9 @@ public class OrderService {
         String messageBody;
         int orderFoodCount = createOrderRequestDto.getOrderFoodDtos().size();
         if (orderFoodCount > 1) {
-            messageBody = food.getName();
-        } else {
             messageBody = food.getName() + " 외 " + (orderFoodCount - 1) + "개의 음식";
+        } else {
+            messageBody = food.getName();
         }
         fcmService.sendMessageTo("owner", store.getMember().getFcmToken(), messageTitle, messageBody);
     }

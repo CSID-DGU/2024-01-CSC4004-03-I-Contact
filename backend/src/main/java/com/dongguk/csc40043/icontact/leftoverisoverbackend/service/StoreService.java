@@ -64,13 +64,14 @@ public class StoreService {
     }
 
     @Transactional
-    public void changeOpenStatus(String username) {
+    public boolean changeOpenStatus(String username) {
         Member member = memberRepository.findByUsernameAndDeleted(username, false).orElseThrow(() ->
                 new UsernameNotFoundException("존재하지 않는 회원입니다."));
         Store store = storeRepository.findByMemberAndDeleted(member, false).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 식당입니다."));
-        store.toggleIsOpen();
+        boolean isOpen = store.toggleIsOpen();
         storeRepository.save(store);
+        return isOpen;
     }
 
     public List<GetStoreResponseDto> getStoreByKeyword(String keyword) {
