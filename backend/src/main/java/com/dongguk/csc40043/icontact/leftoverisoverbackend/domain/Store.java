@@ -57,8 +57,9 @@ public class Store {
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     private List<Food> foods = new ArrayList<>();
 
-    public void toggleIsOpen() {
+    public boolean toggleIsOpen() {
         this.isOpen = !this.isOpen;
+        return this.isOpen;
     }
 
     public void updateName(String name) {
