@@ -23,7 +23,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('즐겨찾기')),
+        title: const Center(
+            child: Text('즐겨찾기', style: TextStyle(fontWeight: FontWeight.w600))),
       ),
       body: Container(
         margin: const EdgeInsets.all(20),

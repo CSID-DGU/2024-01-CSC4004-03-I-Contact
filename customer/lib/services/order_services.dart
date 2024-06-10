@@ -85,9 +85,7 @@ class OrderService {
     }
   }
 
-  static Future<bool> deleteOrder({
-    required int orderId,
-  }) async {
+  static Future<bool> deleteOrder({required int orderId}) async {
     try {
       var token = await AuthService.loadToken();
       if (token.isEmpty) {
@@ -99,7 +97,7 @@ class OrderService {
         'Authorization': '${token[0]} ${token[1]}'
       };
 
-      var body = jsonEncode({'orderNum': orderId});
+      var body = jsonEncode({'orderId': orderId}); // 'orderNum' 필드 포함
 
       var response = await http.post(
         Uri.parse('http://loio-server.azurewebsites.net/order/cancel'),
@@ -116,6 +114,28 @@ class OrderService {
     } catch (e) {
       print('Error: $e'); // 로그 추가
       rethrow; // 예외 재던지기
+    }
+  }
+
+  static Future<bool> updateOrderStatus(
+      {required int orderId, required String status}) async {
+    final response = await http.put(
+      Uri.parse(
+          'http://loio-server.azurewebsites.net/api/orders/$orderId/status'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'status': status,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print(
+          'Failed to update order status: ${response.statusCode} - ${response.reasonPhrase}');
+      return false;
     }
   }
 }

@@ -15,7 +15,9 @@ class MyPageScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text('마이페이지')),
+          title: const Center(
+              child:
+                  Text('마이페이지', style: TextStyle(fontWeight: FontWeight.w600))),
           bottom: const TabBar(
             tabs: [
               Tab(
