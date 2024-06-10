@@ -4,10 +4,8 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.JwtTokenProvid
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.MemberDto;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.CheckDuplicateRequestDto;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.FcmTokenDto;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.LoginRequestDto;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.UpdateMemberRequestDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.*;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.FindUsernameResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.GetMemberResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.LoginResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.MemberRepository;
@@ -106,6 +104,29 @@ public class MemberService {
                 .email(member.getEmail())
                 .phone(member.getPhone())
                 .build();
+    }
+
+    public FindUsernameResponseDto findUsername(FindUsernameRequestDto findUsernameRequestDto) {
+        Member member = memberRepository.findByEmailAndPhoneAndDeleted(findUsernameRequestDto.getEmail(), findUsernameRequestDto.getPhone(), false).orElseThrow(() ->
+                new UsernameNotFoundException("존재하지 않는 회원입니다."));
+        if (!member.getName().equals(findUsernameRequestDto.getName()) || !member.getEmail().equals(findUsernameRequestDto.getEmail()) || !member.getPhone().equals(findUsernameRequestDto.getPhone())) {
+            throw new IllegalArgumentException("입력한 정보가 일치하지 않습니다.");
+        }
+        return FindUsernameResponseDto.builder()
+                .memberId(member.getId())
+                .role(member.getRoles().get(0))
+                .username(member.getUsername())
+                .build();
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequestDto resetPasswordRequestDto) {
+        Member member = memberRepository.findByUsernameAndDeleted(resetPasswordRequestDto.getUsername(), false).orElseThrow(() ->
+                new UsernameNotFoundException("존재하지 않는 회원입니다."));
+        if (!member.getName().equals(resetPasswordRequestDto.getName()) || !member.getEmail().equals(resetPasswordRequestDto.getEmail()) || !member.getPhone().equals(resetPasswordRequestDto.getPhone())) {
+            throw new IllegalArgumentException("입력한 정보가 일치하지 않습니다.");
+        }
+        member.updatePassword(passwordEncoder.encode(resetPasswordRequestDto.getNewPassword()));
     }
 
 }
