@@ -5,6 +5,7 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.*;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.order.ChangeOrderRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.order.CreateOrderRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.CreateOrderResponseDto;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.GetFoodListResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.OrderListDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,7 @@ public class OrderService {
     private final MemberRepository memberRepository;
     private final FoodRepository foodRepository;
     private final FcmService fcmService;
+    private final WebSocketService webSocketService;
 
     @Transactional
     public CreateOrderResponseDto createOrder(CreateOrderRequestDto createOrderRequestDto) {
@@ -36,6 +39,7 @@ public class OrderService {
             Store store = storeRepository.findByIdAndDeleted(createOrderRequestDto.getStoreId(), false)
                     .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
             Order order = createOrderRequestDto.toEntity(member, store, LocalDateTime.now());
+            List<GetFoodListResponseDto> updatedFoodList = new ArrayList<>();
             createOrderRequestDto.getOrderFoodDtos().forEach(orderFoodDto -> {
                 Food food = foodRepository.findById(orderFoodDto.getFoodId())
                         .orElseThrow(() -> new IllegalArgumentException("해당 음식이 존재하지 않습니다."));
@@ -48,8 +52,20 @@ public class OrderService {
                         .build();
                 order.addOrderFood(orderFood);
                 food.minusCapacity(orderFoodDto.getCount());
+                updatedFoodList.add(GetFoodListResponseDto.builder()
+                        .foodId(food.getId())
+                        .storeId(store.getId())
+                        .name(food.getName())
+                        .firstPrice(food.getFirstPrice())
+                        .sellPrice(food.getSellPrice())
+                        .capacity(food.getCapacity())
+                        .visits(food.getVisits())
+                        .isVisible(food.isVisible())
+                        .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : "")
+                        .build());
             });
             orderRepository.save(order);
+            webSocketService.sendFoodUpdate(store.getId(), updatedFoodList);
             return CreateOrderResponseDto.builder()
                     .orderId(order.getId())
                     .build();
