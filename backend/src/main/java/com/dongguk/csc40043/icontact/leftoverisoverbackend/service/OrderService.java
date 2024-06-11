@@ -66,6 +66,7 @@ public class OrderService {
             });
             orderRepository.save(order);
             webSocketService.sendFoodUpdate(store.getId(), updatedFoodList);
+            webSocketService.sendOrderUpdate(store.getId(), getOwnerOrder("ALL"));
             return CreateOrderResponseDto.builder()
                     .orderId(order.getId())
                     .build();
@@ -105,6 +106,7 @@ public class OrderService {
         Order order = orderRepository.findById(changeOrderRequestDto.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
         order.cancel();
+        webSocketService.sendOrderUpdate(order.getStore().getId(), getOwnerOrder("ALL"));
     }
 
     @Transactional
