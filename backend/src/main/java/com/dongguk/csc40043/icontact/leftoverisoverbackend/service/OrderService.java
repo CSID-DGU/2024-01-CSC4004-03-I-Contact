@@ -104,7 +104,7 @@ public class OrderService {
         if (!status.equals("VISIT") && !status.equals("ALL")) {
             throw new IllegalArgumentException("Invalid status");
         }
-        List<Order> orderList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf(status));
+        List<Order> orderList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf("VISIT"));
         if (status.equals("ALL")) {
             List<Order> orderAllList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf("ORDER"));
             orderList.addAll(orderAllList);
