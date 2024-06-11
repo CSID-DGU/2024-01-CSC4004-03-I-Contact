@@ -8,9 +8,9 @@ class OrderService {
     List<OrderModel> orderInstances = [];
     String url;
     if (getAll) {
-      url = 'http://loio-server.azurewebsites.net/owner/order/all';
+      url = 'http://loio-server.azurewebsites.net/owner/order/ALL';
     } else {
-      url = 'http://loio-server.azurewebsites.net/owner/order/visit';
+      url = 'http://loio-server.azurewebsites.net/owner/order/VISIT';
     }
     try {
       var token = await AuthService.loadToken();
@@ -21,6 +21,7 @@ class OrderService {
       if (response.statusCode == 200) {
         String responseBody = await response.stream.bytesToString();
         List<dynamic> orderList = jsonDecode(responseBody);
+        print(orderList);
         for (var order in orderList) {
           var instance = OrderModel.fromJson(order);
           orderInstances.add(instance);

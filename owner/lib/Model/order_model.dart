@@ -22,9 +22,11 @@ class OrderModel {
       status: json['status'],
       orderNum: json['orderNum'],
       appPay: json['appPay'],
-      orderedFoodInfo: List<OrderedFoodInfo>.from(
-        json['orderedFoodInfo'].map((item) => OrderedFoodInfo.fromJson(item)),
-      ),
+      orderedFoodInfo: json['orderFood'] != null
+          ? List<OrderedFoodInfo>.from(
+              json['orderFood'].map((item) => OrderedFoodInfo.fromJson(item)),
+            )
+          : [],
     );
   }
 

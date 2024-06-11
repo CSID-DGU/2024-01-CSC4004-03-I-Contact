@@ -22,15 +22,14 @@ class SalesManagePageState extends State<SalesManagePage> {
   @override
   void initState() {
     super.initState();
-    var storeState = Provider.of<StoreState>(context, listen: false);
-    storeState.setRefreshSalesCallback(refreshMenuList);
   }
 
   void refreshMenuList() {
-    setState(() {
-      visibleMenuList = MenuService.getVisibleMenuList();
-    });
-    print('refresh');
+    if (mounted) {
+      setState(() {
+        visibleMenuList = MenuService.getVisibleMenuList();
+      });
+    }
   }
 
   void closeStoreButton() async {

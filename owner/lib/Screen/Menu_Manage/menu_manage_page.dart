@@ -30,14 +30,14 @@ class MenuManagePageState extends State<MenuManagePage> {
   void initState() {
     // TODO: implement initState
     menuList = MenuService.getMenuList();
-    var storeState = Provider.of<StoreState>(context, listen: false);
-    storeState.setRefreshMenuCallback(refreshMenuList);
   }
 
   void refreshMenuList() {
-    setState(() {
-      menuList = MenuService.getMenuList();
-    });
+    if (mounted) {
+      setState(() {
+        menuList = MenuService.getMenuList();
+      });
+    }
   }
 
   void openStoreButton() async {

@@ -73,6 +73,38 @@ class MenuService {
     }
   }
 
+  static Future<bool> updateMenuInfo(MenuModel menu, File? file) async {
+    try {
+      var request = http.MultipartRequest(
+        'PATCH',
+        Uri.parse('http://loio-server.azurewebsites.net/food/${menu.foodId}'),
+      );
+
+      request.fields['name'] = menu.name;
+      request.fields['firstPrice'] = menu.firstPrice.toString();
+      request.fields['sellPrice'] = menu.sellPrice.toString();
+      if (file != null) {
+        print("사용자 지정 파일 추가됨: ${file.path}");
+        request.files.add(http.MultipartFile(
+          'file',
+          file.readAsBytes().asStream(),
+          file.lengthSync(),
+          filename: file.path.split('/').last,
+        ));
+      }
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Failed to update menu: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('오류 발생: $e');
+      rethrow;
+    }
+  }
+
   static Future<bool> deleteMenu(int foodId) async {
     try {
       var request = http.Request('DELETE',
@@ -154,30 +186,6 @@ class MenuService {
         return menuInstances;
       } else {
         throw Exception('Failed to load menuList: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('오류 발생: $e');
-      rethrow;
-    }
-  }
-
-  static Future<bool> updateMenuInfo(MenuModel menu) async {
-    try {
-      var request = http.MultipartRequest(
-        'PATCH',
-        Uri.parse('http://loio-server.azurewebsites.net/food/${menu.foodId}'),
-      );
-
-      request.fields['name'] = menu.name;
-      request.fields['firstPrice'] = menu.firstPrice.toString();
-      request.fields['sellPrice'] = menu.sellPrice.toString();
-
-      http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        throw Exception('Failed to update menu: ${response.statusCode}');
       }
     } catch (e) {
       print('오류 발생: $e');

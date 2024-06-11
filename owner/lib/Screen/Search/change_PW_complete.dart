@@ -41,7 +41,7 @@ class _ChangePwCompleteState extends State<ChangePwComplete> {
       );*/
       return;
     }
-    showErrorDialog(context, message);
+    showMessageDialog(context, message);
   }
 
   @override
