@@ -3,12 +3,14 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.JwtTokenProvider;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.MemberDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.member.*;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.FindUsernameResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.GetMemberResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.LoginResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.MemberRepository;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -31,6 +33,7 @@ public class MemberService {
     private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final StoreRepository storeRepository;
 
     @Transactional
     public void createMember(MemberDto memberDto) {
@@ -70,6 +73,9 @@ public class MemberService {
     public void deleteMember(String username) {
         Member member = memberRepository.findByUsernameAndDeleted(username, false).orElseThrow(() ->
                 new UsernameNotFoundException("존재하지 않는 회원입니다."));
+        Store store = storeRepository.findByMemberAndDeleted(member, false).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 식당입니다."));
+        storeRepository.delete(store);
         memberRepository.delete(member);
     }
 
