@@ -53,7 +53,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
             ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child: Image.asset(
-                'assets/images/chicken.jpg', // 이미지 경로를 적절히 변경하세요
+                'assets/images/no_image.png', // 이미지 경로를 적절히 변경하세요
                 width: 0.33 * screenWidth,
                 height: 0.107 * screenHeight,
                 fit: BoxFit.cover,
