@@ -50,7 +50,9 @@ class MenuWidget extends StatelessWidget {
                     menuName,
                     style: TextStyle(
                       color: isRemainingZero ? Colors.grey : Colors.black,
-                      fontSize: screenHeight * 0.03,
+                      fontSize: menuName.length > 10
+                          ? screenHeight * 0.025
+                          : screenHeight * 0.03,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -133,7 +135,7 @@ class MenuWidget extends StatelessWidget {
                           errorBuilder: (context, error, stackTrace) {
                             print('Image load error: $error');
                             return Image.asset(
-                              'assets/images/chicken.jpg',
+                              'assets/images/no_image.png',
                               width: 0.25 * screenWidth,
                               height: 0.09 * screenHeight,
                               fit: BoxFit.cover,
@@ -147,7 +149,7 @@ class MenuWidget extends StatelessWidget {
                           },
                         )
                       : Image.asset(
-                          'assets/images/chicken.jpg',
+                          'assets/images/no_image.png',
                           width: 0.25 * screenWidth,
                           height: 0.09 * screenHeight,
                           fit: BoxFit.cover,

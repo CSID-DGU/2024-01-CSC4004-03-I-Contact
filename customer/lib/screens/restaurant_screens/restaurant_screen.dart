@@ -128,7 +128,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Image.asset(
-                                      'assets/images/chicken.jpg',
+                                      'assets/images/no_image.png',
                                       width: 0.25 * screenWidth,
                                       height: 0.09 * screenHeight,
                                       fit: BoxFit.cover,
@@ -136,7 +136,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                   },
                                 )
                               : Image.asset(
-                                  'assets/images/chicken.jpg',
+                                  'assets/images/no_image.png',
                                   width: 0.25 * screenWidth,
                                   height: 0.09 * screenHeight,
                                   fit: BoxFit.cover,

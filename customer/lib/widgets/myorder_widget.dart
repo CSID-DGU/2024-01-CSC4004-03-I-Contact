@@ -133,7 +133,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                       errorBuilder:
                                           (context, error, stackTrace) {
                                         return Image.asset(
-                                          'assets/images/chicken.jpg',
+                                          'assets/images/no_image.png',
                                           width: 0.35 * screenWidth,
                                           height: 0.11 * screenHeight,
                                           fit: BoxFit.cover,
@@ -149,7 +149,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                       },
                                     )
                                   : Image.asset(
-                                      'assets/images/chicken.jpg',
+                                      'assets/images/no_image.png',
                                       width: 0.35 * screenWidth,
                                       height: 0.11 * screenHeight,
                                       fit: BoxFit.cover,
