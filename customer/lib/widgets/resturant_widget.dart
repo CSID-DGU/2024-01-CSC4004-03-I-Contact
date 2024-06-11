@@ -88,7 +88,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: screenHeight * 0.032,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(

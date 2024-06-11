@@ -21,8 +21,10 @@ class MenuWidget extends StatelessWidget {
     double screenWidth = screenSize.width;
     double screenHeight = screenSize.height;
 
+    bool isRemainingZero = int.tryParse(remaining) == 0;
+
     return GestureDetector(
-      onTap: () => onMenuTap(foodId),
+      onTap: isRemainingZero ? null : () => onMenuTap(foodId),
       child: Container(
         decoration: const BoxDecoration(
           color: Color.fromARGB(255, 255, 255, 255),
@@ -47,9 +49,9 @@ class MenuWidget extends StatelessWidget {
                   Text(
                     menuName,
                     style: TextStyle(
-                      color: Colors.black,
+                      color: isRemainingZero ? Colors.grey : Colors.black,
                       fontSize: screenHeight * 0.03,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.001),
@@ -58,7 +60,7 @@ class MenuWidget extends StatelessWidget {
                       Text(
                         unitCost,
                         style: TextStyle(
-                          color: Colors.black,
+                          color: isRemainingZero ? Colors.grey : Colors.black,
                           fontSize: screenHeight * 0.02,
                           fontWeight: FontWeight.normal,
                         ),
@@ -66,7 +68,7 @@ class MenuWidget extends StatelessWidget {
                       Text(
                         '원',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: isRemainingZero ? Colors.grey : Colors.black,
                           fontSize: screenHeight * 0.02,
                           fontWeight: FontWeight.normal,
                         ),
@@ -79,7 +81,9 @@ class MenuWidget extends StatelessWidget {
                       Text(
                         '남은 개수',
                         style: TextStyle(
-                          color: Colors.black.withOpacity(0.4),
+                          color: isRemainingZero
+                              ? Colors.grey.withOpacity(0.4)
+                              : Colors.black.withOpacity(0.4),
                           fontSize: screenHeight * 0.02,
                           fontWeight: FontWeight.normal,
                         ),
@@ -88,7 +92,9 @@ class MenuWidget extends StatelessWidget {
                       Text(
                         remaining,
                         style: TextStyle(
-                          color: Colors.black.withOpacity(0.4),
+                          color: isRemainingZero
+                              ? Colors.grey.withOpacity(0.4)
+                              : Colors.black.withOpacity(0.4),
                           fontSize: screenHeight * 0.02,
                           fontWeight: FontWeight.normal,
                         ),
@@ -96,7 +102,9 @@ class MenuWidget extends StatelessWidget {
                       Text(
                         '개',
                         style: TextStyle(
-                          color: Colors.black.withOpacity(0.4),
+                          color: isRemainingZero
+                              ? Colors.grey.withOpacity(0.4)
+                              : Colors.black.withOpacity(0.4),
                           fontSize: screenHeight * 0.02,
                           fontWeight: FontWeight.normal,
                         ),
@@ -116,6 +124,12 @@ class MenuWidget extends StatelessWidget {
                           width: 0.25 * screenWidth,
                           height: 0.09 * screenHeight,
                           fit: BoxFit.cover,
+                          color: isRemainingZero
+                              ? const Color.fromARGB(255, 220, 220, 220)
+                                  .withOpacity(0.7)
+                              : null,
+                          colorBlendMode:
+                              isRemainingZero ? BlendMode.modulate : null,
                           errorBuilder: (context, error, stackTrace) {
                             print('Image load error: $error');
                             return Image.asset(
@@ -123,6 +137,12 @@ class MenuWidget extends StatelessWidget {
                               width: 0.25 * screenWidth,
                               height: 0.09 * screenHeight,
                               fit: BoxFit.cover,
+                              color: isRemainingZero
+                                  ? const Color.fromARGB(255, 220, 220, 220)
+                                      .withOpacity(0.7)
+                                  : null,
+                              colorBlendMode:
+                                  isRemainingZero ? BlendMode.modulate : null,
                             );
                           },
                         )
@@ -131,6 +151,12 @@ class MenuWidget extends StatelessWidget {
                           width: 0.25 * screenWidth,
                           height: 0.09 * screenHeight,
                           fit: BoxFit.cover,
+                          color: isRemainingZero
+                              ? const Color.fromARGB(255, 220, 220, 220)
+                                  .withOpacity(0.7)
+                              : null,
+                          colorBlendMode:
+                              isRemainingZero ? BlendMode.modulate : null,
                         ),
                 ),
               ),

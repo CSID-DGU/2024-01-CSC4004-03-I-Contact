@@ -172,7 +172,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                           children: [
                             Text(
                               store.name,
-                              style: TextStyle(fontSize: screenHeight * 0.035),
+                              style: TextStyle(
+                                  fontSize: screenHeight * 0.035,
+                                  fontWeight: FontWeight.w600),
                             ),
                             Text(
                               store.address,
@@ -180,25 +182,13 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                   fontSize: screenHeight * 0.025,
                                   color: Colors.black54),
                             ),
-                            SizedBox(height: screenHeight * 0.02),
+                            SizedBox(height: screenHeight * 0.03),
                             Text(
-                              '식수인원 $totalCapacity명',
+                              '이용 가능 인원 $totalCapacity명',
                               style: TextStyle(fontSize: screenHeight * 0.02),
                             ),
                             Row(
                               children: [
-                                Expanded(
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '이용예정 N명',
-                                      style: TextStyle(
-                                        fontSize: screenHeight * 0.015,
-                                        color: Colors.black54,
-                                      ),
-                                    ),
-                                  ),
-                                ),
                                 Expanded(
                                   child: Align(
                                     alignment: Alignment.centerRight,
