@@ -1,17 +1,12 @@
 package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.common.SecurityUtil;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Food;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Image;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.*;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.food.AddFoodRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.food.UpdateFoodRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.AddFoodResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.GetFoodListResponseDto;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.FoodRepository;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.MemberRepository;
-import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.StoreRepository;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -32,6 +27,8 @@ public class FoodService {
     private final StoreRepository storeRepository;
     private final ImageService imageService;
     private final WebSocketService webSocketService;
+    private final OrderFoodRepository orderFoodRepository;
+    private final ImageRepository imageRepository;
 
     @Transactional
     public AddFoodResponseDto addFood(AddFoodRequestDto addFoodRequestDto, MultipartFile file) throws IOException {
@@ -112,7 +109,10 @@ public class FoodService {
     public void deleteFood(Long foodId) {
         Food food = foodRepository.findById(foodId).orElseThrow(() ->
                 new IllegalArgumentException("Invalid foodId"));
-        foodRepository.delete(food);
+        orderFoodRepository.deleteAllByFood(food);
+        if (food.getImage() != null)
+            imageRepository.deleteById(food.getImage().getId());
+        foodRepository.deleteById(food.getId());
         List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
         webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
     }
