@@ -43,7 +43,7 @@ public class Food {
     private boolean isVisible = false;
 
     @Builder.Default
-    @OneToMany(mappedBy = "food", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "food", cascade = CascadeType.ALL)
     private List<OrderFood> orderFoods = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
