@@ -1,15 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:leftover_is_over_owner/Model/menu_model.dart';
 import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
 import 'package:leftover_is_over_owner/Services/menu_services.dart';
-import 'package:leftover_is_over_owner/Services/store_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
-import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
-
-// 현재 틀만 만들어진 상태 기능 구현 필요
-// 메뉴 선택해서 수정 페이지로 넘어올 때 각 입력창에는 직전에 선택해서 넘어온
-//메뉴의 정보가 회색으로 써있고 수정하고 싶은 정보만 선택적으로 수정할 수 있도록 해야함
 
 class MenuManageEditPage extends StatefulWidget {
   final MenuModel menu;
@@ -21,7 +17,17 @@ class MenuManageEditPage extends StatefulWidget {
 
 class _MenuManageEditPageState extends State<MenuManageEditPage> {
   late TextEditingController controllerName, controllerFP, controllerSP;
-  late bool isOpen;
+
+  File? _selectedFile;
+  final picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _selectedFile = File(pickedFile!.path);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -62,7 +68,8 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
     widget.menu.name = controllerName.text;
     widget.menu.firstPrice = int.parse(controllerFP.text);
     widget.menu.sellPrice = int.parse(controllerSP.text);
-    var updatMenuInfo = await MenuService.updateMenuInfo(widget.menu);
+    var updatMenuInfo =
+        await MenuService.updateMenuInfo(widget.menu, _selectedFile);
     if (updatMenuInfo) {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
@@ -88,6 +95,11 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    String imgUrl = widget.menu.imageUrl;
+    bool isRemainingZero = false; // 필요에 따라 isRemainingZero 값을 설정하세요.
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -273,34 +285,62 @@ class _MenuManageEditPageState extends State<MenuManageEditPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      width: 130,
-                      height: 70,
-                      decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 2,
-                              color: Colors.black.withOpacity(0.3),
-                              offset: const Offset(0, 3),
-                            )
-                          ],
-                          color: const Color.fromARGB(255, 210, 210, 210),
-                          borderRadius: BorderRadius.circular(15)),
-                      child: const Text(
-                        '사진 수정하기',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontFamily: "Free2",
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 130,
+                        height: 70,
+                        decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 2,
+                                color: Colors.black.withOpacity(0.3),
+                                offset: const Offset(0, 3),
+                              )
+                            ],
+                            color: const Color.fromARGB(255, 210, 210, 210),
+                            borderRadius: BorderRadius.circular(15)),
+                        child: const Text(
+                          '사진 수정하기',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontFamily: "Free2",
+                          ),
                         ),
                       ),
                     ),
                     Container(
-                        width: 150,
-                        height: 150,
-                        decoration: const BoxDecoration(
-                          color: Color.fromARGB(255, 240, 240, 240),
-                        ))
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 240, 240, 240),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: imgUrl.isNotEmpty
+                            ? Image.network(
+                                'http://loio-server.azurewebsites.net$imgUrl',
+                                width: 0.25 * screenWidth,
+                                height: 0.09 * screenHeight,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  print('Image load error: $error');
+                                  return const Icon(
+                                    Icons.image_not_supported,
+                                    size: 50,
+                                    color: Colors.grey,
+                                  );
+                                },
+                              )
+                            : const Icon(
+                                Icons.image_not_supported,
+                                size: 50,
+                                color: Colors.grey,
+                              ),
+                      ),
+                    ),
                   ],
                 ),
                 Padding(

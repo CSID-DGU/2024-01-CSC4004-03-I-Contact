@@ -25,7 +25,6 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
   bool isLoading = true;
   bool readMode = true;
   bool checkpassword = false;
-  bool checkduplicate = false;
   String lastCheckedId = "";
   @override
   void initState() {
@@ -56,16 +55,6 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
     });
   }
 
-  void _checkDuplicate(String id) async {
-    print(id);
-    checkduplicate = await AuthService.duplicate(id);
-    if (checkduplicate) {
-      // 중복 검사를 통과한 경우
-      lastCheckedId = id; // 마지막 중복 검사를 통과한 id를 lastCheckedId에 저장
-    }
-    setState(() {});
-  }
-
   void _checkCredentials() async {
     var message = '에러';
 
@@ -75,52 +64,39 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
     RegExp regExp = RegExp(pattern);
 
     checkpassword = controllerPwd.text == controllerPwdChk.text;
-    print('아이디 중복 검사 결과: $checkduplicate');
-    print('비밀번호 일치 검사 결과: $checkpassword');
     if (controllerName.text.isEmpty) {
       message = '이름을 입력해주세요.';
-    } else if (controllerUsername.text.isEmpty) {
-      message = '아이디를 입력해주세요.';
     } else if (controllerEmail.text.isEmpty) {
       message = '이메일를 입력해주세요.';
     } else if (!regExp.hasMatch(controllerEmail.text)) {
       message = '올바른 이메일을 입력해주세요.';
     } else if (controllerPhone.text.isEmpty) {
       message = '전화번호를 입력해주세요.';
-    } else if (controllerPhone.text.length < 11) {
-      message = '올바른 전화번호를 입력해주세요.';
     } else if (controllerPwd.text.isEmpty) {
       message = '비밀번호를 입력해주세요.';
     } else if (controllerPwdChk.text.isEmpty) {
       message = '비밀번호 확인을 입력해주세요.';
-    } else if (checkpassword && checkduplicate) {
-      if (lastCheckedId != controllerUsername.text) {
-        // lastCheckedId와 실제 제출된 값이 다른 경우 중복확인을 새로 하도록 오류메세지
-        message = '아이디 중복확인을 새로 해주세요.';
-        setState(() {
-          checkduplicate = false;
-        });
+    } else if (checkpassword) {
+      var name = controllerName.text;
+      var email = controllerEmail.text;
+      var password = controllerPwd.text;
+      var phone = controllerPhone.text;
+      var modify = await AuthService.memberModify(
+        name: name,
+        email: email,
+        phone: phone,
+        password: password,
+      );
+      if (modify) {
+        _changeMode();
+        message = "회원정보가 변경되었습니다.";
+        showMessageDialog(context, message);
       } else {
-        var username = controllerUsername.text;
-        var name = controllerName.text;
-        var email = controllerEmail.text;
-        var password = controllerPwd.text;
-        var phone = controllerPhone.text;
-        var modify = await AuthService.memberModify(
-          username: username,
-          name: name,
-          email: email,
-          phone: phone,
-          password: password,
-        );
-        if (modify) {
-          _changeMode();
-        }
+        showErrorDialog(context, "회원정보 변경에 실패했습니다.");
       }
-    } else if (checkduplicate) {
-      message = '비밀번호가 일치하지 않습니다.';
+      return;
     } else {
-      message = '아이디 중복 확인을 해주세요.';
+      message = "비밀번호가 일치하지 않습니다.";
     }
     showErrorDialog(context, message);
   }
@@ -265,7 +241,7 @@ class _MemberInfoPageState extends State<MemberInfoPage> {
                           ),
                         ),
                         autofocus: false,
-                        readOnly: readMode,
+                        readOnly: true,
                         controller: controllerUsername,
                       ),
                     ),

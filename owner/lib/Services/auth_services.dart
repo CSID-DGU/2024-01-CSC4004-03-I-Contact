@@ -170,28 +170,30 @@ class AuthService {
 
   static Future<bool> memberModify({
     // 나중에 수정하기
-    required String username,
     required String name,
     required String email,
     required String phone,
     required String password,
   }) async {
-    var headers = {'Content-Type': 'application/json'};
+    var token = await loadToken();
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': '${token[0]} ${token[1]}'
+    };
     var request = http.Request(
         'PATCH', Uri.parse('http://loio-server.azurewebsites.net/member'));
     request.body = jsonEncode({
-      "username": username,
       "name": name,
       "email": email,
       "phone": phone,
       "password": password,
-      "roles": roles,
     });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       return true;
     } else {
+      print(response.statusCode);
       return false;
     }
   }
