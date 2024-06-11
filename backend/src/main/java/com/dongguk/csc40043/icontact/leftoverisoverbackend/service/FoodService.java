@@ -28,7 +28,6 @@ public class FoodService {
     private final ImageService imageService;
     private final WebSocketService webSocketService;
     private final OrderFoodRepository orderFoodRepository;
-    private final ImageRepository imageRepository;
 
     @Transactional
     public AddFoodResponseDto addFood(AddFoodRequestDto addFoodRequestDto, MultipartFile file) throws IOException {
@@ -110,8 +109,8 @@ public class FoodService {
         Food food = foodRepository.findById(foodId).orElseThrow(() ->
                 new IllegalArgumentException("Invalid foodId"));
         orderFoodRepository.deleteAllByFood(food);
-        if (food.getImage() != null)
-            imageRepository.deleteById(food.getImage().getId());
+//        if (food.getImage() != null)
+//            imageRepository.deleteById(food.getImage().getId());
         foodRepository.deleteById(food.getId());
         List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
         webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
