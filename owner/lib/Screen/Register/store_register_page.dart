@@ -726,7 +726,7 @@ class _StoreRegisterPageState extends State<StoreRegisterPage> {
                         // 입력값 숫자인지 확인
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(11),
+                          LengthLimitingTextInputFormatter(12),
                           // 전화번호 11자리까지만 입력할 수 있음
                         ],
                       ),
