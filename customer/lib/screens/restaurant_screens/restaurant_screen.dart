@@ -8,6 +8,7 @@ import 'package:leftover_is_over_customer/services/order_services.dart';
 import 'package:leftover_is_over_customer/services/store_services.dart';
 import 'package:leftover_is_over_customer/services/food_services.dart';
 import 'package:leftover_is_over_customer/widgets/menu_widget.dart';
+import 'package:stomp_dart_client/stomp_dart_client.dart';
 import 'cart_screen.dart';
 
 class RestaurantScreen extends StatefulWidget {
@@ -28,6 +29,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   List<String> nameList = [];
   List<int> priceList = [];
 
+  StompClient? stompClient;
+
   void addOrder(int foodId, int count, String foodName, int foodPrice) {
     foodOrders.add(FoodOrder(foodId: foodId, count: count));
     nameList.add(foodName);
@@ -39,6 +42,39 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     super.initState();
     _futureData = _fetchData();
     _checkIfFavorite();
+    stompClient = StompClient(
+      config: StompConfig.sockJS(
+        url:
+            'http://loio-server.azurewebsites.net/ws', // Replace with your server's URL
+        onConnect: onConnectCallback,
+        onWebSocketError: (dynamic error) => print('WebSocket Error: $error'),
+      ),
+    );
+    stompClient!.activate();
+  }
+
+  void onConnectCallback(StompFrame frame) {
+    print('Connected to WebSocket server');
+    print('Subscribing to topic: /topic/store/${widget.storeId}');
+    stompClient!.subscribe(
+      destination: '/topic/store/${widget.storeId}',
+      callback: (frame) {
+        if (frame.body != null) {
+          final foodInfo = frame.body!;
+          print("Received food update for store ${widget.storeId}: $foodInfo");
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    // Deactivate the WebSocket connection if it's active
+    if (stompClient != null && stompClient!.connected) {
+      stompClient!.deactivate();
+      print('WebSocket connection deactivated');
+    }
+    super.dispose();
   }
 
   Future<Map<String, dynamic>> _fetchData() async {
