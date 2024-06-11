@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:leftover_is_over_owner/Model/order_model.dart';
 import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/Order_Manage/order_detail_page.dart';
+import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 
 // 판매관리 주문 내역 카드 생성하는 위젯 주문 개수에 따라 자동으로 Contanier가 생성되도록 수정 예정
 
@@ -38,6 +39,8 @@ class _OrderCardState extends State<OrderCard> {
     menuCnt = orderedFoodList.length;
   }
 
+  var message = '주문을 취소하겠습니까?';
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -54,7 +57,7 @@ class _OrderCardState extends State<OrderCard> {
                         builder: (context) => OrderDetailPage(widget.order)));
               },
               child: Container(
-                height: 150,
+                //height: 170,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -94,45 +97,11 @@ class _OrderCardState extends State<OrderCard> {
                             ),
                           ),
 
-                          // 우측 상단 X 버튼 -> 누르면 주문 취소 팝업 뜨도록 수정 필요
-                          // 주문취소 -> 남은 수량 관련 데이터 연동
-                          Transform.translate(
-                            offset: const Offset(10, -10),
-                            child: IconButton(
-                              icon: const Icon(Icons.close),
-                              onPressed: () {},
+                          // 이용확인 버튼 누르면 상태 바뀌도록 수정 필요
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 20,
                             ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                menuCnt == 1
-                                    ? '메뉴: $firstFood $firstFoodCnt개'
-                                    : '메뉴: $firstFood $firstFoodCnt개 ...', // 메뉴가 다수일 경우
-                                style: const TextStyle(
-                                  fontSize: 23,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                '$payType결제',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                            ],
-                          ),
-                          Transform.translate(
-                            // 이용확인 버튼 누르면 상태 바뀌도록 수정 필요
-                            offset: const Offset(-5, -8),
                             child: GestureDetector(
                               onTap: () {},
                               child: Container(
@@ -155,12 +124,73 @@ class _OrderCardState extends State<OrderCard> {
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w500,
+                                    color: Color.fromARGB(255, 186, 85, 28),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  menuCnt == 1
+                                      ? '메뉴: $firstFood $firstFoodCnt개'
+                                      : '메뉴: $firstFood $firstFoodCnt개 ...', // 메뉴가 다수일 경우
+                                  style: const TextStyle(
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  '$payType결제',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, top: 15),
+                            child: GestureDetector(
+                              onTap: () {
+                                showYesNoDialog(context, message);
+                              },
+                              child: Container(
+                                width: 100,
+                                height: 50,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(50),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      blurRadius: 2,
+                                      color: Colors.black.withOpacity(0.3),
+                                      offset: const Offset(0, 1),
+                                    ),
+                                  ],
+                                ),
+                                child: const Text(
+                                  '주문 취소',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w500,
                                     color: Color.fromARGB(255, 82, 59, 42),
                                   ),
                                 ),
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ],
