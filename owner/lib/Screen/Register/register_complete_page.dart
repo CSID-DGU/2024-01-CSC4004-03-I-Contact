@@ -20,22 +20,22 @@ class RegisterCompletePage extends StatelessWidget {
               scale: 2.0,
               child: const Icon(
                 Icons.check_circle_outline,
-                size: 100,
+                size: 90,
               ),
             ),
           ),
           const SizedBox(
-            height: 60,
+            height: 120,
           ),
           const Text(
             '회원가입이 완료되었습니다!',
             style: TextStyle(
-              fontSize: 28,
-              fontFamily: "Logo",
+              fontSize: 27,
+              fontFamily: "Free2",
             ),
           ),
           const SizedBox(
-            height: 250,
+            height: 200,
           ),
           SizedBox(
             width: 300.0,
