@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:leftover_is_over_customer/screens/home_screens/main_screen.dart';
 import 'package:leftover_is_over_customer/Services/auth_services.dart';
 import 'package:leftover_is_over_customer/widgets/show_custom_dialog_widget.dart';
 import 'package:leftover_is_over_customer/screens/login_screens/register_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,9 +17,12 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController controllerUsername, controllerPwd;
   bool isLoading = false;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     controllerUsername = TextEditingController();
     controllerPwd = TextEditingController();
   }
@@ -45,6 +50,109 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
       showErrorDialog(context, '아이디/Password를 확인해주세요.');
+    }
+  }
+
+  Future<void> _loginWithGoogle() async {
+    print('로그인 시작');
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      // Trigger the authentication flow
+      print('Google Sign-In 시작');
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        print('Google Sign-In 취소됨');
+        setState(() {
+          isLoading = false;
+        });
+        return; // 사용자가 로그인 취소
+      }
+
+      // Obtain the auth details from the request
+      print('Google Sign-In 성공: ${googleUser.email}');
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a new credential
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      print('Firebase 인증 시작');
+      UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+      User? user = userCredential.user;
+
+      if (user != null) {
+        print('Firebase 인증 성공: ${user.email}');
+        // Check if user is signing in for the first time
+        String googleId = "";
+        String googleName = "";
+        if (userCredential.additionalUserInfo!.isNewUser) {
+          print('신규 회원');
+          bool registerCheck = false;
+          googleId = user.email!; // 사용자의 고유 Google ID
+          var a = 'google';
+          googleName =
+              googleUser.displayName ?? '고객님'; // 사용자의 이름이 없을 경우 '고객님'으로 설정
+          try {
+            registerCheck = await AuthService.register(
+              username: googleId,
+              name: googleName,
+              email: googleId,
+              phone: a,
+              password: a,
+            );
+          } catch (e) {
+            print(e);
+          }
+          if (registerCheck) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+              (Route<dynamic> route) => false,
+            );
+          } else {
+            return showErrorDialog(context, '회원가입에 실패했습니다.');
+          }
+        } else {
+          print('계정이 있는 회원');
+          setState(() {
+            isLoading = true;
+          });
+          var temp = "google";
+          var login =
+              await AuthService.login(username: user.email!, password: temp);
+          setState(() {
+            isLoading = true;
+          });
+          print("로그인 여부$login");
+          if (login) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const MainScreen()),
+              (Route<dynamic> route) => false,
+            );
+          } else {
+            if (!mounted) {
+              return showErrorDialog(context, '아이디/Password를 확인해주세요.');
+            }
+          }
+        }
+      } else {
+        print('Firebase 사용자 없음');
+      }
+    } catch (e) {
+      print('예외 발생: $e');
+      showErrorDialog(context, 'Google 로그인에 실패했습니다.');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -195,7 +303,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               )
                                   //const Color.fromARGB(255, 173, 190, 122)),
                                   ),
-                              onPressed: () {},
+                              onPressed: _loginWithGoogle,
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

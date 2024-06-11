@@ -2,6 +2,7 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE store SET deleted = true where store_id = ?")
 public class Store {
 
     @Id

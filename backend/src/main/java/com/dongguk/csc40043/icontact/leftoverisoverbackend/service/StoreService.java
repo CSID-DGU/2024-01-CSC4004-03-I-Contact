@@ -80,12 +80,12 @@ public class StoreService {
     }
 
     public List<GetStoreResponseDto> getStoreByLocation(double latitude, double longitude) {
-        List<Store> storeList = storeRepository.findAllSortedByDistance(latitude, longitude);
+        List<Store> storeList = storeRepository.findAllSortedByDistanceAndDeleted(latitude, longitude, false);
         return toResponseDto(storeList);
     }
 
     public List<GetStoreResponseDto> getStoreByCategory(Long categoryId, double latitude, double longitude) {
-        List<Store> storeList = storeRepository.findByCategoryIdSortedByDistance(categoryId, latitude, longitude);
+        List<Store> storeList = storeRepository.findByCategoryIdSortedByDistanceAndDeleted(categoryId, latitude, longitude, false);
         return toResponseDto(storeList);
     }
 
