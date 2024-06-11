@@ -9,6 +9,7 @@ import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.GetFo
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.OrderListDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,8 +66,9 @@ public class OrderService {
                         .build());
             });
             orderRepository.save(order);
-            webSocketService.sendFoodUpdate(store.getId(), updatedFoodList);
-            webSocketService.sendOrderUpdate(store.getId(), getOwnerOrder("ALL"));
+            Long storeId = store.getId();
+            webSocketService.sendFoodUpdate(storeId, updatedFoodList);
+            webSocketService.sendOrderUpdate(storeId, getOwnerOrder(storeId, "ALL"));
             return CreateOrderResponseDto.builder()
                     .orderId(order.getId())
                     .build();
@@ -88,6 +90,17 @@ public class OrderService {
         Store store = storeRepository.findByMemberAndDeleted(memberRepository.findByUsernameAndDeleted(SecurityUtil.getCurrentUser(), false)
                         .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")), false)
                 .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
+        return getOrderListDtos(status, store);
+    }
+
+    public List<OrderListDto> getOwnerOrder(Long storeId, String status) {
+        Store store = storeRepository.findByIdAndDeleted(storeId, false)
+                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
+        return getOrderListDtos(status, store);
+    }
+
+    @NotNull
+    private List<OrderListDto> getOrderListDtos(String status, Store store) {
         if (!status.equals("VISIT") && !status.equals("ALL")) {
             throw new IllegalArgumentException("Invalid status");
         }
@@ -106,7 +119,8 @@ public class OrderService {
         Order order = orderRepository.findById(changeOrderRequestDto.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
         order.cancel();
-        webSocketService.sendOrderUpdate(order.getStore().getId(), getOwnerOrder("ALL"));
+        Long storeId = order.getStore().getId();
+        webSocketService.sendOrderUpdate(storeId, getOwnerOrder(storeId, "ALL"));
     }
 
     @Transactional
