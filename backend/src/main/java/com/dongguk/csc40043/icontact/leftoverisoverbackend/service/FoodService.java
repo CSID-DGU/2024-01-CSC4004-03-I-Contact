@@ -39,6 +39,8 @@ public class FoodService {
         Food food = foodRepository.save(addFoodRequestDto.toEntity(store, image));
         List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
         webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
+        List<GetFoodListResponseDto> updatedAllFoodList = getAllFoodListByStoreId(food.getStore().getId());
+        webSocketService.sendAllFoodUpdate(food.getStore().getId(), updatedAllFoodList);
         return AddFoodResponseDto.builder()
                 .foodId(food.getId())
                 .build();
@@ -85,6 +87,8 @@ public class FoodService {
         }
         List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
         webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
+        List<GetFoodListResponseDto> updatedAllFoodList = getAllFoodListByStoreId(food.getStore().getId());
+        webSocketService.sendAllFoodUpdate(food.getStore().getId(), updatedAllFoodList);
     }
 
     public List<GetFoodListResponseDto> getFoodListByStoreId(Long storeId) {
@@ -92,6 +96,25 @@ public class FoodService {
                 new IllegalArgumentException("Invalid storeId"));
         return store.getFoods().stream()
                 .filter(Food::isVisible)
+                .map(food -> GetFoodListResponseDto.builder()
+                        .foodId(food.getId())
+                        .storeId(store.getId())
+                        .name(food.getName())
+                        .firstPrice(food.getFirstPrice())
+                        .sellPrice(food.getSellPrice())
+                        .capacity(food.getCapacity())
+                        .visits(food.getVisits())
+                        .isVisible(food.isVisible())
+                        .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : "")
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
+
+    public List<GetFoodListResponseDto> getAllFoodListByStoreId(Long storeId) {
+        Store store = storeRepository.findByIdAndDeleted(storeId, false).orElseThrow(() ->
+                new IllegalArgumentException("Invalid storeId"));
+        return store.getFoods().stream()
                 .map(food -> GetFoodListResponseDto.builder()
                         .foodId(food.getId())
                         .storeId(store.getId())
@@ -117,6 +140,8 @@ public class FoodService {
         foodRepository.deleteById(food.getId());
         List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
         webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
+        List<GetFoodListResponseDto> updatedAllFoodList = getAllFoodListByStoreId(food.getStore().getId());
+        webSocketService.sendAllFoodUpdate(food.getStore().getId(), updatedAllFoodList);
     }
 
     @Transactional
@@ -126,6 +151,8 @@ public class FoodService {
         food.addCapacity();
         List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
         webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
+        List<GetFoodListResponseDto> updatedAllFoodList = getAllFoodListByStoreId(food.getStore().getId());
+        webSocketService.sendAllFoodUpdate(food.getStore().getId(), updatedAllFoodList);
     }
 
     @Transactional
@@ -135,6 +162,8 @@ public class FoodService {
         food.minusCapacity();
         List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
         webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
+        List<GetFoodListResponseDto> updatedAllFoodList = getAllFoodListByStoreId(food.getStore().getId());
+        webSocketService.sendAllFoodUpdate(food.getStore().getId(), updatedAllFoodList);
     }
 
 }
