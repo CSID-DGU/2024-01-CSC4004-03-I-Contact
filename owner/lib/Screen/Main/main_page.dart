@@ -7,6 +7,7 @@ import 'package:leftover_is_over_owner/Model/store_model.dart';
 import 'package:leftover_is_over_owner/Provider/store_state.dart';
 import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
 import 'package:leftover_is_over_owner/Screen/Main/member_info_page.dart';
+import 'package:leftover_is_over_owner/Screen/Main/order_list_page.dart';
 import 'package:leftover_is_over_owner/Screen/Menu_Manage/menu_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/Sales_Manage/sales_manage_page.dart';
 import 'package:leftover_is_over_owner/Screen/Order_Manage/order_manage_page.dart';
@@ -479,8 +480,8 @@ class _MainPageState extends State<MainPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const StoreInfoPage()),
+                                        builder: (context) => OrderListPage(
+                                            storeId: store.storeId)),
                                   ).then((_) {
                                     setState(() {
                                       _isDropdownVisible =

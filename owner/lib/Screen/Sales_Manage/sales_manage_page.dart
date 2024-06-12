@@ -50,13 +50,13 @@ class SalesManagePageState extends State<SalesManagePage> {
     print('Connected to WebSocket server');
     print('Subscribing to topic: /topic/store/${widget.storeId}');
     stompClient!.subscribe(
-      destination: '/topic/menu',
+      destination: '/topic/store/${widget.storeId}',
       callback: (frame) {
         if (frame.body != null) {
           final List<dynamic> menuList = jsonDecode(frame.body!);
           List<MenuModel> menus =
               menuList.map((menuJson) => MenuModel.fromJson(menuJson)).toList();
-          print(menus);
+          print('웹소켓 $menus');
           setState(() {
             _menuList = menus;
             _menuStreamController.add(menus);
