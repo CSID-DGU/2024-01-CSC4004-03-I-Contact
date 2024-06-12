@@ -5,9 +5,17 @@ import 'package:leftover_is_over_customer/screens/setting_screens/profile_edit_s
 import 'package:leftover_is_over_customer/screens/setting_screens/notification_setting_screen.dart';
 import 'package:leftover_is_over_customer/Services/auth_services.dart';
 import 'package:leftover_is_over_customer/widgets/show_custom_dialog_widget.dart';
+import 'package:leftover_is_over_customer/models/user_model.dart';
 
-class MyPageScreen extends StatelessWidget {
+class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
+
+  @override
+  State<MyPageScreen> createState() => _MyPageScreenState();
+}
+
+class _MyPageScreenState extends State<MyPageScreen> {
+  late final Future<UserModel> _futureData = AuthService.getUserModel();
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +24,11 @@ class MyPageScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Center(
-              child: Text('마이페이지',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: Color.fromARGB(255, 0, 0, 0)))),
+            child: Text('마이페이지',
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Color.fromARGB(255, 0, 0, 0))),
+          ),
           bottom: const TabBar(
             tabs: [
               Tab(
@@ -35,10 +44,10 @@ class MyPageScreen extends StatelessWidget {
             unselectedLabelColor: Colors.grey,
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            ProfileSection(),
-            SettingsSection(),
+            ProfileSection(futureData: _futureData),
+            const SettingsSection(),
           ],
         ),
       ),
@@ -47,50 +56,68 @@ class MyPageScreen extends StatelessWidget {
 }
 
 class ProfileSection extends StatelessWidget {
-  const ProfileSection({super.key});
+  final Future<UserModel> futureData;
+
+  const ProfileSection({required this.futureData, super.key});
 
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    double screenWidth = screenSize.width;
     double screenHeight = screenSize.height;
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircleAvatar(
-            radius: 50,
-            backgroundImage: AssetImage('assets/images/no_image.png'),
-          ),
-          SizedBox(height: screenHeight * 0.03),
-          const Text(
-            '유저 이름',
-            style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 0, 0, 0)),
-          ),
-          SizedBox(height: screenHeight * 0.01),
-          const Text(
-            '아이디123',
-            style: TextStyle(fontSize: 18, color: Color.fromARGB(255, 0, 0, 0)),
-          ),
-          SizedBox(height: screenHeight * 0.03),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.amber,
+
+    return FutureBuilder<UserModel>(
+      future: futureData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (snapshot.hasData) {
+          final user = snapshot.data!;
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage('assets/images/no_image.png'),
+                ),
+                SizedBox(height: screenHeight * 0.03),
+                Text(
+                  user.name,
+                  style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 0, 0, 0)),
+                ),
+                SizedBox(height: screenHeight * 0.01),
+                Text(
+                  user.username,
+                  style: const TextStyle(
+                      fontSize: 18, color: Color.fromARGB(255, 0, 0, 0)),
+                ),
+                SizedBox(height: screenHeight * 0.03),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProfileEditScreen()),
+                    );
+                  },
+                  child: const Text('프로필 수정',
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ],
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ProfileEditScreen()),
-              );
-            },
-            child: const Text('프로필 수정', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
+          );
+        } else {
+          return const Center(child: Text('No data available'));
+        }
+      },
     );
   }
 }
@@ -125,7 +152,6 @@ class _SettingsSectionState extends State<SettingsSection> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    double screenWidth = screenSize.width;
     double screenHeight = screenSize.height;
     return Center(
       child: Column(

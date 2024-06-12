@@ -4,9 +4,8 @@ import 'package:leftover_is_over_customer/models/order_model.dart';
 import 'package:leftover_is_over_customer/models/store_model.dart';
 import 'package:leftover_is_over_customer/models/food_model.dart';
 import 'package:leftover_is_over_customer/services/favorite_services.dart';
-import 'package:leftover_is_over_customer/services/order_services.dart';
-import 'package:leftover_is_over_customer/services/store_services.dart';
 import 'package:leftover_is_over_customer/services/food_services.dart';
+import 'package:leftover_is_over_customer/services/store_services.dart';
 import 'package:leftover_is_over_customer/widgets/menu_widget.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 import 'cart_screen.dart';
@@ -25,6 +24,7 @@ class RestaurantScreen extends StatefulWidget {
 class _RestaurantScreenState extends State<RestaurantScreen> {
   late Future<Map<String, dynamic>> _futureData;
   late StreamController<List<FoodModel>> _foodStreamController;
+  List<FoodModel> _foodList = [];
   bool isFavorite = false;
   int numServings = 1;
 
@@ -46,6 +46,10 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     _futureData = _fetchData();
     _foodStreamController = StreamController<List<FoodModel>>();
     _checkIfFavorite();
+    _initializeWebSocket();
+  }
+
+  void _initializeWebSocket() {
     stompClient = StompClient(
       config: StompConfig.sockJS(
         url:
@@ -59,29 +63,49 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
   void onConnectCallback(StompFrame frame) {
     print('Connected to WebSocket server');
-    print('Subscribing to topic: /topic/store/${widget.storeId}');
+    print('Subscribing to topic: /topic/store/${widget.storeId}/all');
     stompClient!.subscribe(
-      destination: '/topic/store/${widget.storeId}',
+      destination: '/topic/store/${widget.storeId}/all',
       callback: (frame) {
         if (frame.body != null) {
           final List<FoodModel> updatedFoods = parseFoods(frame.body!);
-          _foodStreamController.add(updatedFoods);
           print(
               "Received food update for store ${widget.storeId}: ${frame.body!}");
+          setState(() {
+            _foodList = _mergeFoodLists(_foodList, updatedFoods);
+            _foodStreamController.add(_foodList);
+          });
         }
       },
     );
   }
 
+  List<FoodModel> _mergeFoodLists(
+      List<FoodModel> original, List<FoodModel> updated) {
+    // Create a map of foodId to FoodModel for quick lookup
+    final Map<int, FoodModel> foodMap = {
+      for (var food in original) food.foodId: food
+    };
+
+    // Update or add new foods from the updated list
+    for (var food in updated) {
+      foodMap[food.foodId] = food;
+    }
+
+    // Remove foods with visible == false
+    foodMap.removeWhere((key, food) => !food.visible);
+
+    // Return the updated list of FoodModel
+    return foodMap.values.toList();
+  }
+
   List<FoodModel> parseFoods(String body) {
-    // Assuming body is a JSON string, parse it and return a list of FoodModel
     final List<dynamic> parsedJson = json.decode(body);
     return parsedJson.map((json) => FoodModel.fromJson(json)).toList();
   }
 
   @override
   void dispose() {
-    // Deactivate the WebSocket connection if it's active
     if (stompClient != null && stompClient!.connected) {
       stompClient!.deactivate();
       print('WebSocket connection deactivated');
@@ -96,11 +120,15 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
     final results = await Future.wait([storeFuture, foodsFuture]);
 
-    _foodStreamController.add(results[1] as List<FoodModel>);
+    final initialFoods = results[1] as List<FoodModel>;
+    setState(() {
+      _foodList = initialFoods;
+      _foodStreamController.add(_foodList);
+    });
 
     return {
       'store': results[0],
-      'foods': results[1],
+      'foods': initialFoods,
     };
   }
 
@@ -155,6 +183,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
           final store = snapshot.data!['store'] as StoreModel;
+
           return Scaffold(
             body: StreamBuilder<List<FoodModel>>(
               stream: _foodStreamController.stream,
@@ -332,10 +361,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   void _showHalfScreenModal(
       String menuName, int menuPrice, int foodId, int foodCapacity) {
     setState(() {
-      numServings = 1;
-      if (foodCapacity == 0) {
-        numServings = 0;
-      }
+      numServings = foodCapacity == 0 ? 0 : 1;
     });
 
     Size screenSize = MediaQuery.of(context).size;
@@ -356,14 +382,11 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   child: Column(
                     children: [
                       Expanded(
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: Padding(
-                            padding: EdgeInsets.only(top: screenHeight * 0.035),
-                            child: Text(
-                              '$menuName 주문하기',
-                              style: TextStyle(fontSize: screenHeight * 0.035),
-                            ),
+                        child: Padding(
+                          padding: EdgeInsets.only(top: screenHeight * 0.035),
+                          child: Text(
+                            '$menuName 주문하기',
+                            style: TextStyle(fontSize: screenHeight * 0.035),
                           ),
                         ),
                       ),
@@ -380,40 +403,28 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                     });
                                   }
                                 },
-                                child: SizedBox(
-                                  width: screenHeight * 0.04,
-                                  height: screenHeight * 0.04,
-                                  child: Icon(
-                                    Icons.exposure_minus_1_outlined,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
+                                child: Icon(
+                                  Icons.exposure_minus_1_outlined,
+                                  color: Theme.of(context).primaryColor,
                                 ),
                               ),
-                              SizedBox(
-                                width: screenWidth * 0.1,
-                              ),
+                              SizedBox(width: screenWidth * 0.1),
                               Text(
                                 '$numServings인분',
                                 style: TextStyle(fontSize: screenHeight * 0.04),
                               ),
-                              SizedBox(
-                                width: screenWidth * 0.1,
-                              ),
+                              SizedBox(width: screenWidth * 0.1),
                               ElevatedButton(
                                 onPressed: () {
-                                  setModalState(() {
-                                    if (foodCapacity > numServings) {
+                                  if (foodCapacity > numServings) {
+                                    setModalState(() {
                                       numServings += 1;
-                                    }
-                                  });
+                                    });
+                                  }
                                 },
-                                child: SizedBox(
-                                  width: screenHeight * 0.04,
-                                  height: screenHeight * 0.04,
-                                  child: Icon(
-                                    Icons.plus_one_outlined,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
+                                child: Icon(
+                                  Icons.plus_one_outlined,
+                                  color: Theme.of(context).primaryColor,
                                 ),
                               ),
                             ],
@@ -421,45 +432,40 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                         ),
                       ),
                       Expanded(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Padding(
-                            padding:
-                                EdgeInsets.only(bottom: screenHeight * 0.035),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (!nameList.contains(menuName)) {
-                                  addOrder(
-                                      foodId, numServings, menuName, menuPrice);
-                                  Navigator.pop(context);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content:
-                                          Text('$menuName이(가) 장바구니에 추가되었습니다.'),
-                                    ),
-                                  );
-                                } else {
-                                  Navigator.pop(context);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content:
-                                          Text('$menuName이(가) 이미 장바구니에 있습니다.'),
-                                    ),
-                                  );
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: Theme.of(context).primaryColor,
-                                fixedSize: Size(
-                                    screenWidth * 0.8, screenHeight * 0.06),
-                              ),
-                              child: Text(
-                                '장바구니에 추가',
-                                style: TextStyle(
-                                  fontSize: screenHeight * 0.027,
-                                ),
-                              ),
+                        child: Padding(
+                          padding:
+                              EdgeInsets.only(bottom: screenHeight * 0.035),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (!nameList.contains(menuName)) {
+                                addOrder(
+                                    foodId, numServings, menuName, menuPrice);
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text('$menuName이(가) 장바구니에 추가되었습니다.'),
+                                  ),
+                                );
+                              } else {
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text('$menuName이(가) 이미 장바구니에 있습니다.'),
+                                  ),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Theme.of(context).primaryColor,
+                              fixedSize:
+                                  Size(screenWidth * 0.8, screenHeight * 0.06),
+                            ),
+                            child: Text(
+                              '장바구니에 추가',
+                              style: TextStyle(fontSize: screenHeight * 0.027),
                             ),
                           ),
                         ),
