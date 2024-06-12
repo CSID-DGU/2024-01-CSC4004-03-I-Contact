@@ -128,7 +128,7 @@ public class OrderService {
         Order order = orderRepository.findById(changeOrderRequestDto.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
         order.complete();
-        webSocketService.sendOrderUpdate(order.getStore().getId(), getOwnerOrder("ALL"));
+        webSocketService.sendOrderUpdate(order.getStore().getId(), getOwnerOrder(order.getStore().getId(), "ALL"));
     }
 
     public void sendOrderNotification(CreateOrderRequestDto createOrderRequestDto) throws IOException {
