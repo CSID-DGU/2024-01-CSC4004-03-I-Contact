@@ -57,7 +57,6 @@ class _OrderCardState extends State<OrderCard> {
                         builder: (context) => OrderDetailPage(widget.order)));
               },
               child: Container(
-                //height: 170,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -77,6 +76,7 @@ class _OrderCardState extends State<OrderCard> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Container(
                             padding: const EdgeInsets.all(2.0),
@@ -93,45 +93,25 @@ class _OrderCardState extends State<OrderCard> {
                             child: Text(
                               '주문 번호: $orderNum',
                               style: const TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.w600),
+                                fontSize: 25,
+                                fontFamily: "Free2",
+                              ),
                             ),
                           ),
-
-                          // 이용확인 버튼 누르면 상태 바뀌도록 수정 필요
                           Padding(
-                            padding: const EdgeInsets.only(
-                              left: 20,
-                            ),
-                            child: GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                width: 100,
-                                height: 50,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(50),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 2,
-                                      color: Colors.black.withOpacity(0.3),
-                                      offset: const Offset(0, 1),
-                                    ),
-                                  ],
-                                ),
-                                child: const Text(
-                                  '이용 확인',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromARGB(255, 186, 85, 28),
-                                  ),
-                                ),
+                            padding: const EdgeInsets.only(right: 70),
+                            child: Text(
+                              '$payType결제',
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 120, 120, 120),
+                                fontSize: 15,
+                                fontFamily: "Free2",
                               ),
                             ),
                           ),
                         ],
                       ),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -145,53 +125,77 @@ class _OrderCardState extends State<OrderCard> {
                                       : '메뉴: $firstFood $firstFoodCnt개 ...', // 메뉴가 다수일 경우
                                   style: const TextStyle(
                                     fontSize: 23,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  '$payType결제',
-                                  style: const TextStyle(
-                                    fontSize: 16,
+                                    fontFamily: "Free2",
                                   ),
                                 ),
                                 const SizedBox(height: 5),
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20, top: 15),
-                            child: GestureDetector(
-                              onTap: () {
-                                showYesNoDialog(context, message);
-                              },
-                              child: Container(
-                                width: 100,
-                                height: 50,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(50),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 2,
-                                      color: Colors.black.withOpacity(0.3),
-                                      offset: const Offset(0, 1),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20, bottom: 5),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  showYesNoDialog(context, message);
+                                },
+                                child: Container(
+                                  width: 100,
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(50),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        blurRadius: 2,
+                                        color: Colors.black.withOpacity(0.3),
+                                        offset: const Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Text(
+                                    '주문 취소',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: "Free2",
+                                      color: Color.fromARGB(255, 82, 59, 42),
                                     ),
-                                  ],
-                                ),
-                                child: const Text(
-                                  '주문 취소',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromARGB(255, 82, 59, 42),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ],
+                              GestureDetector(
+                                onTap: () {},
+                                child: Container(
+                                  width: 100,
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(50),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        blurRadius: 2,
+                                        color: Colors.black.withOpacity(0.3),
+                                        offset: const Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Text(
+                                    '이용 확인',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: "Free2",
+                                      color: Color.fromARGB(255, 186, 85, 28),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]),
                       ),
                     ],
                   ),
