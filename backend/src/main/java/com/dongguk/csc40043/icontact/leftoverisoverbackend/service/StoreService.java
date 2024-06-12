@@ -70,6 +70,9 @@ public class StoreService {
         Store store = storeRepository.findByMemberAndDeleted(member, false).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 식당입니다."));
         boolean isOpen = store.toggleIsOpen();
+        if (isOpen) {
+            store.getFoods().forEach(food -> food.updateIsVisible(true));
+        }
         storeRepository.save(store);
         return isOpen;
     }

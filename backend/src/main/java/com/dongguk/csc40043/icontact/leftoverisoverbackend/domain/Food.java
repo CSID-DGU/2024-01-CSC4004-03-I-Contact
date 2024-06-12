@@ -74,6 +74,10 @@ public class Food {
         this.capacity -= count;
     }
 
+    public void plusCapacity(int count) {
+        this.capacity += count;
+    }
+
     public void updateImage(Image image) {
         this.image = image;
     }

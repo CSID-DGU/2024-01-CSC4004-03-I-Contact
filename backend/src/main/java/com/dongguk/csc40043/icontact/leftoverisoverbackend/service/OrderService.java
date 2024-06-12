@@ -31,6 +31,7 @@ public class OrderService {
     private final FoodRepository foodRepository;
     private final FcmService fcmService;
     private final WebSocketService webSocketService;
+    private final FoodService foodService;
 
     @Transactional
     public CreateOrderResponseDto createOrder(CreateOrderRequestDto createOrderRequestDto) {
@@ -120,8 +121,10 @@ public class OrderService {
         Order order = orderRepository.findById(changeOrderRequestDto.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
         order.cancel();
+        order.getOrderFoods().forEach(orderFood -> orderFood.getFood().plusCapacity(orderFood.getCount()));
         Long storeId = order.getStore().getId();
         webSocketService.sendOrderUpdate(storeId, getOwnerOrder(storeId, "ALL"));
+        webSocketService.sendFoodUpdate(storeId, foodService.getFoodListByStoreId(storeId));
     }
 
     @Transactional
