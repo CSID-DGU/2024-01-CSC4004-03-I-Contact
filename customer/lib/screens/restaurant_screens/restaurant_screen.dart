@@ -63,7 +63,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
   void onConnectCallback(StompFrame frame) {
     print('Connected to WebSocket server');
-    print('Subscribing to topic: /topic/store/${widget.storeId}');
+    print('Subscribing to topic: /topic/store/${widget.storeId}/all');
     stompClient!.subscribe(
       destination: '/topic/store/${widget.storeId}',
       callback: (frame) {
