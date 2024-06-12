@@ -44,7 +44,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   void initState() {
     super.initState();
     _futureData = _fetchData();
-    _foodStreamController = StreamController<List<FoodModel>>();
+    _foodStreamController = StreamController<List<FoodModel>>.broadcast();
     _checkIfFavorite();
     _initializeWebSocket();
   }
