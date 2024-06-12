@@ -82,20 +82,16 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
   List<FoodModel> _mergeFoodLists(
       List<FoodModel> original, List<FoodModel> updated) {
-    // Create a map of foodId to FoodModel for quick lookup
     final Map<int, FoodModel> foodMap = {
       for (var food in original) food.foodId: food
     };
 
-    // Update or add new foods from the updated list
     for (var food in updated) {
       foodMap[food.foodId] = food;
     }
 
-    // Remove foods with visible == false
     foodMap.removeWhere((key, food) => !food.visible);
 
-    // Return the updated list of FoodModel
     return foodMap.values.toList();
   }
 
@@ -121,10 +117,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     final results = await Future.wait([storeFuture, foodsFuture]);
 
     final initialFoods = results[1] as List<FoodModel>;
-    setState(() {
-      _foodList = initialFoods;
-      _foodStreamController.add(_foodList);
-    });
+    _foodList = initialFoods.where((food) => food.visible).toList();
+    _foodStreamController.add(_foodList);
 
     return {
       'store': results[0],
@@ -188,12 +182,13 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
             body: StreamBuilder<List<FoodModel>>(
               stream: _foodStreamController.stream,
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                if (snapshot.connectionState == ConnectionState.waiting &&
+                    _foodList.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (snapshot.hasData) {
-                  final foods = snapshot.data!;
+                } else if (snapshot.hasData || _foodList.isNotEmpty) {
+                  final foods = snapshot.data ?? _foodList;
                   int totalCapacity =
                       foods.fold(0, (sum, food) => sum + food.capacity);
 
