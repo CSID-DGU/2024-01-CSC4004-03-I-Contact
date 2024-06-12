@@ -92,6 +92,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       foodMap[food.foodId] = food;
     }
 
+    // Remove foods with visible == false
+    foodMap.removeWhere((key, food) => !food.visible);
+
     // Return the updated list of FoodModel
     return foodMap.values.toList();
   }
