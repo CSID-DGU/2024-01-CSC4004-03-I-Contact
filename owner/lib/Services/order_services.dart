@@ -10,7 +10,7 @@ class OrderService {
     if (getAll) {
       url = 'http://loio-server.azurewebsites.net/owner/order/ALL';
     } else {
-      url = 'http://loio-server.azurewebsites.net/owner/order/VISIT';
+      url = 'http://loio-server.azurewebsites.net/owner/order/VISIBLE';
     }
     try {
       var token = await AuthService.loadToken();
@@ -21,7 +21,6 @@ class OrderService {
       if (response.statusCode == 200) {
         String responseBody = await response.stream.bytesToString();
         List<dynamic> orderList = jsonDecode(responseBody);
-        print(orderList);
         for (var order in orderList) {
           var instance = OrderModel.fromJson(order);
           orderInstances.add(instance);
@@ -30,6 +29,34 @@ class OrderService {
       } else {
         throw Exception('Failed to load orderList: ${response.statusCode}');
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<bool> orderCheck(int orderId, bool complete) async {
+    try {
+      var check = false;
+      var headers = {'Content-Type': 'application/json'};
+      http.Request request;
+      if (complete) {
+        request = http.Request('POST',
+            Uri.parse('http://loio-server.azurewebsites.net/order/complete'));
+      } else {
+        request = http.Request('POST',
+            Uri.parse('http://loio-server.azurewebsites.net/order/cancel'));
+      }
+      request.body = jsonEncode({"orderId": orderId});
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        check = true;
+      } else {
+        String responseBody = await response.stream.bytesToString();
+        print(responseBody);
+        throw Exception('Failed to change orderState: ${response.statusCode}');
+      }
+      return check;
     } catch (e) {
       rethrow;
     }
