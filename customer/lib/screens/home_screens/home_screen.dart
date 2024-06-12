@@ -217,28 +217,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const NotificationsScreen(),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  width: screenWidth * 0.1,
-                                  height: screenHeight * 0.1,
-                                  margin:
-                                      EdgeInsets.only(left: screenWidth * 0.1),
-                                  child: Icon(
-                                    Icons.notifications,
-                                    size: 32,
-                                    color: Theme.of(context).primaryColorDark,
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
                         );
