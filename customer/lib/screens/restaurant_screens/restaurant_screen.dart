@@ -65,7 +65,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     print('Connected to WebSocket server');
     print('Subscribing to topic: /topic/store/${widget.storeId}/all');
     stompClient!.subscribe(
-      destination: '/topic/store/${widget.storeId}',
+      destination: '/topic/store/${widget.storeId}/all',
       callback: (frame) {
         if (frame.body != null) {
           final List<FoodModel> updatedFoods = parseFoods(frame.body!);

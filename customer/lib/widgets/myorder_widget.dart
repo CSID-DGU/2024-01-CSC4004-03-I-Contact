@@ -64,14 +64,17 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
             itemBuilder: (context, index) {
               final order = orders[orders.length - 1 - index];
               final bool isCanceled = order.status.toLowerCase() == 'cancel';
+              final bool isComplete = order.status.toLowerCase() == 'complete';
               final TextStyle textStyle = TextStyle(
-                color: isCanceled ? Colors.grey : Colors.black,
+                color: (isCanceled || isComplete) ? Colors.grey : Colors.black,
                 fontSize: screenHeight * 0.018,
-                fontWeight: isCanceled ? FontWeight.normal : FontWeight.w400,
+                fontWeight: (isCanceled || isComplete)
+                    ? FontWeight.normal
+                    : FontWeight.w400,
               );
 
               return GestureDetector(
-                onTap: isCanceled
+                onTap: (isCanceled || isComplete)
                     ? null
                     : () {
                         Navigator.push(
@@ -106,7 +109,9 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                             Text(
                               order.orderDate,
                               style: TextStyle(
-                                color: isCanceled ? Colors.grey : Colors.black,
+                                color: (isCanceled || isComplete)
+                                    ? Colors.grey
+                                    : Colors.black,
                                 fontSize: screenHeight * 0.016,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -121,12 +126,12 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                       width: 0.35 * screenWidth,
                                       height: 0.11 * screenHeight,
                                       fit: BoxFit.cover,
-                                      color: isCanceled
+                                      color: (isCanceled || isComplete)
                                           ? const Color.fromARGB(
                                                   255, 220, 220, 220)
                                               .withOpacity(0.7)
                                           : null,
-                                      colorBlendMode: isCanceled
+                                      colorBlendMode: (isCanceled || isComplete)
                                           ? BlendMode.modulate
                                           : null,
                                       errorBuilder:
@@ -136,14 +141,15 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                           width: 0.35 * screenWidth,
                                           height: 0.11 * screenHeight,
                                           fit: BoxFit.cover,
-                                          color: isCanceled
+                                          color: (isCanceled || isComplete)
                                               ? const Color.fromARGB(
                                                       255, 220, 220, 220)
                                                   .withOpacity(0.7)
                                               : null,
-                                          colorBlendMode: isCanceled
-                                              ? BlendMode.modulate
-                                              : null,
+                                          colorBlendMode:
+                                              (isCanceled || isComplete)
+                                                  ? BlendMode.modulate
+                                                  : null,
                                         );
                                       },
                                     )
@@ -152,12 +158,12 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                       width: 0.35 * screenWidth,
                                       height: 0.11 * screenHeight,
                                       fit: BoxFit.cover,
-                                      color: isCanceled
+                                      color: (isCanceled || isComplete)
                                           ? const Color.fromARGB(
                                                   255, 220, 220, 220)
                                               .withOpacity(0.7)
                                           : null,
-                                      colorBlendMode: isCanceled
+                                      colorBlendMode: (isCanceled || isComplete)
                                           ? BlendMode.modulate
                                           : null,
                                     ),
@@ -174,8 +180,9 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                               Text(
                                 order.store.name,
                                 style: TextStyle(
-                                  color:
-                                      isCanceled ? Colors.grey : Colors.black,
+                                  color: (isCanceled || isComplete)
+                                      ? Colors.grey
+                                      : Colors.black,
                                   fontSize: screenHeight * 0.025,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -185,8 +192,9 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                 Text(
                                   '${order.orderedFood[0].name} 외 ${order.orderedFood.map((food) => food.count).reduce((value, element) => value + element) - order.orderedFood[0].count}개',
                                   style: TextStyle(
-                                    color:
-                                        isCanceled ? Colors.grey : Colors.black,
+                                    color: (isCanceled || isComplete)
+                                        ? Colors.grey
+                                        : Colors.black,
                                     fontSize: screenHeight * 0.018,
                                     fontWeight: FontWeight.normal,
                                   ),
@@ -200,7 +208,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                   Text(
                                     '주문 번호: ${order.orderNum % 1000}',
                                     style: TextStyle(
-                                      color: isCanceled
+                                      color: (isCanceled || isComplete)
                                           ? Colors.grey
                                           : Colors.black,
                                       fontSize: screenHeight * 0.018,
@@ -208,26 +216,27 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                     ),
                                   ),
                                   ElevatedButton(
-                                    onPressed: isCanceled
+                                    onPressed: (isCanceled || isComplete)
                                         ? null
                                         : () {
                                             _cancelOrder(order.orderNum);
                                           },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFFFFD700),
-                                      foregroundColor: isCanceled
-                                          ? Colors.grey
-                                          : Colors.black,
+                                      foregroundColor:
+                                          (isCanceled || isComplete)
+                                              ? Colors.grey
+                                              : Colors.black,
                                       textStyle: TextStyle(
                                         fontSize: screenHeight * 0.018,
                                       ),
                                       minimumSize: const Size(70, 35),
                                     ),
                                     child: Text(
-                                      '방문취소',
+                                      isComplete ? '방문완료' : '방문취소',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        color: isCanceled
+                                        color: (isCanceled || isComplete)
                                             ? Colors.grey
                                             : Colors.black,
                                       ),
