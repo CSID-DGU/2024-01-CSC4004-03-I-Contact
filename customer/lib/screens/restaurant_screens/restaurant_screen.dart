@@ -27,6 +27,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   late StreamController<List<FoodModel>> _foodStreamController;
   bool isFavorite = false;
   int numServings = 1;
+  final List<FoodModel> _foodList = [];
 
   List<FoodOrder> foodOrders = [];
   List<String> nameList = [];
@@ -68,6 +69,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           _foodStreamController.add(updatedFoods);
           print(
               "Received food update for store ${widget.storeId}: ${frame.body!}");
+          setState(() {
+            _foodStreamController.add(updatedFoods);
+          });
         }
       },
     );
