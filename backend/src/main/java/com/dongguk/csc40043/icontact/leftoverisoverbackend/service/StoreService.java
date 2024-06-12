@@ -70,6 +70,9 @@ public class StoreService {
         Store store = storeRepository.findByMemberAndDeleted(member, false).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 식당입니다."));
         boolean isOpen = store.toggleIsOpen();
+        if (isOpen) {
+            store.getFoods().forEach(food -> food.updateIsVisible(true));
+        }
         storeRepository.save(store);
         return isOpen;
     }
@@ -80,12 +83,12 @@ public class StoreService {
     }
 
     public List<GetStoreResponseDto> getStoreByLocation(double latitude, double longitude) {
-        List<Store> storeList = storeRepository.findAllSortedByDistanceAndDeleted(latitude, longitude, false);
+        List<Store> storeList = storeRepository.findAllSortedByDistanceAndIsOpenAndDeleted(latitude, longitude, true, false);
         return toResponseDto(storeList);
     }
 
     public List<GetStoreResponseDto> getStoreByCategory(Long categoryId, double latitude, double longitude) {
-        List<Store> storeList = storeRepository.findByCategoryIdSortedByDistanceAndDeleted(categoryId, latitude, longitude, false);
+        List<Store> storeList = storeRepository.findByCategoryIdSortedByDistanceAndIsOpenAndDeleted(categoryId, latitude, longitude, true, false);
         return toResponseDto(storeList);
     }
 

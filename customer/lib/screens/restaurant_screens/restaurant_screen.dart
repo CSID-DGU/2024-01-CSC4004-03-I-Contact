@@ -10,6 +10,8 @@ import 'package:leftover_is_over_customer/services/food_services.dart';
 import 'package:leftover_is_over_customer/widgets/menu_widget.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 import 'cart_screen.dart';
+import 'dart:convert';
+import 'dart:async';
 
 class RestaurantScreen extends StatefulWidget {
   final int storeId;
@@ -22,6 +24,7 @@ class RestaurantScreen extends StatefulWidget {
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
   late Future<Map<String, dynamic>> _futureData;
+  late StreamController<List<FoodModel>> _foodStreamController;
   bool isFavorite = false;
   int numServings = 1;
 
@@ -41,6 +44,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   void initState() {
     super.initState();
     _futureData = _fetchData();
+    _foodStreamController = StreamController<List<FoodModel>>();
     _checkIfFavorite();
     stompClient = StompClient(
       config: StompConfig.sockJS(
@@ -60,11 +64,19 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       destination: '/topic/store/${widget.storeId}',
       callback: (frame) {
         if (frame.body != null) {
-          final foodInfo = frame.body!;
-          print("Received food update for store ${widget.storeId}: $foodInfo");
+          final List<FoodModel> updatedFoods = parseFoods(frame.body!);
+          _foodStreamController.add(updatedFoods);
+          print(
+              "Received food update for store ${widget.storeId}: ${frame.body!}");
         }
       },
     );
+  }
+
+  List<FoodModel> parseFoods(String body) {
+    // Assuming body is a JSON string, parse it and return a list of FoodModel
+    final List<dynamic> parsedJson = json.decode(body);
+    return parsedJson.map((json) => FoodModel.fromJson(json)).toList();
   }
 
   @override
@@ -74,6 +86,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       stompClient!.deactivate();
       print('WebSocket connection deactivated');
     }
+    _foodStreamController.close();
     super.dispose();
   }
 
@@ -82,6 +95,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     final foodsFuture = FoodService.getFoodListByStoreId(widget.storeId);
 
     final results = await Future.wait([storeFuture, foodsFuture]);
+
+    _foodStreamController.add(results[1] as List<FoodModel>);
 
     return {
       'store': results[0],
@@ -140,147 +155,159 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
           final store = snapshot.data!['store'] as StoreModel;
-          final foods = snapshot.data!['foods'] as List<FoodModel>;
-          int totalCapacity = foods.fold(0, (sum, food) => sum + food.capacity);
-
           return Scaffold(
-            body: NestedScrollView(
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  SliverAppBar(
-                    expandedHeight: screenHeight * 0.3,
-                    floating: false,
-                    pinned: true,
-                    stretch: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.parallax,
-                      background:
-                          foods.isNotEmpty && foods[0].imageUrl.isNotEmpty
-                              ? Image.network(
-                                  'http://loio-server.azurewebsites.net${foods[0].imageUrl}',
-                                  width: 0.25 * screenWidth,
-                                  height: 0.09 * screenHeight,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      'assets/images/no_image.png',
-                                      width: 0.25 * screenWidth,
-                                      height: 0.09 * screenHeight,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                )
-                              : Image.asset(
-                                  'assets/images/no_image.png',
-                                  width: 0.25 * screenWidth,
-                                  height: 0.09 * screenHeight,
-                                  fit: BoxFit.cover,
-                                ),
-                    ),
-                    actions: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            right:
-                                screenWidth * 0.05), // Adjust the padding here
-                        child: IconButton(
-                          onPressed: _toggleFavorite,
-                          icon: Icon(
-                            isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: isFavorite ? Colors.red : null,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      width: screenWidth * 0.9,
-                      height: screenHeight * 0.2,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          top: screenHeight * 0.01,
-                          left: screenWidth * 0.05,
-                          right: screenWidth * 0.07,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              store.name,
-                              style: TextStyle(
-                                  fontSize: screenHeight * 0.035,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              store.address,
-                              style: TextStyle(
-                                  fontSize: screenHeight * 0.025,
-                                  color: Colors.black54),
-                            ),
-                            SizedBox(height: screenHeight * 0.03),
-                            Text(
-                              '이용 가능 인원 $totalCapacity명',
-                              style: TextStyle(fontSize: screenHeight * 0.02),
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      '마감시간 ${store.endTime}',
-                                      style: TextStyle(
-                                        fontSize: screenHeight * 0.02,
-                                      ),
-                                    ),
+            body: StreamBuilder<List<FoodModel>>(
+              stream: _foodStreamController.stream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.hasData) {
+                  final foods = snapshot.data!;
+                  int totalCapacity =
+                      foods.fold(0, (sum, food) => sum + food.capacity);
+
+                  return NestedScrollView(
+                    headerSliverBuilder:
+                        (BuildContext context, bool innerBoxIsScrolled) {
+                      return <Widget>[
+                        SliverAppBar(
+                          expandedHeight: screenHeight * 0.3,
+                          floating: false,
+                          pinned: true,
+                          stretch: true,
+                          flexibleSpace: FlexibleSpaceBar(
+                            collapseMode: CollapseMode.parallax,
+                            background: foods.isNotEmpty &&
+                                    foods[0].imageUrl.isNotEmpty
+                                ? Image.network(
+                                    'http://loio-server.azurewebsites.net${foods[0].imageUrl}',
+                                    width: 0.25 * screenWidth,
+                                    height: 0.09 * screenHeight,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'assets/images/no_image.png',
+                                        width: 0.25 * screenWidth,
+                                        height: 0.09 * screenHeight,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  )
+                                : Image.asset(
+                                    'assets/images/no_image.png',
+                                    width: 0.25 * screenWidth,
+                                    height: 0.09 * screenHeight,
+                                    fit: BoxFit.cover,
                                   ),
+                          ),
+                          actions: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(right: screenWidth * 0.05),
+                              child: IconButton(
+                                onPressed: _toggleFavorite,
+                                icon: Icon(
+                                  isFavorite
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: isFavorite ? Colors.red : null,
                                 ),
-                              ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                  ),
-                ];
-              },
-              body: ListView.builder(
-                itemCount: foods.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final food = foods[index];
-                  return MenuWidget(
-                    foodId: food.foodId,
-                    menuName: food.name,
-                    unitCost: food.sellPrice.toString(),
-                    remaining: food.capacity.toString(),
-                    imgUrl: food.imageUrl.toString(),
-                    onMenuTap: (int foodId) {
-                      _showHalfScreenModal(
-                          food.name, food.sellPrice, foodId, food.capacity);
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              top: screenHeight * 0.01,
+                              left: screenWidth * 0.05,
+                              right: screenWidth * 0.07,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  store.name,
+                                  style: TextStyle(
+                                      fontSize: screenHeight * 0.035,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  store.address,
+                                  style: TextStyle(
+                                      fontSize: screenHeight * 0.025,
+                                      color: Colors.black54),
+                                ),
+                                SizedBox(height: screenHeight * 0.03),
+                                Text(
+                                  '이용 가능 인원 $totalCapacity명',
+                                  style:
+                                      TextStyle(fontSize: screenHeight * 0.02),
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(
+                                          '마감시간 ${store.endTime}',
+                                          style: TextStyle(
+                                              fontSize: screenHeight * 0.02),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ];
                     },
+                    body: ListView.builder(
+                      itemCount: foods.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final food = foods[index];
+                        return MenuWidget(
+                          foodId: food.foodId,
+                          menuName: food.name,
+                          unitCost: food.sellPrice.toString(),
+                          remaining: food.capacity.toString(),
+                          imgUrl: food.imageUrl.toString(),
+                          onMenuTap: (int foodId) {
+                            _showHalfScreenModal(food.name, food.sellPrice,
+                                foodId, food.capacity);
+                          },
+                        );
+                      },
+                    ),
                   );
-                },
-              ),
+                } else {
+                  return const Center(child: Text('No data available'));
+                }
+              },
             ),
             bottomNavigationBar: BottomAppBar(
               child: Container(
                 width: screenWidth,
-                height: screenHeight * 0.08, // 버튼 높이 조절
+                height: screenHeight * 0.08,
                 margin: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.05,
-                  vertical: screenHeight * 0.01, // 좌우 및 상하 간격 조절
-                ),
+                    horizontal: screenWidth * 0.05,
+                    vertical: screenHeight * 0.01),
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => CartScreen(
-                              storeId: store.storeId,
-                              foodOrders: foodOrders,
-                              nameList: nameList,
-                              priceList: priceList)),
+                        builder: (context) => CartScreen(
+                          storeId: store.storeId,
+                          foodOrders: foodOrders,
+                          nameList: nameList,
+                          priceList: priceList,
+                        ),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -289,9 +316,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   ),
                   child: Text(
                     '장바구니',
-                    style: TextStyle(
-                      fontSize: screenHeight * 0.025,
-                    ),
+                    style: TextStyle(fontSize: screenHeight * 0.025),
                   ),
                 ),
               ),

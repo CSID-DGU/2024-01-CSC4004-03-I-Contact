@@ -91,6 +91,7 @@ public class FoodService {
         Store store = storeRepository.findByIdAndDeleted(storeId, false).orElseThrow(() ->
                 new IllegalArgumentException("Invalid storeId"));
         return store.getFoods().stream()
+                .filter(Food::isVisible)
                 .map(food -> GetFoodListResponseDto.builder()
                         .foodId(food.getId())
                         .storeId(store.getId())

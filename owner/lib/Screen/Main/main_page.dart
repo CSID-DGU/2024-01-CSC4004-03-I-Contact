@@ -204,7 +204,7 @@ class _MainPageState extends State<MainPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const SalesManagePage()));
+                                      SalesManagePage(storeId: store.storeId)));
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
