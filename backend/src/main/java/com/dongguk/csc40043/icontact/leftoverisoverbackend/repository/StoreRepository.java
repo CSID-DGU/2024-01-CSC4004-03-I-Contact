@@ -24,6 +24,4 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     Optional<Store> findByIdAndDeleted(Long id, boolean deleted);
 
-    Optional<Store> findByIdAndDeletedAndIsVisible(Long id, boolean deleted, boolean isVisible);
-
 }

@@ -88,9 +88,10 @@ public class FoodService {
     }
 
     public List<GetFoodListResponseDto> getFoodListByStoreId(Long storeId) {
-        Store store = storeRepository.findByIdAndDeletedAndIsVisible(storeId, false, true).orElseThrow(() ->
+        Store store = storeRepository.findByIdAndDeleted(storeId, false).orElseThrow(() ->
                 new IllegalArgumentException("Invalid storeId"));
         return store.getFoods().stream()
+                .filter(Food::isVisible)
                 .map(food -> GetFoodListResponseDto.builder()
                         .foodId(food.getId())
                         .storeId(store.getId())
