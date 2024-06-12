@@ -97,6 +97,7 @@ class _OrderCardState extends State<OrderCard> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Container(
                             padding: const EdgeInsets.all(2.0),
@@ -116,126 +117,93 @@ class _OrderCardState extends State<OrderCard> {
                               '주문 번호: $orderNum',
                               style: const TextStyle(
                                 fontSize: 25,
-                                fontWeight: FontWeight.w600,
+
+                                fontFamily: "Free2",
+
                               ),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: GestureDetector(
-                              onTap: orderComplete,
-                              child: Container(
-                                width: 100,
-                                height: 50,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(50),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 2,
-                                      color: Colors.black.withOpacity(0.3),
-                                      offset: const Offset(0, 1),
-                                    ),
-                                  ],
-                                ),
-                                child: const Text(
-                                  '이용 확인',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromARGB(255, 186, 85, 28),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 5),
-                                Text(
-                                  menuCnt == 1
-                                      ? ' 메뉴: $firstFood $firstFoodCnt개'
-                                      : ' 메뉴: $firstFood $firstFoodCnt개 외',
-                                  style: const TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  ' $payType결제',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.orange[600],
+
+                            padding: const EdgeInsets.only(right: 70),
+                            child: Text(
+                              '$payType결제',
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 120, 120, 120),
+                                fontSize: 15,
+                                fontFamily: "Free2",
+
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20, top: 15),
-                            child: GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('주문 취소'),
-                                      content: Text(message),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: const Text('아니오'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                        TextButton(
-                                          child: const Text('네'),
-                                          onPressed: () {
-                                            orderCancel();
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              child: Container(
-                                width: 100,
-                                height: 50,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(50),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 2,
-                                      color: Colors.black.withOpacity(0.3),
-                                      offset: const Offset(0, 1),
+
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20, bottom: 5),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  showYesNoDialog(context, message);
+                                },
+                                child: Container(
+                                  width: 100,
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(50),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        blurRadius: 2,
+                                        color: Colors.black.withOpacity(0.3),
+                                        offset: const Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Text(
+                                    '주문 취소',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: "Free2",
+                                      color: Color.fromARGB(255, 82, 59, 42),
+
                                     ),
-                                  ],
-                                ),
-                                child: const Text(
-                                  '주문 취소',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromARGB(255, 82, 59, 42),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ],
+                              GestureDetector(
+                                onTap: () {},
+                                child: Container(
+                                  width: 100,
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(50),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        blurRadius: 2,
+                                        color: Colors.black.withOpacity(0.3),
+                                        offset: const Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Text(
+                                    '이용 확인',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: "Free2",
+                                      color: Color.fromARGB(255, 186, 85, 28),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]),
                       ),
                     ],
                   ),
