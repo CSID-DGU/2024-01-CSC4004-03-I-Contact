@@ -18,6 +18,10 @@ public class WebSocketService {
         simpMessagingTemplate.convertAndSend("/topic/store/" + storeId.toString(), foodList);
     }
 
+    public void sendAllFoodUpdate(Long storeId, List<GetFoodListResponseDto> foodList) {
+        simpMessagingTemplate.convertAndSend("/topic/store/" + storeId.toString() + "/all", foodList);
+    }
+
     public void sendOrderUpdate(Long storeId, List<OrderListDto> orderList) {
         simpMessagingTemplate.convertAndSend("/topic/order/" + storeId, orderList);
     }

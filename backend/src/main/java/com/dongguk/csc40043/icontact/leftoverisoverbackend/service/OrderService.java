@@ -42,6 +42,7 @@ public class OrderService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
             Order order = createOrderRequestDto.toEntity(member, store, LocalDateTime.now());
             List<GetFoodListResponseDto> updatedFoodList = new ArrayList<>();
+            List<GetFoodListResponseDto> updatedAllFoodList = new ArrayList<>();
             createOrderRequestDto.getOrderFoodDtos().forEach(orderFoodDto -> {
                 Food food = foodRepository.findById(orderFoodDto.getFoodId())
                         .orElseThrow(() -> new IllegalArgumentException("해당 음식이 존재하지 않습니다."));
@@ -65,10 +66,22 @@ public class OrderService {
                         .isVisible(food.isVisible())
                         .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : "")
                         .build());
+                updatedAllFoodList.add(GetFoodListResponseDto.builder()
+                        .foodId(food.getId())
+                        .storeId(store.getId())
+                        .name(food.getName())
+                        .firstPrice(food.getFirstPrice())
+                        .sellPrice(food.getSellPrice())
+                        .capacity(food.getCapacity())
+                        .visits(food.getVisits())
+                        .isVisible(food.isVisible())
+                        .imageUrl(food.getImage() != null ? food.getImage().getFileUrl() : "")
+                        .build());
             });
             orderRepository.save(order);
             Long storeId = store.getId();
             webSocketService.sendFoodUpdate(storeId, updatedFoodList);
+            webSocketService.sendAllFoodUpdate(storeId, updatedAllFoodList);
             webSocketService.sendOrderUpdate(storeId, getOwnerOrder(storeId, "ALL"));
             return CreateOrderResponseDto.builder()
                     .orderId(order.getId())
@@ -126,6 +139,7 @@ public class OrderService {
         Long storeId = order.getStore().getId();
         webSocketService.sendOrderUpdate(storeId, getOwnerOrder(storeId, "ALL"));
         webSocketService.sendFoodUpdate(storeId, foodService.getFoodListByStoreId(storeId));
+        webSocketService.sendAllFoodUpdate(storeId, foodService.getAllFoodListByStoreId(storeId));
     }
 
     @Transactional
