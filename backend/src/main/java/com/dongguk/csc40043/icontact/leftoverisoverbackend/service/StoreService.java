@@ -76,12 +76,12 @@ public class StoreService {
         if (isOpen) {
             store.getFoods().forEach(food -> food.updateIsVisible(true));
         }
+        storeRepository.save(store);
         Long storeId = store.getId();
         List<GetFoodListResponseDto> updatedFoodList = foodService.getFoodListByStoreId(storeId);
         webSocketService.sendFoodUpdate(storeId, updatedFoodList);
         List<GetFoodListResponseDto> updatedAllFoodList = foodService.getAllFoodListByStoreId(storeId);
         webSocketService.sendAllFoodUpdate(storeId, updatedAllFoodList);
-        storeRepository.save(store);
         return isOpen;
     }
 
