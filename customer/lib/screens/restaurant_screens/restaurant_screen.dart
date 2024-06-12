@@ -10,6 +10,8 @@ import 'package:leftover_is_over_customer/services/food_services.dart';
 import 'package:leftover_is_over_customer/widgets/menu_widget.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 import 'cart_screen.dart';
+import 'dart:convert';
+import 'dart:async';
 
 class RestaurantScreen extends StatefulWidget {
   final int storeId;
@@ -22,6 +24,7 @@ class RestaurantScreen extends StatefulWidget {
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
   late Future<Map<String, dynamic>> _futureData;
+  late StreamController<List<FoodModel>> _foodStreamController;
   bool isFavorite = false;
   int numServings = 1;
 
@@ -41,6 +44,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   void initState() {
     super.initState();
     _futureData = _fetchData();
+    _foodStreamController = StreamController<List<FoodModel>>();
     _checkIfFavorite();
     stompClient = StompClient(
       config: StompConfig.sockJS(
@@ -60,11 +64,19 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       destination: '/topic/store/${widget.storeId}',
       callback: (frame) {
         if (frame.body != null) {
-          final foodInfo = frame.body!;
-          print("Received food update for store ${widget.storeId}: $foodInfo");
+          final List<FoodModel> updatedFoods = parseFoods(frame.body!);
+          _foodStreamController.add(updatedFoods);
+          print(
+              "Received food update for store ${widget.storeId}: ${frame.body!}");
         }
       },
     );
+  }
+
+  List<FoodModel> parseFoods(String body) {
+    // Assuming body is a JSON string, parse it and return a list of FoodModel
+    final List<dynamic> parsedJson = json.decode(body);
+    return parsedJson.map((json) => FoodModel.fromJson(json)).toList();
   }
 
   @override
@@ -74,6 +86,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       stompClient!.deactivate();
       print('WebSocket connection deactivated');
     }
+    _foodStreamController.close();
     super.dispose();
   }
 
@@ -82,6 +95,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     final foodsFuture = FoodService.getFoodListByStoreId(widget.storeId);
 
     final results = await Future.wait([storeFuture, foodsFuture]);
+
+    _foodStreamController.add(results[1] as List<FoodModel>);
 
     return {
       'store': results[0],
@@ -245,21 +260,35 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   ),
                 ];
               },
-              body: ListView.builder(
-                itemCount: foods.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final food = foods[index];
-                  return MenuWidget(
-                    foodId: food.foodId,
-                    menuName: food.name,
-                    unitCost: food.sellPrice.toString(),
-                    remaining: food.capacity.toString(),
-                    imgUrl: food.imageUrl.toString(),
-                    onMenuTap: (int foodId) {
-                      _showHalfScreenModal(
-                          food.name, food.sellPrice, foodId, food.capacity);
-                    },
-                  );
+              body: StreamBuilder<List<FoodModel>>(
+                stream: _foodStreamController.stream,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (snapshot.hasData) {
+                    final foods = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: foods.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final food = foods[index];
+                        return MenuWidget(
+                          foodId: food.foodId,
+                          menuName: food.name,
+                          unitCost: food.sellPrice.toString(),
+                          remaining: food.capacity.toString(),
+                          imgUrl: food.imageUrl.toString(),
+                          onMenuTap: (int foodId) {
+                            _showHalfScreenModal(food.name, food.sellPrice,
+                                foodId, food.capacity);
+                          },
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(child: Text('No data available'));
+                  }
                 },
               ),
             ),
