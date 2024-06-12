@@ -37,6 +37,8 @@ public class FoodService {
                 new IllegalArgumentException("존재하지 않는 식당입니다."));
         Image image = imageService.store(file);
         Food food = foodRepository.save(addFoodRequestDto.toEntity(store, image));
+        List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
+        webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
         return AddFoodResponseDto.builder()
                 .foodId(food.getId())
                 .build();
