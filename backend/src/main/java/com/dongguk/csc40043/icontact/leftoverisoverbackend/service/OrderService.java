@@ -106,10 +106,11 @@ public class OrderService {
             throw new IllegalArgumentException("Invalid status");
         }
 
-        List<Order> orderList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf("VISIT"));
-        if (status.equals("ALL")) {
-            List<Order> orderAllList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf("ORDER"));
-            orderList.addAll(orderAllList);
+        List<Order> orderList;
+        if (status.equals("VISIT")) {
+            orderList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf("VISIT"));
+        } else {
+            orderList = orderRepository.findByStore(store);
         }
         return orderList.stream()
                 .map(order -> mapToOrderListDto(order, order.getMember()))
