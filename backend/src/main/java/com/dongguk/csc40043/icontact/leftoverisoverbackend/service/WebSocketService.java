@@ -26,4 +26,8 @@ public class WebSocketService {
         simpMessagingTemplate.convertAndSend("/topic/order/" + storeId, orderList);
     }
 
+    public void sendAllOrderUpdate(Long storeId, List<OrderListDto> orderList) {
+        simpMessagingTemplate.convertAndSend("/topic/order/" + storeId + "/all", orderList);
+    }
+
 }
