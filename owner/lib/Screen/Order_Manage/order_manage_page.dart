@@ -38,7 +38,6 @@ class _OrderManagePageState extends State<OrderManagePage> {
   }
 
   void refreshOrderList() {
-    print("refresh함수에서 refresh");
     if (mounted) {
       setState(() {
         initialOrderList = OrderService.getOrderList(false);
@@ -50,8 +49,7 @@ class _OrderManagePageState extends State<OrderManagePage> {
   void _initializeWebSocket() {
     stompClient = StompClient(
       config: StompConfig.sockJS(
-        url:
-            'http://loio-server.azurewebsites.net/ws', // Replace with your server's URL
+        url: 'http://loio-server.azurewebsites.net/ws',
         onConnect: onConnectCallback,
         onWebSocketError: (dynamic error) => print('WebSocket Error: $error'),
       ),

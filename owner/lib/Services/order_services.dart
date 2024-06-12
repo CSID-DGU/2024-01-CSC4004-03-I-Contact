@@ -10,7 +10,7 @@ class OrderService {
     if (getAll) {
       url = 'http://loio-server.azurewebsites.net/owner/order/ALL';
     } else {
-      url = 'http://loio-server.azurewebsites.net/owner/order/VISIBLE';
+      url = 'http://loio-server.azurewebsites.net/owner/order/VISIT';
     }
     try {
       var token = await AuthService.loadToken();
@@ -27,6 +27,7 @@ class OrderService {
         }
         return orderInstances;
       } else {
+        //print(response.body);
         throw Exception('Failed to load orderList: ${response.statusCode}');
       }
     } catch (e) {
