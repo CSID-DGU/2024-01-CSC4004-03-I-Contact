@@ -47,6 +47,7 @@ dependencies:
   flutter_local_notifications: ^17.1.2
   google_sign_in: ^6.2.1
   image_picker: ^1.1.2
+  stomp_dart_client: ^2.0.0
 
 dev_dependencies:
   flutter_test:
