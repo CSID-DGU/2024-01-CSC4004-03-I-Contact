@@ -15,6 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +32,8 @@ public class FoodService {
     private final ImageService imageService;
     private final WebSocketService webSocketService;
     private final OrderFoodRepository orderFoodRepository;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledFuture<?> scheduledFuture;
 
     @Transactional
     public AddFoodResponseDto addFood(AddFoodRequestDto addFoodRequestDto, MultipartFile file) throws IOException {
@@ -85,10 +91,28 @@ public class FoodService {
             Image image = imageService.store(file);
             food.updateImage(image);
         }
-        List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(food.getStore().getId());
-        webSocketService.sendFoodUpdate(food.getStore().getId(), updatedFoodList);
-        List<GetFoodListResponseDto> updatedAllFoodList = getAllFoodListByStoreId(food.getStore().getId());
-        webSocketService.sendAllFoodUpdate(food.getStore().getId(), updatedAllFoodList);
+        scheduleWebSocketUpdate(food.getStore().getId());
+    }
+
+    // Helper method to schedule the WebSocket update
+    private synchronized void scheduleWebSocketUpdate(Long storeId) {
+        // Cancel any existing scheduled task
+        if (scheduledFuture != null && !scheduledFuture.isDone()) {
+            scheduledFuture.cancel(false);
+        }
+
+        // Schedule a new task to send the WebSocket update after a delay
+        scheduledFuture = scheduler.schedule(() -> {
+            try {
+                List<GetFoodListResponseDto> updatedFoodList = getFoodListByStoreId(storeId);
+                webSocketService.sendFoodUpdate(storeId, updatedFoodList);
+                List<GetFoodListResponseDto> updatedAllFoodList = getAllFoodListByStoreId(storeId);
+                webSocketService.sendAllFoodUpdate(storeId, updatedAllFoodList);
+            } catch (Exception e) {
+                // Handle exceptions (e.g., log them)
+                e.printStackTrace();
+            }
+        }, 1000, TimeUnit.MILLISECONDS); // Adjust the delay as needed (500ms in this example)
     }
 
     public List<GetFoodListResponseDto> getFoodListByStoreId(Long storeId) {
