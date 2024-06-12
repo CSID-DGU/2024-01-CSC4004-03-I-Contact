@@ -204,7 +204,7 @@ class MenuService {
             'http://loio-server.azurewebsites.net/food/$foodId/minus');
       }
 
-      var request = http.MultipartRequest('PATCH', url);
+      var request = http.MultipartRequest('POST', url);
 
       http.StreamedResponse response = await request.send();
 

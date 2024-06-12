@@ -289,8 +289,9 @@ class _MainPageState extends State<MainPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const OrderManagePage()));
+                                  builder: (context) => OrderManagePage(
+                                        storeId: store.storeId,
+                                      )));
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
