@@ -22,7 +22,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   Future<List<GetOrderModel>> _getOrders() async {
     try {
       final orders = await OrderService.getOrders();
-      return orders ?? []; // null인 경우 빈 리스트 반환
+      return orders ?? []; // Return an empty list if orders is null
     } catch (e) {
       print("Error fetching orders: $e");
       return [];
@@ -55,11 +55,10 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+          return const Center(child: Text('주문이 없습니다'));
         } else if (snapshot.hasData) {
           final orders = snapshot.data!;
-          if (orders.isEmpty) {
-            return const Center(child: Text('주문이 없습니다'));
-          }
           return ListView.builder(
             itemCount: orders.length,
             itemBuilder: (context, index) {
@@ -182,22 +181,24 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                 ),
                               ),
                               SizedBox(height: screenHeight * 0.002),
-                              Text(
-                                '${order.orderedFood[0].name} 외 ${order.orderedFood.map((food) => food.count).reduce((value, element) => value + element) - order.orderedFood[0].count}개',
-                                style: TextStyle(
-                                  color:
-                                      isCanceled ? Colors.grey : Colors.black,
-                                  fontSize: screenHeight * 0.018,
-                                  fontWeight: FontWeight.normal,
+                              if (order.orderedFood.isNotEmpty)
+                                Text(
+                                  '${order.orderedFood[0].name} 외 ${order.orderedFood.map((food) => food.count).reduce((value, element) => value + element) - order.orderedFood[0].count}개',
+                                  style: TextStyle(
+                                    color:
+                                        isCanceled ? Colors.grey : Colors.black,
+                                    fontSize: screenHeight * 0.018,
+                                    fontWeight: FontWeight.normal,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: screenHeight * 0.000),
+                              if (order.orderedFood.isNotEmpty)
+                                SizedBox(height: screenHeight * 0.000),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    order.status,
+                                    '주문 번호: ${order.orderNum % 1000}',
                                     style: TextStyle(
                                       color: isCanceled
                                           ? Colors.grey
