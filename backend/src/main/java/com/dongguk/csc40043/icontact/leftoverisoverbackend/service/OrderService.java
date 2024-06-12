@@ -107,7 +107,7 @@ public class OrderService {
 
         List<Order> orderList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf("VISIT"));
         if (status.equals("ALL")) {
-            List<Order> orderAllList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf("ALL"));
+            List<Order> orderAllList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf("ORDER"));
             orderList.addAll(orderAllList);
         }
         return orderList.stream()
