@@ -101,12 +101,13 @@ public class OrderService {
 
     @NotNull
     private List<OrderListDto> getOrderListDtos(String status, Store store) {
-        if (!status.equals("VISIT") && !status.equals("ALL")) {
+        if (!status.equals("VISIBLE") && !status.equals("ALL")) {
             throw new IllegalArgumentException("Invalid status");
         }
-        List<Order> orderList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf("VISIT"));
+
+        List<Order> orderList = orderRepository.findByStoreAndIsVisible(store, true);
         if (status.equals("ALL")) {
-            List<Order> orderAllList = orderRepository.findByStoreAndStatus(store, OrderStatus.valueOf("ORDER"));
+            List<Order> orderAllList = orderRepository.findByStoreAndIsVisible(store, false);
             orderList.addAll(orderAllList);
         }
         return orderList.stream()

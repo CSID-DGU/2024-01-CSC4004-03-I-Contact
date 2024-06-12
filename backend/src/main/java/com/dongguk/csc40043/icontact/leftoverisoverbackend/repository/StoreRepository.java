@@ -22,6 +22,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     @Query(value = "SELECT *, ST_Distance_Sphere(point(longitude, latitude), point(:targetLon, :targetLat)) as distance FROM store WHERE category_id = :categoryId AND ST_Distance_Sphere(point(longitude, latitude), point(:targetLon, :targetLat)) <= 2000 AND deleted = :deleted ORDER BY distance", nativeQuery = true)
     List<Store> findByCategoryIdSortedByDistanceAndDeleted(Long categoryId, double targetLat, double targetLon, boolean deleted);
 
+    Optional<Store> findByIdAndDeleted(Long id, boolean deleted);
+
     Optional<Store> findByIdAndDeletedAndIsVisible(Long id, boolean deleted, boolean isVisible);
 
 }
