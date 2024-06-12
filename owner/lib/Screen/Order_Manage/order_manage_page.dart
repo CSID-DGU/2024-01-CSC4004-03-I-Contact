@@ -4,7 +4,6 @@ import 'package:leftover_is_over_owner/Model/order_model.dart';
 import 'package:leftover_is_over_owner/Screen/Order_Manage/order_detail_page.dart';
 import 'package:leftover_is_over_owner/Services/order_services.dart';
 import 'package:leftover_is_over_owner/Services/store_services.dart';
-import 'package:leftover_is_over_owner/Widget/order_card_widget.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 import 'dart:async';
@@ -289,8 +288,8 @@ class _OrderManagePageState extends State<OrderManagePage> {
                                                     order.orderedFoodInfo
                                                                 .length ==
                                                             1
-                                                        ? ' 메뉴: ${order.orderedFoodInfo[0].name}개 외${order.orderedFoodInfo[0].count}'
-                                                        : ' 메뉴: ${order.orderedFoodInfo[0].name}개 외',
+                                                        ? ' 메뉴: ${order.orderedFoodInfo[0].name} ${order.orderedFoodInfo[0].count}개'
+                                                        : ' 메뉴: ${order.orderedFoodInfo[0].name} ${order.orderedFoodInfo[0].count}개 외',
                                                     style: const TextStyle(
                                                       fontSize: 19,
                                                       fontWeight:
