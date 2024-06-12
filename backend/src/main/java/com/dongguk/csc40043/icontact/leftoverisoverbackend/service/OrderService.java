@@ -82,7 +82,8 @@ public class OrderService {
             Long storeId = store.getId();
             webSocketService.sendFoodUpdate(storeId, updatedFoodList);
             webSocketService.sendAllFoodUpdate(storeId, updatedAllFoodList);
-            webSocketService.sendOrderUpdate(storeId, getOwnerOrder(storeId, "ALL"));
+            webSocketService.sendOrderUpdate(storeId, getOwnerOrder(storeId, "VISIT"));
+            webSocketService.sendAllOrderUpdate(storeId, getOwnerOrder(storeId, "ALL"));
             return CreateOrderResponseDto.builder()
                     .orderId(order.getId())
                     .build();
@@ -137,7 +138,8 @@ public class OrderService {
         order.cancel();
         order.getOrderFoods().forEach(orderFood -> orderFood.getFood().plusCapacity(orderFood.getCount()));
         Long storeId = order.getStore().getId();
-        webSocketService.sendOrderUpdate(storeId, getOwnerOrder(storeId, "ALL"));
+        webSocketService.sendOrderUpdate(storeId, getOwnerOrder(storeId, "VISIT"));
+        webSocketService.sendAllOrderUpdate(storeId, getOwnerOrder(storeId, "ALL"));
         webSocketService.sendFoodUpdate(storeId, foodService.getFoodListByStoreId(storeId));
         webSocketService.sendAllFoodUpdate(storeId, foodService.getAllFoodListByStoreId(storeId));
     }
@@ -147,7 +149,8 @@ public class OrderService {
         Order order = orderRepository.findById(changeOrderRequestDto.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
         order.complete();
-        webSocketService.sendOrderUpdate(order.getStore().getId(), getOwnerOrder(order.getStore().getId(), "ALL"));
+        webSocketService.sendOrderUpdate(order.getStore().getId(), getOwnerOrder(order.getStore().getId(), "VISIT"));
+        webSocketService.sendAllOrderUpdate(order.getStore().getId(), getOwnerOrder(order.getStore().getId(), "ALL"));
     }
 
     public void sendOrderNotification(CreateOrderRequestDto createOrderRequestDto) throws IOException {
