@@ -2,6 +2,7 @@ package com.dongguk.csc40043.icontact.leftoverisoverbackend.service;
 
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Member;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.domain.Store;
+import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.ResponseDto.GetFoodListResponseDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.geocoding.CoordinateDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store.CreateStoreRequestDto;
 import com.dongguk.csc40043.icontact.leftoverisoverbackend.dto.RequestDto.store.UpdateStoreRequestDto;
@@ -28,6 +29,8 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
     private final GeocodingService geocodingService;
+    private final WebSocketService webSocketService;
+    private final FoodService foodService;
 
     @Transactional
     public CreateStoreResponseDto createStore(CreateStoreRequestDto createStoreRequestDto) {
@@ -73,6 +76,9 @@ public class StoreService {
         if (isOpen) {
             store.getFoods().forEach(food -> food.updateIsVisible(true));
         }
+        Long storeId = store.getId();
+        List<GetFoodListResponseDto> updatedFoodList = foodService.getFoodListByStoreId(storeId);
+        webSocketService.sendFoodUpdate(storeId, updatedFoodList);
         storeRepository.save(store);
         return isOpen;
     }
