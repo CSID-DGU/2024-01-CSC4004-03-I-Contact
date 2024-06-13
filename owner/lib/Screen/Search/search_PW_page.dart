@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
+import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 import 'package:leftover_is_over_owner/Screen/Search/change_PW_complete.dart';
 
@@ -15,7 +17,8 @@ class _SearchPwPageState extends State<SearchPwPage> {
   late TextEditingController controllerUsername,
       controllerName,
       controllerEmail,
-      controllerPhone;
+      controllerPhone,
+      controllerPwd;
 
   @override
   void initState() {
@@ -23,9 +26,10 @@ class _SearchPwPageState extends State<SearchPwPage> {
     controllerName = TextEditingController();
     controllerEmail = TextEditingController();
     controllerPhone = TextEditingController();
+    controllerPwd = TextEditingController();
   }
 
-  void _checkCredentials() {
+  void _checkCredentials() async {
     var message = '에러';
 
     // 이메일 형식을 확인하기 위한 정규 표현식
@@ -45,20 +49,26 @@ class _SearchPwPageState extends State<SearchPwPage> {
       message = '이메일를 입력해주세요.';
     } else if (!regExp.hasMatch(controllerEmail.text)) {
       message = '올바른 이메일을 입력해주세요.';
+    } else if (controllerPwd.text.isEmpty) {
+      message = '변경할 비밀번호를 입력해주세요.';
     } else {
-      var userName = controllerUsername;
+      var username = controllerUsername.text;
       var name = controllerName.text;
       var phone = controllerPhone.text;
       var email = controllerEmail.text;
-
-      /*Navigator.push( 
-          context,
-          MaterialPageRoute(
-              builder: (context) => 정보확인시켜주는페이지(
-                  name: name,
-                  email: email,
-                  phone: phone,)),
-        );*/
+      var password = controllerPwd.text;
+      var resetResult = await AuthService.resetPassword(
+          username: username,
+          name: name,
+          email: email,
+          phone: phone,
+          newPassword: password);
+      if (resetResult) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ChangePwComplete()));
+      } else {
+        showErrorDialog(context, '비밀번호 변경에 실패했습니다');
+      }
       return;
     }
     showErrorDialog(context, message);
@@ -133,7 +143,6 @@ class _SearchPwPageState extends State<SearchPwPage> {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    obscureText: true,
                     autofocus: false,
                     controller: controllerUsername,
                   ),
@@ -286,19 +295,60 @@ class _SearchPwPageState extends State<SearchPwPage> {
                   ),
                 ),
                 const SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  clipBehavior: Clip.hardEdge,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 23),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: const Color.fromARGB(255, 173, 190, 122),
+                  ),
+                  child: const Text(
+                    '변경할 비밀번호',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                ),
+                const SizedBox(
+                  height: 1,
+                ),
+                Container(
+                  height: 36,
+                  width: 400,
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 2,
+                        color: Colors.black.withOpacity(0.3),
+                        offset: const Offset(1, 3),
+                      )
+                    ],
+                    borderRadius: BorderRadius.circular(70),
+                  ),
+                  // 유효성 검증을 위해 TextFormFeild를 사용하라는데 TextFeild로도 작동하긴 함
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(70.0),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    autofocus: false,
+                    obscureText: true,
+                    controller: controllerPwd,
+                  ),
+                ),
+                const SizedBox(
                   height: 80,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     OutlinedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const ChangePwComplete()));
-                      },
+                      onPressed: _checkCredentials,
                       style: OutlinedButton.styleFrom(
                         backgroundColor:
                             const Color.fromARGB(255, 173, 190, 122),

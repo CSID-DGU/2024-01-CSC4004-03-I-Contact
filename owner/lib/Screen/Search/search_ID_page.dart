@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 import 'package:leftover_is_over_owner/Screen/Search/search_ID_complete.dart';
 
@@ -21,14 +22,13 @@ class _SearchIdPageState extends State<SearchIdPage> {
     controllerPhone = TextEditingController();
   }
 
-  void _checkCredentials() {
+  void _checkCredentials() async {
     var message = '에러';
 
     // 이메일 형식을 확인하기 위한 정규 표현식
     String pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\\.,;:\s@\"]+\.)+[^<>()[\]\\.,;:\s@\"]{2,})$';
     RegExp regExp = RegExp(pattern);
-
     if (controllerName.text.isEmpty) {
       message = '이름을 입력해주세요.';
     } else if (controllerPhone.text.isEmpty) {
@@ -43,15 +43,16 @@ class _SearchIdPageState extends State<SearchIdPage> {
       var name = controllerName.text;
       var phone = controllerPhone.text;
       var email = controllerEmail.text;
-
-      /*Navigator.push( 
-          context,
-          MaterialPageRoute(
-              builder: (context) => 정보확인시켜주는페이지(
-                  name: name,
-                  email: email,
-                  phone: phone,)),
-        );*/
+      var findResult = await AuthService.findUserName(
+          name: name, email: email, phone: phone);
+      if (findResult != '') {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SearchIdComplete(searchId: findResult)));
+      } else {
+        showErrorDialog(context, 'ID가 존재하지 않습니다.');
+      }
       return;
     }
     showErrorDialog(context, message);
@@ -239,13 +240,7 @@ class _SearchIdPageState extends State<SearchIdPage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     OutlinedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const SearchIdComplete()));
-                      },
+                      onPressed: _checkCredentials,
                       style: OutlinedButton.styleFrom(
                         backgroundColor:
                             const Color.fromARGB(255, 222, 234, 187),

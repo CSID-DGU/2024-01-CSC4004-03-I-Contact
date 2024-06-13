@@ -137,6 +137,79 @@ class AuthService {
     }
   }
 
+  static Future<String> findUserName(
+      {required String name,
+      required String email,
+      required String phone}) async {
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request('POST',
+        Uri.parse('http://loio-server.azurewebsites.net/find-username'));
+    request.body = json.encode({
+      "name": name,
+      "email": email,
+      "phone": phone,
+    });
+    request.headers.addAll(headers);
+    try {
+      http.StreamedResponse response = await request.send();
+      String responseBody = await response.stream.bytesToString();
+      if (response.statusCode == 200) {
+        var decodedResponse = json.decode(responseBody);
+        if (decodedResponse != null &&
+            decodedResponse.containsKey('username')) {
+          return decodedResponse['username'];
+        } else {
+          print('Username not found in response');
+          return '';
+        }
+      } else if (response.statusCode == 400) {
+        print("400에러 $responseBody");
+        return '';
+      } else {
+        print(response.statusCode); // 기타 로그인 Service error
+        return '';
+      }
+    } catch (e) {
+      //  request Timeout시
+      print('Error: $e');
+      return '';
+    }
+  }
+
+  static Future<bool> resetPassword(
+      {required String username,
+      required String name,
+      required String email,
+      required String phone,
+      required String newPassword}) async {
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request('POST',
+        Uri.parse('http://loio-server.azurewebsites.net/reset-password'));
+    request.body = json.encode({
+      "username": username,
+      "name": name,
+      "email": email,
+      "phone": phone,
+      "newPassword": newPassword,
+    });
+    request.headers.addAll(headers);
+    print('das');
+    try {
+      http.StreamedResponse response = await request.send();
+      String responseBody = await response.stream.bytesToString();
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        print("${response.statusCode}에러 $responseBody");
+        return false;
+      }
+    } catch (e) {
+      //  request Timeout시
+      print('Error: $e');
+      rethrow;
+    }
+  }
+
   static Future<void> saveToken(Map<String, dynamic> token) async {
     List<String> tokenList = List.filled(3, '');
     token.forEach((key, value) {
@@ -226,49 +299,4 @@ class AuthService {
       return false;
     }
   }
-
-/*
-  static List<WebtoonModel> webtoonInstances = [];
-
-  static Future<List<WebtoonModel>> getTodaysToons() async {
-    final url = Uri.parse('$baseUrl/$today');
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final List<dynamic> webtoons = jsonDecode(response.body);
-      for (var webtoon in webtoons) {
-        final instance = WebtoonModel.fromJson(webtoon);
-        webtoonInstances.add(instance);
-      }
-      return webtoonInstances;
-    }
-    throw Error();
-  }
-
-  static Future<WebtoonDetailModel> getToonbyId(String id) async {
-    final url = Uri.parse("$baseUrl/$id");
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final webtoon = jsonDecode(response.body);
-      return WebtoonDetailModel.fromJson(webtoon);
-    }
-    throw Error();
-  }
-
-  static Future<List<WebtoonEpisodeModel>> getLatestEpisodeById(
-      String id) async {
-    List<WebtoonEpisodeModel> episodeInstances = [];
-
-    final url = Uri.parse("$baseUrl/$id/episodes");
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final episodes = jsonDecode(response.body);
-      for (var episode in episodes) {
-        var ins = WebtoonEpisodeModel.fromJson(episode);
-        episodeInstances.add(ins);
-      }
-      return episodeInstances;
-    }
-    throw Error();
-  }
-  */
 }

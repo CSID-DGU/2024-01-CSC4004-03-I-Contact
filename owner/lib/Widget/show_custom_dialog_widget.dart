@@ -39,3 +39,23 @@ void showMessageDialog(BuildContext context, String message) {
     },
   );
 }
+
+void showSearchResultDialog(BuildContext context, String want, String message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(want),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: Text(message),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}

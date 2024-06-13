@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
+import 'package:leftover_is_over_owner/Screen/Main/main_page.dart';
+import 'package:leftover_is_over_owner/Screen/Search/change_PW_complete.dart';
 import 'package:leftover_is_over_owner/Screen/Search/search_PW_page.dart';
 
 class SearchIdComplete extends StatefulWidget {
-  const SearchIdComplete({super.key});
+  final String searchId;
+  const SearchIdComplete({required this.searchId, super.key});
 
   @override
   State<SearchIdComplete> createState() => _SearchIdCompleteState();
@@ -17,6 +20,7 @@ class _SearchIdCompleteState extends State<SearchIdComplete> {
   void initState() {
     super.initState();
     controllerUsername = TextEditingController();
+    controllerUsername.text = widget.searchId;
   }
 
   @override
@@ -113,22 +117,28 @@ class _SearchIdCompleteState extends State<SearchIdComplete> {
                   padding: const EdgeInsets.only(top: 170),
                   child: Column(
                     children: [
-                      const Text(
-                        '로그인을 다시 시도해주세요',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: "Free2",
-                        ),
-                      ),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(
+                          if (mounted) {
+                            Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const SearchPwPage()));
+                                  builder: (context) => const MainPage()),
+                              (route) => false,
+                            );
+
+                            Future.delayed(Duration.zero, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ChangePwComplete()),
+                              );
+                            });
+                          }
                         },
                         style: TextButton.styleFrom(
-                          foregroundColor: Colors.black,
+                          foregroundColor: Colors.grey[600],
                         ),
                         child: const Text('Password 찾기'),
                       ),
