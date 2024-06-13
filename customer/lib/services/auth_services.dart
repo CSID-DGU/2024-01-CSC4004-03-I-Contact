@@ -188,4 +188,34 @@ class AuthService {
       return false; // Failed due to an exception
     }
   }
+
+  static Future<bool> passwordModify(String newPassword) async {
+    try {
+      var token =
+          await loadToken(); // Assuming loadToken() loads authentication token
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': '${token[0]} ${token[1]}'
+      };
+      var request = http.Request(
+        'PATCH',
+        Uri.parse('http://loio-server.azurewebsites.net/member'),
+      );
+      request.body = jsonEncode({
+        "password": newPassword,
+      });
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        return true; // Successfully updated
+      } else {
+        print('Failed to update password: ${response.statusCode}');
+        return false; // Failed to update
+      }
+    } catch (e) {
+      print('Error updating password: $e');
+      return false; // Failed due to an exception
+    }
+  }
 }
