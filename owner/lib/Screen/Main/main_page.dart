@@ -14,7 +14,6 @@ import 'package:leftover_is_over_owner/Screen/Order_Manage/order_manage_page.dar
 import 'package:leftover_is_over_owner/Screen/Main/store_info_page.dart';
 import 'package:leftover_is_over_owner/Services/auth_services.dart';
 import 'package:leftover_is_over_owner/Services/store_services.dart';
-import 'package:leftover_is_over_owner/Widget/store_state_widget.dart';
 import 'package:leftover_is_over_owner/Widget/show_custom_dialog_widget.dart';
 import 'dart:ui';
 
