@@ -39,13 +39,17 @@ class _CategorySearchScreenState extends State<CategorySearchScreen> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             List<StoreModel> stores = snapshot.data!;
-            return ListView.builder(
-              itemCount: stores.length,
-              itemBuilder: (BuildContext context, int index) {
-                final StoreModel store = stores[index]; // storeId를 1부터 시작하도록 설정
-                return RestaurantWidget(storeId: store.storeId);
-              },
-            );
+            if (stores.isEmpty) {
+              return const Center(child: Text('식당이 없습니다.'));
+            } else {
+              return ListView.builder(
+                itemCount: stores.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final StoreModel store = stores[index];
+                  return RestaurantWidget(storeId: store.storeId);
+                },
+              );
+            }
           } else {
             return const Center(child: Text('No data available'));
           }

@@ -190,7 +190,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                               SizedBox(height: screenHeight * 0.002),
                               if (order.orderedFood.isNotEmpty)
                                 Text(
-                                  '${order.orderedFood[0].name} 외 ${order.orderedFood.map((food) => food.count).reduce((value, element) => value + element) - order.orderedFood[0].count}개',
+                                  '${order.orderedFood[0].name} 외 ${order.orderedFood.length - 1}개',
                                   style: TextStyle(
                                     color: (isCanceled || isComplete)
                                         ? Colors.grey
