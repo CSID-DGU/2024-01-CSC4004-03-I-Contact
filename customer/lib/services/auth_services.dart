@@ -154,4 +154,38 @@ class AuthService {
       rethrow; // 예외 재던지기
     }
   }
+
+  static Future<bool> memberModify({
+    required String name,
+    required String email,
+  }) async {
+    try {
+      var token =
+          await loadToken(); // Assuming loadToken() loads authentication token
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': '${token[0]} ${token[1]}'
+      };
+      var request = http.Request(
+        'PATCH',
+        Uri.parse('http://loio-server.azurewebsites.net/member'),
+      );
+      request.body = jsonEncode({
+        "name": name,
+        "email": email,
+      });
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        return true; // Successfully updated
+      } else {
+        print('Failed to update profile: ${response.statusCode}');
+        return false; // Failed to update
+      }
+    } catch (e) {
+      print('Error updating profile: $e');
+      return false; // Failed due to an exception
+    }
+  }
 }

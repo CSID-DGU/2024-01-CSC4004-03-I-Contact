@@ -101,12 +101,37 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       body: _futureStore == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(child: CircularProgressIndicator()),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  '지도 로딩중...',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                ),
+              ],
+            )
           : FutureBuilder<List<StoreModel>>(
               future: _futureStore,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(child: CircularProgressIndicator()),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        '가게 로딩중...',
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  );
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (snapshot.hasData) {

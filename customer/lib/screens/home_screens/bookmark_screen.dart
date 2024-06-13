@@ -34,10 +34,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Center(
-                  child: Text('Failed to load favorites: ${snapshot.error}'));
+              return const Center(child: Text('즐겨찾기한 식당이 없습니다.'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No favorites found.'));
+              return const Center(child: Text('즐겨찾기한 식당이 없습니다.'));
             } else {
               List<FavoriteModel> favorites = snapshot.data!;
               return ListView.builder(

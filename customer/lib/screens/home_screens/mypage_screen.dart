@@ -165,19 +165,6 @@ class _SettingsSectionState extends State<SettingsSection> {
                 color: Color.fromARGB(255, 0, 0, 0)),
           ),
           SizedBox(height: screenHeight * 0.05),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.amber,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const NotificationSettingScreen()),
-              );
-            },
-            child: const Text('알림 설정', style: TextStyle(color: Colors.white)),
-          ),
           SizedBox(height: screenHeight * 0.01),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
