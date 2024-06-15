@@ -31,6 +31,10 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Android specific ignores
+android/key.properties
+android/app/owner-release-key.jks
+
 # Symbolication related
 app.*.symbols
 
@@ -41,3 +45,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Key properties and keystore
+android/key.properties
+android/app/owner-release-key.jks

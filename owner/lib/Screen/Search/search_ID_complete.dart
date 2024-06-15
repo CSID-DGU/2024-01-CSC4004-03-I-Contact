@@ -123,7 +123,7 @@ class _SearchIdCompleteState extends State<SearchIdComplete> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const MainPage()),
+                                  builder: (context) => const LoginPage()),
                               (route) => false,
                             );
 
@@ -131,8 +131,7 @@ class _SearchIdCompleteState extends State<SearchIdComplete> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ChangePwComplete()),
+                                    builder: (context) => const SearchPwPage()),
                               );
                             });
                           }

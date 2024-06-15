@@ -11,7 +11,11 @@ import 'package:leftover_is_over_owner/Screen/Main/login_page.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print("Handling a background message: ${message.messageId}");
-  // 백그라운드 메시지 처리를 여기에 추가할 수 있습니다.
+}
+
+@pragma('vm:entry-point')
+void onDidReceiveBackgroundNotificationResponse(NotificationResponse details) {
+  // 백그라운드 알림 처리 로직
 }
 
 void initializeNotification() async {
@@ -29,9 +33,8 @@ void initializeNotification() async {
     onDidReceiveNotificationResponse: (details) {
       // 알림 클릭 시 액션 처리
     },
-    onDidReceiveBackgroundNotificationResponse: (details) {
-      // 백그라운드 알림 처리 로직
-    },
+    onDidReceiveBackgroundNotificationResponse:
+        onDidReceiveBackgroundNotificationResponse,
   );
 
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
