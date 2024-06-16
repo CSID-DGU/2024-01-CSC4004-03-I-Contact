@@ -88,7 +88,7 @@ class _OrderListPageState extends State<OrderListPage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(
-              '주문 관리  ',
+              '전체 주문 내역  ',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
             ),
           ],
