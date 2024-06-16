@@ -310,7 +310,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ),
                           child: Text(
-                            '이용 확인',
+                            '주문 관리',
                             style: TextStyle(
                               color: Colors.brown[600],
                               fontSize: 30,
