@@ -344,7 +344,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               const FoodCategoryWidget(
                                   categoryNumber: 8, foodName: '기타'),
                               const FoodCategoryWidget(
-                                  categoryNumber: 9, foodName: '추천'),
+                                  categoryNumber: 9, foodName: '전체'),
                             ],
                           ),
                         ],
