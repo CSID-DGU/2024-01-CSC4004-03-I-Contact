@@ -32,6 +32,23 @@
 ## 시스템 구성도
 ![Diagram](https://github.com/CSID-DGU/2024-01-CSC4004-03-I-Contact/blob/main/Doc/%EA%B5%AC%EC%84%B1%EB%8F%84.png?raw=true)
 
+이 시스템 구성도는 LOIO 프로젝트의 전체 아키텍처를 나타낸다. 시스템은 크게 Client와 Server로 구성된다. 
+
+- Client
+	- 고객 어플리케이션: 사용자는 이 앱을 통해 주변 가게들의 남은 음식 정보를 확인하고 구매할 수 있습니다.
+	- 점주 어플리케이션: 점주는 이 앱을 통해 매장을 등록하고 남은 음식을 할인된 가격에 판매할 수 있습니다.
+
+- Azure Web Apps
+	- 백엔드 어플리케이션이 배포되는 클라우드 서비스입니다.
+	- Spring Boot 어플리케이션이 실행됩니다.
+
+- Spring Boot
+	- API 서버로, 클라이언트의 요청을 처리하고 데이터베이스와의 상호작용, 사용자 인증, 알림 전송 등의 기능을 수행합니다.
+	- WebSocket의 STOMP 프로토콜을 사용하여 주문목록, 메뉴현황 등에 실시간 데이터 업데이트를 지원합니다. 
+
+- Firebase
+	- Google 로그인시 사용자 인증을 관리합니다.
+	- Cloud Messaging 서비스를 통해 Spring Boot 어플리케이션에서 클라이언트 어플리케이션으로 푸시 알림을 전송하는데 사용됩니다. 주문이 등록되거나 즐겨찾기한 식당이 판매개시하는 경우 알림이 전송됩니다.
 
 ## 다운로드
 - 고객 어플리케이션 <br>
@@ -39,4 +56,4 @@
 - 점주 어플리케이션 <br>
 [![Owner Application](https://img.shields.io/badge/Download_For_Owners-green?style=for-the-badge&logo=Android)](https://drive.google.com/file/d/1MrhUM7Ys6eChTPpwzd0FnKz653oth-Cy/view?usp=drive_link)
 - 설치 후 설정에서 알림을 허용해주세요
-- 현재는 안드로이드만 지원합니다.
+- 현재는 안드로이드만 지원합니다
