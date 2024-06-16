@@ -10,13 +10,14 @@
 
 🙏 Loio의 이용자가 늘어날수록 음식물 쓰레기의 발생은 줄어들 환경 보호를 향한 작지만 큰 걸음을 내딛을 수 있습니다.
 
+## 다운로드
+- 고객 어플리케이션 <br>
+[![Customer Application](https://img.shields.io/badge/Download_For_Customers-blue?style=for-the-badge&logo=Android)](https://drive.google.com/file/d/1itznIU5npvExpNon0nxaK6zrr0sbhfWT/view?usp=drive_link)
+- 점주 어플리케이션 <br>
+[![Owner Application](https://img.shields.io/badge/Download_For_Owners-green?style=for-the-badge&logo=Android)](https://drive.google.com/file/d/1MrhUM7Ys6eChTPpwzd0FnKz653oth-Cy/view?usp=drive_link)
+- 설치 후 설정에서 알림을 허용해주세요
+- 현재는 안드로이드만 지원합니다
 
-## 팀원 구성
-|윤진수|남상원|서지민|안하현|염경민|
-|:---:|:---:|:---:|:---:|:---:|
-|서버|고객앱|점주앱|고객앱|점주앱|
-|<img src="https://avatars.githubusercontent.com/u/51525934?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/139528469?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/129031753?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/150058057?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/153171942?v=4" width="150" height="150"/>|
-|Jinsoo Yoon<br/>[@floreo1242](https://github.com/floreo1242)|[@DavyScar](https://github.com/DavyScar)|[@seojm07](https://github.com/seojm07)|ha-hyeon<br/>[@ha-hyeon](https://github.com/ha-hyeon)|[@Ykmykmkkk](https://github.com/Ykmykmkkk)|
 
 
 ## 개발 환경
@@ -50,10 +51,15 @@
 	- Google 로그인시 사용자 인증을 관리합니다.
 	- Cloud Messaging 서비스를 통해 Spring Boot 어플리케이션에서 클라이언트 어플리케이션으로 푸시 알림을 전송하는데 사용됩니다. 주문이 등록되거나 즐겨찾기한 식당이 판매개시하는 경우 알림이 전송됩니다.
 
-## 다운로드
-- 고객 어플리케이션 <br>
-[![Customer Application](https://img.shields.io/badge/Download_For_Customers-blue?style=for-the-badge&logo=Android)](https://drive.google.com/file/d/1itznIU5npvExpNon0nxaK6zrr0sbhfWT/view?usp=drive_link)
-- 점주 어플리케이션 <br>
-[![Owner Application](https://img.shields.io/badge/Download_For_Owners-green?style=for-the-badge&logo=Android)](https://drive.google.com/file/d/1MrhUM7Ys6eChTPpwzd0FnKz653oth-Cy/view?usp=drive_link)
-- 설치 후 설정에서 알림을 허용해주세요
-- 현재는 안드로이드만 지원합니다
+
+## 팀원 구성
+|윤진수|남상원|서지민|안하현|염경민|
+|:---:|:---:|:---:|:---:|:---:|
+|서버|고객앱|점주앱|고객앱|점주앱|
+|<img src="https://avatars.githubusercontent.com/u/51525934?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/139528469?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/129031753?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/150058057?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/153171942?v=4" width="150" height="150"/>|
+|Jinsoo Yoon<br/>[@floreo1242](https://github.com/floreo1242)|[@DavyScar](https://github.com/DavyScar)|[@seojm07](https://github.com/seojm07)|ha-hyeon<br/>[@ha-hyeon](https://github.com/ha-hyeon)|[@Ykmykmkkk](https://github.com/Ykmykmkkk)|
+
+## 라이선스
+
+이 프로젝트는 [MIT 라이선스](LICENSE) 하에 배포됩니다. 자세한 내용은 [LICENSE 파일](LICENSE)을 참조하세요.
+
