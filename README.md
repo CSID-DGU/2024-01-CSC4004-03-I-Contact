@@ -32,7 +32,7 @@
 ## 시스템 구성도
 ![Diagram](https://github.com/CSID-DGU/2024-01-CSC4004-03-I-Contact/blob/main/Doc/%EA%B5%AC%EC%84%B1%EB%8F%84.png?raw=true)
 
-이 시스템 구성도는 LOIO 프로젝트의 전체 아키텍처를 나타낸다. 시스템은 크게 Client와 Server로 구성된다. 
+이 시스템 구성도는 LOIO 프로젝트의 전체 시스템을 나타냅니다. 시스템은 크게 Client와 Server로 구성됩니다.
 
 - Client
 	- 고객 어플리케이션: 사용자는 이 앱을 통해 주변 가게들의 남은 음식 정보를 확인하고 구매할 수 있습니다.
