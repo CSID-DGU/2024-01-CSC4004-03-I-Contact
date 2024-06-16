@@ -20,13 +20,13 @@
 
 
 ## 개발 환경
-- 개발도구
+- 개발도구 <br>
 ![VS Code](https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white) ![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white)
-- 협업도구
+- 협업도구 <br>
 ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white) ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white) ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
-- 어플리케이션
+- 어플리케이션 <br>
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white) ![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
-- 서버
+- 서버 <br>
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white) ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
 ## 시스템 구성도
@@ -34,9 +34,9 @@
 
 
 ## 다운로드
-- 고객 어플리케이션
+- 고객 어플리케이션 <br>
 [![Customer Application](https://img.shields.io/badge/Download_For_Customers-blue?style=for-the-badge&logo=Android)](https://drive.google.com/file/d/1itznIU5npvExpNon0nxaK6zrr0sbhfWT/view?usp=drive_link)
-- 점주 어플리케이션
+- 점주 어플리케이션 <br>
 [![Owner Application](https://img.shields.io/badge/Download_For_Owners-green?style=for-the-badge&logo=Android)](https://drive.google.com/file/d/1MrhUM7Ys6eChTPpwzd0FnKz653oth-Cy/view?usp=drive_link)
 - 설치 후 설정에서 알림을 허용해주세요
 - 현재는 안드로이드만 지원합니다.
